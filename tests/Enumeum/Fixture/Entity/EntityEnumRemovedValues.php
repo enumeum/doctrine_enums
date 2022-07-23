@@ -26,7 +26,7 @@ class EntityEnumRemovedValues
     private int $id;
 
     /**
-     * @ORM\Column(type=enumeum_string, enumType=RemovedValuesStatusType::class)
+     * @ORM\Column(type=enumeum_string, enumType=RemovedValuesStatusType::class, options={"comment":"SOME Comment"})
      */
     #[ORM\Column(type: EnumeumType::NAME, enumType: RemovedValuesStatusType::class, options: ["comment" => "SOME Comment"])]
     private RemovedValuesStatusType $status;

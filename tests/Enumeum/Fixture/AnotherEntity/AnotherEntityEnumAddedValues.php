@@ -26,7 +26,7 @@ class AnotherEntityEnumAddedValues
     private int $id;
 
     /**
-     * @ORM\Column(type=enumeum_string, enumType=AddedValuesStatusType::class)
+     * @ORM\Column(type=enumeum_string, enumType=AddedValuesStatusType::class, options={"comment":"SOME Comment"})
      */
     #[ORM\Column(type: EnumeumType::NAME, enumType: AddedValuesStatusType::class, options: ["comment" => "SOME Comment"])]
     private AddedValuesStatusType $status;

@@ -144,7 +144,7 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
             "CREATE TABLE another_entity (id INT NOT NULL, PRIMARY KEY(id))",
         ]);
 
-        $this->definitionRegistry->loadType(AddedValuesStatusType::class);
+        $this->definitionRegistry->loadType(BaseStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
@@ -164,13 +164,39 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
         $this->fail('Test should not achieve this point.');
     }
 
-    public function testEnumTypeWillBeUsedByAnotherTableDroppingGoesAfterUsage(): void
+    public function testEnumTypeWillBeUsedByAnotherTableWithAddingValuesDroppingGoesBeforeUsage(): void
     {
         $this->applySQL([
             "CREATE TABLE another_entity (id INT NOT NULL, PRIMARY KEY(id))",
         ]);
 
         $this->definitionRegistry->loadType(AddedValuesStatusType::class);
+
+        $schemaTool = new SchemaTool($this->em);
+        $schema = $this->composeSchema([
+            EntityWithoutTypedField::class,
+            AnotherEntityEnumAddedValues::class,
+        ]);
+
+        $this->expectException(SimultaneousManagementTypeException::class);
+        $this->expectExceptionMessage(
+            'Type "status_type" is already queued to be dropped and then attempted to be persisted. ' .
+            'SQL generating stopped. ' .
+            'To avoid this exception change fields and generate migrations separately, one by one.',
+        );
+
+        $schemaTool->getUpdateSchemaSql($schema);
+
+        $this->fail('Test should not achieve this point.');
+    }
+
+    public function testEnumTypeWillBeUsedByAnotherTableDroppingGoesAfterUsage(): void
+    {
+        $this->applySQL([
+            "CREATE TABLE another_entity (id INT NOT NULL, PRIMARY KEY(id))",
+        ]);
+
+        $this->definitionRegistry->loadType(BaseStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
@@ -182,6 +208,36 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
 
         self::assertEquals(
             [
+                "ALTER TABLE another_entity ADD status status_type NOT NULL",
+                "COMMENT ON COLUMN another_entity.status IS 'SOME Comment'",
+                "ALTER TABLE entity DROP status",
+            ],
+            $updateSchemaSql,
+        );
+
+        $this->applySQL($updateSchemaSql);
+    }
+
+    public function testEnumTypeWillBeUsedByAnotherTableWithAddingValuesDroppingGoesAfterUsage(): void
+    {
+        $this->applySQL([
+            "CREATE TABLE another_entity (id INT NOT NULL, PRIMARY KEY(id))",
+        ]);
+
+        $this->definitionRegistry->loadType(AddedValuesStatusType::class);
+
+        $schemaTool = new SchemaTool($this->em);
+        $schema = $this->composeSchema([
+            AnotherEntityEnumAddedValues::class,
+            EntityWithoutTypedField::class,
+        ]);
+
+        $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
+
+        self::assertEquals(
+            [
+                "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'accepted'",
+                "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'rejected'",
                 "ALTER TABLE another_entity ADD status status_type NOT NULL",
                 "COMMENT ON COLUMN another_entity.status IS 'SOME Comment'",
                 "ALTER TABLE entity DROP status",

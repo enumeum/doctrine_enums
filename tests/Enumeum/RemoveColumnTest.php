@@ -159,7 +159,9 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
             'To avoid this exception change fields and generate migrations separately, one by one.',
         );
 
-        $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
+        $schemaTool->getUpdateSchemaSql($schema);
+
+        $this->fail('Test should not achieve this point.');
     }
 
     public function testEnumTypeWillBeUsedByAnotherTableDroppingGoesAfterUsage(): void

@@ -24,7 +24,7 @@ class EntityNotEnum
     private int $id;
 
     /**
-     * @ORM\Column(type=string, options={"comment":"SOME Comment"})
+     * @ORM\Column(type="string", options={"comment":"SOME Comment"})
      */
     #[ORM\Column(type: Types::STRING, options: ["comment" => "SOME Comment"])]
     private string $status;

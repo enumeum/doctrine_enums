@@ -26,7 +26,7 @@ class EntityChangedComment
     private int $id;
 
     /**
-     * @ORM\Column(type=enumeum_string, enumType=BaseStatusType::class, options={"comment":"CHANGED Comment"})
+     * @ORM\Column(type="enumeum_enum", enumType=BaseStatusType::class, options={"comment":"CHANGED Comment"})
      */
     #[ORM\Column(type: EnumeumType::NAME, enumType: BaseStatusType::class, options: ["comment" => "CHANGED Comment"])]
     private BaseStatusType $status;

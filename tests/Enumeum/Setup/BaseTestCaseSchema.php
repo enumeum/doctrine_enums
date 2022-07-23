@@ -170,6 +170,7 @@ abstract class BaseTestCaseSchema extends TestCase
     protected function getMetadataDriverImplementation(): MappingDriver
     {
         return new AttributeDriver([]);
+        //return new AnnotationDriver(new AnnotationReader());
     }
 
     protected function getDefaultConfiguration(): Configuration

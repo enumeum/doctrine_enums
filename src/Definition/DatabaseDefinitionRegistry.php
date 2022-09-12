@@ -1,4 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the "Doctrine enumerations extension for Postgres" package.
+ * (c) Alexey Sitka <alexey.sitka@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Enumeum\DoctrineEnum\Definition;
 
@@ -46,10 +55,10 @@ QUERY;
         }
 
         foreach ($sorted as $name => $type) {
-            usort($type, fn (array $a, array $b) => $a['order'] > $b['order'] ? 1 : -1 );
+            usort($type, static fn (array $a, array $b) => $a['order'] > $b['order'] ? 1 : -1);
             $this->definitions[$name] = new DatabaseDefinition(
                 $name,
-                array_map(fn (array $a) => $a['value'], $type),
+                array_map(static fn (array $a) => $a['value'], $type),
             );
         }
 

@@ -1,4 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the "Doctrine enumerations extension for Postgres" package.
+ * (c) Alexey Sitka <alexey.sitka@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Enumeum\DoctrineEnum\Definition;
 
@@ -53,7 +62,8 @@ class DefinitionRegistry
             if ($typeName = $this->tryMappedEnumName($reflection)) {
                 return new Definition($typeName, $enumClassName, (string) $reflection->getBackingType());
             }
-        } catch (Throwable) {}
+        } catch (Throwable) {
+        }
 
         throw UnexpectedValueException::enumIsNotRelatedToBeEnumeumType($enumClassName);
     }

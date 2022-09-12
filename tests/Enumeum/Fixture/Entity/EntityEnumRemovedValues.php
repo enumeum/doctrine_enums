@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the "Doctrine enumerations extension for Postgres" package.
+ * (c) Alexey Sitka <alexey.sitka@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace EnumeumTests\Fixture\Entity;
 
 use Doctrine\DBAL\Types\Types;
@@ -14,7 +21,7 @@ use EnumeumTests\Fixture\RemovedValuesStatusType;
  * @ORM\Table(name="entity")
  */
 #[ORM\Entity]
-#[ORM\Table(name: "entity")]
+#[ORM\Table(name: 'entity')]
 class EntityEnumRemovedValues
 {
     /**
@@ -28,7 +35,7 @@ class EntityEnumRemovedValues
     /**
      * @ORM\Column(type="enumeum_enum", enumType=RemovedValuesStatusType::class, options={"comment":"SOME Comment"})
      */
-    #[ORM\Column(type: EnumeumType::NAME, enumType: RemovedValuesStatusType::class, options: ["comment" => "SOME Comment"])]
+    #[ORM\Column(type: EnumeumType::NAME, enumType: RemovedValuesStatusType::class, options: ['comment' => 'SOME Comment'])]
     private RemovedValuesStatusType $status;
 
     public function __construct(

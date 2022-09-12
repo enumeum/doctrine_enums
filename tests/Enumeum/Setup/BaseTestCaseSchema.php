@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the "Doctrine enumerations extension for Postgres" package.
+ * (c) Alexey Sitka <alexey.sitka@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace EnumeumTests\Setup;
 
 use Doctrine\Common\EventManager;
@@ -96,6 +103,7 @@ abstract class BaseTestCaseSchema extends TestCase
 
     /**
      * TODO: Remove this method when dropping support of doctrine/dbal 2.
+     *
      * @throws RuntimeException|Exception
      */
     protected function startQueryLog(): void
@@ -126,7 +134,7 @@ abstract class BaseTestCaseSchema extends TestCase
         $connection = DriverManager::getConnection($params);
         $schemaManager = $connection->createSchemaManager();
 
-        if (!in_array($name, $schemaManager->listDatabases())) {
+        if (!in_array($name, $schemaManager->listDatabases(), true)) {
             $schemaManager->createDatabase($name);
         }
 
@@ -143,7 +151,7 @@ abstract class BaseTestCaseSchema extends TestCase
         $connection = DriverManager::getConnection($params);
         $schemaManager = $connection->createSchemaManager();
 
-        if (in_array($name, $schemaManager->listDatabases())) {
+        if (in_array($name, $schemaManager->listDatabases(), true)) {
             $schemaManager->dropDatabase($name);
         }
 
@@ -170,7 +178,7 @@ abstract class BaseTestCaseSchema extends TestCase
     protected function getMetadataDriverImplementation(): MappingDriver
     {
         return new AttributeDriver([]);
-        //return new AnnotationDriver(new AnnotationReader());
+        // return new AnnotationDriver(new AnnotationReader());
     }
 
     protected function getDefaultConfiguration(): Configuration
@@ -203,8 +211,6 @@ abstract class BaseTestCaseSchema extends TestCase
     }
 
     /**
-     * @param iterable $queries
-     *
      * @throws Exception
      */
     protected function applySQL(iterable $queries): void

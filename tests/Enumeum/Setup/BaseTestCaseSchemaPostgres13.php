@@ -1,4 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the "Doctrine enumerations extension for Postgres" package.
+ * (c) Alexey Sitka <alexey.sitka@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace EnumeumTests\Setup;
 
@@ -7,14 +16,14 @@ use JetBrains\PhpStorm\ArrayShape;
 abstract class BaseTestCaseSchemaPostgres13 extends BaseTestCaseSchema
 {
     #[ArrayShape([
-        'driver' => "string",
-        'host' => "string",
-        'port' => "int",
-        'dbname' => "string",
-        'user' => "string",
-        'password' => "string",
-        'charset' => "string",
-        'server_version' => "string"
+        'driver' => 'string',
+        'host' => 'string',
+        'port' => 'int',
+        'dbname' => 'string',
+        'user' => 'string',
+        'password' => 'string',
+        'charset' => 'string',
+        'server_version' => 'string',
     ])]
     protected function getConnectionParams(): array
     {

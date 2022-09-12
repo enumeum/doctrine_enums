@@ -1,4 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the "Doctrine enumerations extension for Postgres" package.
+ * (c) Alexey Sitka <alexey.sitka@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Enumeum\DoctrineEnum\EventListener;
 
@@ -36,17 +45,17 @@ class ColumnDefinitionSubscriber implements EventSubscriber
             return;
         }
 
-        //dump('--------------------------------------------');
-        //dump(get_class($event));
-        //dump($tableColumn);
+        // dump('--------------------------------------------');
+        // dump(get_class($event));
+        // dump($tableColumn);
 
         $event->preventDefault();
 
         $event->setColumn($this->createSchemaColumn($tableColumn, $definition));
 
-        //dump($event->getColumn());
-        //dump(get_class($event));
-        //dump('=============================================');
+        // dump($event->getColumn());
+        // dump(get_class($event));
+        // dump('=============================================');
     }
 
     private function createSchemaColumn(array $tableColumn, Definition $definition): Column

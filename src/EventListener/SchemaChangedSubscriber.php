@@ -1,4 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the "Doctrine enumerations extension for Postgres" package.
+ * (c) Alexey Sitka <alexey.sitka@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Enumeum\DoctrineEnum\EventListener;
 
@@ -27,7 +36,7 @@ class SchemaChangedSubscriber implements EventSubscriber
     public const ENUM_TYPE_OPTION_NAME = 'enumType';
     private const TYPE_CREATE_QUERY = "CREATE TYPE %1\$s AS ENUM ('%2\$s')";
     private const TYPE_ALTER_QUERY = "ALTER TYPE %1\$s ADD VALUE IF NOT EXISTS '%2\$s'";
-    private const TYPE_DROP_QUERY = "DROP TYPE %1\$s";
+    private const TYPE_DROP_QUERY = 'DROP TYPE %1$s';
 
     public function __construct(
         private readonly DefinitionRegistry $definitionRegistry,
@@ -53,7 +62,7 @@ class SchemaChangedSubscriber implements EventSubscriber
             return;
         }
 
-        //dump(get_class($event));
+        // dump(get_class($event));
 
         foreach ($this->generateEnumTypePersistenceSQL($definition) as $sql) {
             $event->addSql($sql);
@@ -79,7 +88,7 @@ class SchemaChangedSubscriber implements EventSubscriber
             return;
         }
 
-        //dump(get_class($event));
+        // dump(get_class($event));
 
         foreach ($this->generateEnumTypePersistenceSQL($definition) as $sql) {
             if (!TypeQueriesStack::hasPersistenceQuery($sql, $definition->name)) {
@@ -109,9 +118,9 @@ class SchemaChangedSubscriber implements EventSubscriber
         $definition = $this->findTypeDefinition($column);
         $fromDefinition = $this->findTypeDefinition($fromColumn);
 
-        //dump($diff->changedProperties);
-        //dump($definition);
-        //dump($fromDefinition);
+        // dump($diff->changedProperties);
+        // dump($definition);
+        // dump($fromDefinition);
 
         if (null === $definition && null === $fromDefinition) {
             return;
@@ -120,8 +129,8 @@ class SchemaChangedSubscriber implements EventSubscriber
         $this->clearComment($diff);
 
         if ($definition?->enumClassName === $fromDefinition?->enumClassName) {
-            //dump(get_class($event));
-            //dump('$definition?->enumClassName === $fromDefinition?->enumClassName');
+            // dump(get_class($event));
+            // dump('$definition?->enumClassName === $fromDefinition?->enumClassName');
 
             foreach ($this->generateEnumTypePersistenceSQL($definition) as $sql) {
                 if (!TypeQueriesStack::hasPersistenceQuery($sql, $definition->name)) {
@@ -145,8 +154,8 @@ class SchemaChangedSubscriber implements EventSubscriber
         }
 
         if (null !== $definition) {
-            //dump(get_class($event));
-            //dump('null !== $definition');
+            // dump(get_class($event));
+            // dump('null !== $definition');
 
             foreach ($this->generateEnumTypePersistenceSQL($definition) as $sql) {
                 if (!TypeQueriesStack::hasPersistenceQuery($sql, $definition->name)) {
@@ -169,8 +178,8 @@ class SchemaChangedSubscriber implements EventSubscriber
         }
 
         if (null !== $fromDefinition) {
-            //dump(get_class($event));
-            //dump('null !== $fromDefinition');
+            // dump(get_class($event));
+            // dump('null !== $fromDefinition');
 
             $platform = $event->getPlatform();
             $tableName = $event->getTableDiff()->getName($platform)->getName();
@@ -187,7 +196,7 @@ class SchemaChangedSubscriber implements EventSubscriber
             return;
         }
 
-        //dump(get_class($event));
+        // dump(get_class($event));
 
         $platform = $event->getPlatform();
         $column->setType(GenericEnumType::create($definition->name));
@@ -221,7 +230,7 @@ class SchemaChangedSubscriber implements EventSubscriber
                 $definition->name,
                 implode("', '", [...$definition->cases]),
             );
-        } else if (EnumChangesTool::isChanged($databaseDefinition->cases, $definition->cases)) {
+        } elseif (EnumChangesTool::isChanged($databaseDefinition->cases, $definition->cases)) {
             $add = EnumChangesTool::getAlterAddValues($databaseDefinition->cases, $definition->cases);
             foreach ($add as $value) {
                 $sql[] = sprintf(
@@ -246,7 +255,7 @@ class SchemaChangedSubscriber implements EventSubscriber
                 }
             }
         } else {
-            //dump('NOT USED!!!');
+            // dump('NOT USED!!!');
             $sql = sprintf(self::TYPE_DROP_QUERY, $definition->name);
             if (!TypeQueriesStack::hasRemovalQuery($sql, $definition->name)
                 && TypeQueriesStack::isPersistenceStackEmpty($definition->name)
@@ -267,7 +276,7 @@ class SchemaChangedSubscriber implements EventSubscriber
 
         if ($diff->column->getComment() === $clearComment) {
             $diff->changedProperties = array_filter(array_map(
-                fn (string $item) => $item !== 'comment' ? $item : null,
+                static fn (string $item) => 'comment' !== $item ? $item : null,
                 $diff->changedProperties,
             ));
         }
@@ -275,7 +284,7 @@ class SchemaChangedSubscriber implements EventSubscriber
 
     private function findTypeDefinition(Column $column): ?Definition
     {
-        if (! $column->hasCustomSchemaOption(self::ENUM_TYPE_OPTION_NAME)) {
+        if (!$column->hasCustomSchemaOption(self::ENUM_TYPE_OPTION_NAME)) {
             return null;
         }
 

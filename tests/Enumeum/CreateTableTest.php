@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the "Doctrine enumerations extension for Postgres" package.
+ * (c) Alexey Sitka <alexey.sitka@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace EnumeumTests;
 
 use Doctrine\ORM\Tools\SchemaTool;
@@ -27,11 +34,11 @@ final class CreateTableTest extends BaseTestCaseSchemaPostgres13
 
         $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
 
-        self::assertEquals(
+        self::assertSame(
             [
-                "CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id))",
+                'CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id))',
                 "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
-                "ALTER TABLE entity ADD status status_type NOT NULL",
+                'ALTER TABLE entity ADD status status_type NOT NULL',
                 "COMMENT ON COLUMN entity.status IS 'SOME Comment'",
             ],
             $updateSchemaSql,
@@ -55,10 +62,10 @@ final class CreateTableTest extends BaseTestCaseSchemaPostgres13
 
         $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
 
-        self::assertEquals(
+        self::assertSame(
             [
-                "CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id))",
-                "ALTER TABLE entity ADD status status_type NOT NULL",
+                'CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id))',
+                'ALTER TABLE entity ADD status status_type NOT NULL',
                 "COMMENT ON COLUMN entity.status IS 'SOME Comment'",
             ],
             $updateSchemaSql,
@@ -82,12 +89,12 @@ final class CreateTableTest extends BaseTestCaseSchemaPostgres13
 
         $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
 
-        self::assertEquals(
+        self::assertSame(
             [
-                "CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id))",
+                'CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id))',
                 "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'accepted'",
                 "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'rejected'",
-                "ALTER TABLE entity ADD status status_type NOT NULL",
+                'ALTER TABLE entity ADD status status_type NOT NULL',
                 "COMMENT ON COLUMN entity.status IS 'SOME Comment'",
             ],
             $updateSchemaSql,
@@ -116,7 +123,7 @@ final class CreateTableTest extends BaseTestCaseSchemaPostgres13
 
         $schemaTool->getUpdateSchemaSql($schema);
 
-        $this->fail('Test should not achieve this point.');
+        self::fail('Test should not achieve this point.');
     }
 
     protected function getBaseSQL(): array

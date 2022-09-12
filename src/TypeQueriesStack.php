@@ -1,4 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the "Doctrine enumerations extension for Postgres" package.
+ * (c) Alexey Sitka <alexey.sitka@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Enumeum\DoctrineEnum;
 
@@ -26,7 +35,7 @@ class TypeQueriesStack
 
     public static function hasPersistenceQuery(string $query, string $type): bool
     {
-        return !empty(self::$persistenceStack[$type]) && in_array($query, self::$persistenceStack[$type]);
+        return !empty(self::$persistenceStack[$type]) && in_array($query, self::$persistenceStack[$type], true);
     }
 
     public static function isPersistenceStackEmpty(string $type): bool
@@ -49,7 +58,7 @@ class TypeQueriesStack
 
     public static function hasUsageQuery(string $query, string $type): bool
     {
-        return !empty(self::$usageStack[$type]) && in_array($query, self::$usageStack[$type]);
+        return !empty(self::$usageStack[$type]) && in_array($query, self::$usageStack[$type], true);
     }
 
     public static function isUsageStackEmpty(string $type): bool
@@ -75,7 +84,7 @@ class TypeQueriesStack
 
     public static function hasRemovalQuery(string $query, string $type): bool
     {
-        return !empty(self::$removalStack[$type]) && in_array($query, self::$removalStack[$type]);
+        return !empty(self::$removalStack[$type]) && in_array($query, self::$removalStack[$type], true);
     }
 
     public static function isRemovalStackEmpty(string $type): bool

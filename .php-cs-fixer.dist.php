@@ -44,7 +44,7 @@ return (new PhpCsFixer\Config())
         'no_unset_on_property' => true,
         'no_useless_else' => true,
         'ordered_class_elements' => true,
-        'ordered_imports' => ['sort_algorithm' => 'alpha'],
+        'ordered_imports' => ['sort_algorithm' => 'alpha', 'imports_order' => ['const', 'class', 'function']],
         'phpdoc_summary' => false,
         'phpdoc_to_comment' => false,
         'php_unit_construct' => true,

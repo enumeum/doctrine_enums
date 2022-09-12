@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Enumeum\DoctrineEnum\Exception;
 
 use RuntimeException;
+
 use function sprintf;
 
 class SimultaneousManagementTypeException extends RuntimeException

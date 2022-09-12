@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Enumeum\DoctrineEnum\Exception;
 
 use UnexpectedValueException as BaseUnexpectedValueException;
+
 use function sprintf;
 
 class UnexpectedValueException extends BaseUnexpectedValueException

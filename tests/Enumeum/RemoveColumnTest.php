@@ -5,18 +5,21 @@ declare(strict_types=1);
 namespace EnumeumTests;
 
 use Doctrine\ORM\Tools\SchemaTool;
+use Enumeum\DoctrineEnum\Exception\InvalidArgumentException;
 use Enumeum\DoctrineEnum\Exception\SimultaneousManagementTypeException;
 use EnumeumTests\Fixture\AddedValuesStatusType;
 use EnumeumTests\Fixture\AnotherEntity\AnotherEntity;
 use EnumeumTests\Fixture\AnotherEntity\AnotherEntityEnumAddedValues;
+use EnumeumTests\Fixture\AnotherEntity\AnotherEntityEnumRemovedValues;
 use EnumeumTests\Fixture\BaseStatusType;
+use EnumeumTests\Fixture\Entity\EntityNotEnum;
 use EnumeumTests\Fixture\Entity\EntityWithoutTypedField;
 use EnumeumTests\Fixture\RemovedValuesStatusType;
 use EnumeumTests\Setup\BaseTestCaseSchemaPostgres13;
 
 final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
 {
-    public function testEnumTypeNotExists(): void
+    public function testEnumTypeNotUsedAnymore(): void
     {
         $this->definitionRegistry->loadType(BaseStatusType::class);
 
@@ -138,6 +141,31 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
         $this->applySQL($updateSchemaSql);
     }
 
+    public function testEnumTypeIsUsedByAnotherTableAndNeedsRemoveValues(): void
+    {
+        $this->applySQL([
+            "CREATE TABLE another_entity (id INT NOT NULL, status status_type NOT NULL, PRIMARY KEY(id))",
+            "COMMENT ON COLUMN another_entity.status IS 'SOME Comment'",
+        ]);
+
+        $this->definitionRegistry->loadType(AddedValuesStatusType::class);
+
+        $schemaTool = new SchemaTool($this->em);
+        $schema = $this->composeSchema([
+            EntityNotEnum::class,
+            AnotherEntityEnumRemovedValues::class,
+        ]);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Enum should not be reordered with common Doctrine SchemaTool. Use Enumeum\DoctrineEnum\EnumTool for that.',
+        );
+
+        $schemaTool->getUpdateSchemaSql($schema);
+
+        $this->fail('Test should not achieve this point.');
+    }
+
     public function testEnumTypeWillBeUsedByAnotherTableDroppingGoesBeforeUsage(): void
     {
         $this->applySQL([
@@ -156,7 +184,7 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
         $this->expectExceptionMessage(
             'Type "status_type" is already queued to be dropped and then attempted to be used. ' .
             'SQL generating stopped. ' .
-            'To avoid this exception change fields and generate migrations separately, one by one.',
+            'To avoid this exception change fields and generate migrations consequentially, one by one.',
         );
 
         $schemaTool->getUpdateSchemaSql($schema);
@@ -182,7 +210,7 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
         $this->expectExceptionMessage(
             'Type "status_type" is already queued to be dropped and then attempted to be persisted. ' .
             'SQL generating stopped. ' .
-            'To avoid this exception change fields and generate migrations separately, one by one.',
+            'To avoid this exception change fields and generate migrations consequentially, one by one.',
         );
 
         $schemaTool->getUpdateSchemaSql($schema);

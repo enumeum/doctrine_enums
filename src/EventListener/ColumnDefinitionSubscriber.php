@@ -45,17 +45,8 @@ class ColumnDefinitionSubscriber implements EventSubscriber
             return;
         }
 
-        // dump('--------------------------------------------');
-        // dump(get_class($event));
-        // dump($tableColumn);
-
         $event->preventDefault();
-
         $event->setColumn($this->createSchemaColumn($tableColumn, $definition));
-
-        // dump($event->getColumn());
-        // dump(get_class($event));
-        // dump('=============================================');
     }
 
     private function createSchemaColumn(array $tableColumn, Definition $definition): Column

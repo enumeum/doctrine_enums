@@ -38,7 +38,6 @@ final class ChangeColumnToEnumTest extends BaseTestCaseSchemaPostgres13
             [
                 "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
                 'ALTER TABLE entity ALTER status TYPE status_type USING status::status_type',
-                'ALTER TABLE entity ALTER status DROP DEFAULT',
             ],
             $updateSchemaSql,
         );
@@ -64,7 +63,6 @@ final class ChangeColumnToEnumTest extends BaseTestCaseSchemaPostgres13
         self::assertSame(
             [
                 'ALTER TABLE entity ALTER status TYPE status_type USING status::status_type',
-                'ALTER TABLE entity ALTER status DROP DEFAULT',
             ],
             $updateSchemaSql,
         );
@@ -92,7 +90,6 @@ final class ChangeColumnToEnumTest extends BaseTestCaseSchemaPostgres13
                 "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'accepted'",
                 "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'rejected'",
                 'ALTER TABLE entity ALTER status TYPE status_type USING status::status_type',
-                'ALTER TABLE entity ALTER status DROP DEFAULT',
             ],
             $updateSchemaSql,
         );

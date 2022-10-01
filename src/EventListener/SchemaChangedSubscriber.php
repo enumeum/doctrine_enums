@@ -62,16 +62,18 @@ class SchemaChangedSubscriber implements EventSubscriber
             return;
         }
 
-        // dump(get_class($event));
-
         foreach ($this->generateEnumTypePersistenceSQL($definition) as $sql) {
-            $event->addSql($sql);
+            if (!TypeQueriesStack::hasPersistenceQuery($sql, $definition->name)) {
+                TypeQueriesStack::addPersistenceQuery($sql, $definition->name);
+                $event->addSql($sql);
+            }
         }
 
         $platform = $event->getPlatform();
         $column->setType(GenericEnumType::create($definition->name));
         $tableDiff = new TableDiff($event->getTable()->getName(), [$column]);
         foreach ($this->getAlterTableColumnSQL($platform, $tableDiff) as $sql) {
+            TypeQueriesStack::addUsageQuery($sql, $definition->name);
             $event->addSql($sql);
         }
 
@@ -87,8 +89,6 @@ class SchemaChangedSubscriber implements EventSubscriber
         if (null === $definition = $this->findTypeDefinition($column)) {
             return;
         }
-
-        // dump(get_class($event));
 
         foreach ($this->generateEnumTypePersistenceSQL($definition) as $sql) {
             if (!TypeQueriesStack::hasPersistenceQuery($sql, $definition->name)) {
@@ -118,10 +118,6 @@ class SchemaChangedSubscriber implements EventSubscriber
         $definition = $this->findTypeDefinition($column);
         $fromDefinition = $this->findTypeDefinition($fromColumn);
 
-        // dump($diff->changedProperties);
-        // dump($definition);
-        // dump($fromDefinition);
-
         if (null === $definition && null === $fromDefinition) {
             return;
         }
@@ -129,9 +125,6 @@ class SchemaChangedSubscriber implements EventSubscriber
         $this->clearComment($diff);
 
         if ($definition?->enumClassName === $fromDefinition?->enumClassName) {
-            // dump(get_class($event));
-            // dump('$definition?->enumClassName === $fromDefinition?->enumClassName');
-
             foreach ($this->generateEnumTypePersistenceSQL($definition) as $sql) {
                 if (!TypeQueriesStack::hasPersistenceQuery($sql, $definition->name)) {
                     TypeQueriesStack::addPersistenceQuery($sql, $definition->name);
@@ -154,9 +147,6 @@ class SchemaChangedSubscriber implements EventSubscriber
         }
 
         if (null !== $definition) {
-            // dump(get_class($event));
-            // dump('null !== $definition');
-
             foreach ($this->generateEnumTypePersistenceSQL($definition) as $sql) {
                 if (!TypeQueriesStack::hasPersistenceQuery($sql, $definition->name)) {
                     TypeQueriesStack::addPersistenceQuery($sql, $definition->name);
@@ -178,9 +168,6 @@ class SchemaChangedSubscriber implements EventSubscriber
         }
 
         if (null !== $fromDefinition) {
-            // dump(get_class($event));
-            // dump('null !== $fromDefinition');
-
             $platform = $event->getPlatform();
             $tableName = $event->getTableDiff()->getName($platform)->getName();
             foreach ($this->generateEnumTypeRemovalSQL($tableName, $fromDefinition, $fromColumn) as $sql) {
@@ -196,8 +183,6 @@ class SchemaChangedSubscriber implements EventSubscriber
             return;
         }
 
-        // dump(get_class($event));
-
         $platform = $event->getPlatform();
         $column->setType(GenericEnumType::create($definition->name));
         $tableDiff = new TableDiff($event->getTableDiff()->getName($platform)->getName(), [], [], [$column]);
@@ -210,13 +195,11 @@ class SchemaChangedSubscriber implements EventSubscriber
             $event->addSql($sql);
         }
 
-        /** Disables adding this column with Doctrine */
+        /** Disables removing this column with Doctrine */
         $event->preventDefault();
     }
 
     /**
-     * https://stackoverflow.com/questions/1771543/adding-a-new-value-to-an-existing-enum-type
-     *
      * @return iterable<string>
      */
     private function generateEnumTypePersistenceSQL(Definition $definition): iterable

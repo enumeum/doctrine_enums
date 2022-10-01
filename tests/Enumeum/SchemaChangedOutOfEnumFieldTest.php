@@ -37,7 +37,6 @@ final class SchemaChangedOutOfEnumFieldTest extends BaseTestCaseSchemaPostgres13
         self::assertSame(
             [
                 'ALTER TABLE entity ALTER field TYPE INT',
-                'ALTER TABLE entity ALTER field DROP DEFAULT',
             ],
             $updateSchemaSql,
         );
@@ -63,7 +62,6 @@ final class SchemaChangedOutOfEnumFieldTest extends BaseTestCaseSchemaPostgres13
         self::assertSame(
             [
                 'ALTER TABLE entity ALTER field TYPE INT',
-                'ALTER TABLE entity ALTER field DROP DEFAULT',
                 "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'accepted'",
                 "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'rejected'",
             ],

@@ -13,24 +13,8 @@ namespace Enumeum\DoctrineEnum\EnumUsage;
 
 use Doctrine\DBAL\Connection;
 
-class UsageRegistry
+abstract class AbstractUsageRegistry
 {
-    private const TYPES_QUERY = <<<QUERY
-SELECT col.udt_name AS "name",
-    col.table_name AS "table",
-    col.column_name AS "column"
-FROM information_schema.columns col
-JOIN information_schema.tables tab ON tab.table_schema = col.table_schema
-    AND tab.table_name = col.table_name
-    AND tab.table_type = 'BASE TABLE'
-JOIN pg_type typ ON col.udt_name = typ.typname
-JOIN pg_enum enu ON typ.oid = enu.enumtypid
-WHERE col.table_schema NOT IN ('information_schema', 'pg_catalog')
-GROUP BY col.table_name,
-    col.column_name,
-    col.udt_name;
-QUERY;
-
     private bool $loaded = false;
 
     /** @var Usage[] */
@@ -43,6 +27,8 @@ QUERY;
         private readonly Connection $connection,
     ) {
     }
+
+    abstract protected function getUsageQuery(): string;
 
     public function getUsage(string $name): ?Usage
     {
@@ -76,7 +62,7 @@ QUERY;
 
     private function load(): void
     {
-        $values = $this->connection->executeQuery(self::TYPES_QUERY)->fetchAllAssociative();
+        $values = $this->connection->executeQuery($this->getUsageQuery())->fetchAllAssociative();
         foreach ($values as $value) {
             $this->usagesByStructure[$value['name']][$value['table']][$value['column']] =
                 new UsageColumn($value['name'], $value['table'], $value['column']);

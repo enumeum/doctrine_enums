@@ -25,7 +25,8 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Enumeum\DoctrineEnum\Definition\DatabaseDefinitionRegistry;
 use Enumeum\DoctrineEnum\Definition\DefinitionRegistry;
-use Enumeum\DoctrineEnum\EnumUsage\UsageRegistry;
+use Enumeum\DoctrineEnum\EnumUsage\MaterialViewUsageRegistry;
+use Enumeum\DoctrineEnum\EnumUsage\TableUsageRegistry;
 use Enumeum\DoctrineEnum\EventListener\ColumnDefinitionSubscriber;
 use Enumeum\DoctrineEnum\EventListener\SchemaChangedSubscriber;
 use Enumeum\DoctrineEnum\Type\EnumeumType;
@@ -41,7 +42,8 @@ abstract class BaseTestCaseSchema extends TestCase
     protected ?EntityManager $em = null;
     protected ?DefinitionRegistry $definitionRegistry = null;
     protected ?DatabaseDefinitionRegistry $databaseDefinitionRegistry = null;
-    protected ?UsageRegistry $usageRegistry = null;
+    protected ?TableUsageRegistry $tableUsageRegistry = null;
+    protected ?MaterialViewUsageRegistry $materialViewUsageRegistry = null;
     protected QueryAnalyzer $queryAnalyzer;
     protected MockObject|LoggerInterface $queryLogger;
 
@@ -95,7 +97,7 @@ abstract class BaseTestCaseSchema extends TestCase
         $em->getEventManager()->addEventSubscriber(new SchemaChangedSubscriber(
             $this->getDefinitionRegistry(),
             $this->getDatabaseDefinitionRegistry($em->getConnection()),
-            $this->getUsageRegistry($em->getConnection()),
+            $this->getTableUsageRegistry($em->getConnection()),
         ));
 
         return $this->em = $em;
@@ -238,12 +240,21 @@ abstract class BaseTestCaseSchema extends TestCase
         return $this->databaseDefinitionRegistry;
     }
 
-    protected function getUsageRegistry(Connection $connection): UsageRegistry
+    protected function getTableUsageRegistry(Connection $connection): TableUsageRegistry
     {
-        if (null === $this->usageRegistry) {
-            $this->usageRegistry = new UsageRegistry($connection);
+        if (null === $this->tableUsageRegistry) {
+            $this->tableUsageRegistry = new TableUsageRegistry($connection);
         }
 
-        return $this->usageRegistry;
+        return $this->tableUsageRegistry;
+    }
+
+    protected function getMaterialViewUsageRegistry(Connection $connection): MaterialViewUsageRegistry
+    {
+        if (null === $this->materialViewUsageRegistry) {
+            $this->materialViewUsageRegistry = new MaterialViewUsageRegistry($connection);
+        }
+
+        return $this->materialViewUsageRegistry;
     }
 }

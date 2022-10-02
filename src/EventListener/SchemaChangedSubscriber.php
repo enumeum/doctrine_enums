@@ -25,7 +25,7 @@ use Doctrine\DBAL\Schema\TableDiff;
 use Enumeum\DoctrineEnum\Definition\DatabaseDefinitionRegistry;
 use Enumeum\DoctrineEnum\Definition\Definition;
 use Enumeum\DoctrineEnum\Definition\DefinitionRegistry;
-use Enumeum\DoctrineEnum\EnumUsage\UsageRegistry;
+use Enumeum\DoctrineEnum\EnumUsage\TableUsageRegistry;
 use Enumeum\DoctrineEnum\Tools\CommentMarker;
 use Enumeum\DoctrineEnum\Tools\EnumChangesTool;
 use Enumeum\DoctrineEnum\Type\GenericEnumType;
@@ -41,7 +41,7 @@ class SchemaChangedSubscriber implements EventSubscriber
     public function __construct(
         private readonly DefinitionRegistry $definitionRegistry,
         private readonly DatabaseDefinitionRegistry $databaseDefinitionRegistry,
-        private readonly UsageRegistry $usageRegistry,
+        private readonly TableUsageRegistry $tableUsageRegistry,
     ) {
     }
 
@@ -230,7 +230,7 @@ class SchemaChangedSubscriber implements EventSubscriber
     private function generateEnumTypeRemovalSQL(string $tableName, Definition $definition, Column $column): iterable
     {
         $result = [];
-        if ($this->usageRegistry->isUsedElsewhereExcept($definition->name, $tableName, $column->getName())) {
+        if ($this->tableUsageRegistry->isUsedElsewhereExcept($definition->name, $tableName, $column->getName())) {
             foreach ($this->generateEnumTypePersistenceSQL($definition) as $sql) {
                 if (!TypeQueriesStack::hasPersistenceQuery($sql, $definition->name)) {
                     TypeQueriesStack::addPersistenceQuery($sql, $definition->name);

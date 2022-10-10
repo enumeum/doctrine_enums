@@ -36,7 +36,7 @@ QUERY;
     ) {
     }
 
-    public function getTypeDefinition(string $name): ?DatabaseDefinition
+    public function getTypeDefinitionByName(string $name): ?DatabaseDefinition
     {
         if (!$this->loaded) {
             $this->loadDefinitions();

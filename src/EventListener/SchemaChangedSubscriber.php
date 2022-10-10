@@ -22,26 +22,22 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\ColumnDiff;
 use Doctrine\DBAL\Schema\TableDiff;
-use Enumeum\DoctrineEnum\Definition\DatabaseDefinitionRegistry;
 use Enumeum\DoctrineEnum\Definition\Definition;
 use Enumeum\DoctrineEnum\Definition\DefinitionRegistry;
-use Enumeum\DoctrineEnum\EnumUsage\TableUsageRegistry;
+use Enumeum\DoctrineEnum\EnumQueriesGenerator;
+use Enumeum\DoctrineEnum\EnumUsagePersister;
 use Enumeum\DoctrineEnum\Tools\CommentMarker;
-use Enumeum\DoctrineEnum\Tools\EnumChangesTool;
 use Enumeum\DoctrineEnum\Type\GenericEnumType;
 use Enumeum\DoctrineEnum\TypeQueriesStack;
 
 class SchemaChangedSubscriber implements EventSubscriber
 {
     public const ENUM_TYPE_OPTION_NAME = 'enumType';
-    private const TYPE_CREATE_QUERY = "CREATE TYPE %1\$s AS ENUM ('%2\$s')";
-    private const TYPE_ALTER_QUERY = "ALTER TYPE %1\$s ADD VALUE IF NOT EXISTS '%2\$s'";
-    private const TYPE_DROP_QUERY = 'DROP TYPE %1$s';
 
     public function __construct(
         private readonly DefinitionRegistry $definitionRegistry,
-        private readonly DatabaseDefinitionRegistry $databaseDefinitionRegistry,
-        private readonly TableUsageRegistry $tableUsageRegistry,
+        private readonly EnumQueriesGenerator $enumQueriesGenerator,
+        private readonly EnumUsagePersister $usagePersister,
     ) {
     }
 
@@ -62,7 +58,7 @@ class SchemaChangedSubscriber implements EventSubscriber
             return;
         }
 
-        foreach ($this->generateEnumTypePersistenceSQL($definition) as $sql) {
+        foreach ($this->enumQueriesGenerator->generateEnumTypePersistenceSQL($definition) as $sql) {
             if (!TypeQueriesStack::hasPersistenceQuery($sql, $definition->name)) {
                 TypeQueriesStack::addPersistenceQuery($sql, $definition->name);
                 $event->addSql($sql);
@@ -90,7 +86,7 @@ class SchemaChangedSubscriber implements EventSubscriber
             return;
         }
 
-        foreach ($this->generateEnumTypePersistenceSQL($definition) as $sql) {
+        foreach ($this->enumQueriesGenerator->generateEnumTypePersistenceSQL($definition) as $sql) {
             if (!TypeQueriesStack::hasPersistenceQuery($sql, $definition->name)) {
                 TypeQueriesStack::addPersistenceQuery($sql, $definition->name);
                 $event->addSql($sql);
@@ -125,7 +121,7 @@ class SchemaChangedSubscriber implements EventSubscriber
         $this->clearComment($diff);
 
         if ($definition?->enumClassName === $fromDefinition?->enumClassName) {
-            foreach ($this->generateEnumTypePersistenceSQL($definition) as $sql) {
+            foreach ($this->enumQueriesGenerator->generateEnumTypePersistenceSQL($definition) as $sql) {
                 if (!TypeQueriesStack::hasPersistenceQuery($sql, $definition->name)) {
                     TypeQueriesStack::addPersistenceQuery($sql, $definition->name);
                     $event->addSql($sql);
@@ -147,7 +143,7 @@ class SchemaChangedSubscriber implements EventSubscriber
         }
 
         if (null !== $definition) {
-            foreach ($this->generateEnumTypePersistenceSQL($definition) as $sql) {
+            foreach ($this->enumQueriesGenerator->generateEnumTypePersistenceSQL($definition) as $sql) {
                 if (!TypeQueriesStack::hasPersistenceQuery($sql, $definition->name)) {
                     TypeQueriesStack::addPersistenceQuery($sql, $definition->name);
                     $event->addSql($sql);
@@ -170,7 +166,8 @@ class SchemaChangedSubscriber implements EventSubscriber
         if (null !== $fromDefinition) {
             $platform = $event->getPlatform();
             $tableName = $event->getTableDiff()->getName($platform)->getName();
-            foreach ($this->generateEnumTypeRemovalSQL($tableName, $fromDefinition, $fromColumn) as $sql) {
+            $columnName = $fromColumn->getName();
+            foreach ($this->usagePersister->getEnumTypeRemovalSql($tableName, $columnName, $fromDefinition) as $sql) {
                 $event->addSql($sql);
             }
         }
@@ -191,65 +188,13 @@ class SchemaChangedSubscriber implements EventSubscriber
         }
 
         $tableName = $event->getTableDiff()->getName($platform)->getName();
-        foreach ($this->generateEnumTypeRemovalSQL($tableName, $definition, $column) as $sql) {
+        $columnName = $column->getName();
+        foreach ($this->usagePersister->getEnumTypeRemovalSql($tableName, $columnName, $definition) as $sql) {
             $event->addSql($sql);
         }
 
         /** Disables removing this column with Doctrine */
         $event->preventDefault();
-    }
-
-    /**
-     * @return iterable<string>
-     */
-    private function generateEnumTypePersistenceSQL(Definition $definition): iterable
-    {
-        $sql = [];
-
-        $databaseDefinition = $this->databaseDefinitionRegistry->getTypeDefinition($definition->name);
-        if (null === $databaseDefinition) {
-            $sql[] = sprintf(
-                self::TYPE_CREATE_QUERY,
-                $definition->name,
-                implode("', '", [...$definition->cases]),
-            );
-        } elseif (EnumChangesTool::isChanged($databaseDefinition->cases, $definition->cases)) {
-            $add = EnumChangesTool::getAlterAddValues($databaseDefinition->cases, $definition->cases);
-            foreach ($add as $value) {
-                $sql[] = sprintf(
-                    self::TYPE_ALTER_QUERY,
-                    $definition->name,
-                    $value,
-                );
-            }
-        }
-
-        return $sql;
-    }
-
-    private function generateEnumTypeRemovalSQL(string $tableName, Definition $definition, Column $column): iterable
-    {
-        $result = [];
-        if ($this->tableUsageRegistry->isUsedElsewhereExcept($definition->name, $tableName, $column->getName())) {
-            foreach ($this->generateEnumTypePersistenceSQL($definition) as $sql) {
-                if (!TypeQueriesStack::hasPersistenceQuery($sql, $definition->name)) {
-                    TypeQueriesStack::addPersistenceQuery($sql, $definition->name);
-                    $result[] = $sql;
-                }
-            }
-        } else {
-            // dump('NOT USED!!!');
-            $sql = sprintf(self::TYPE_DROP_QUERY, $definition->name);
-            if (!TypeQueriesStack::hasRemovalQuery($sql, $definition->name)
-                && TypeQueriesStack::isPersistenceStackEmpty($definition->name)
-                && TypeQueriesStack::isUsageStackEmpty($definition->name)
-            ) {
-                TypeQueriesStack::addRemovalQuery($sql, $definition->name);
-                $result[] = $sql;
-            }
-        }
-
-        return $result;
     }
 
     private function clearComment(ColumnDiff $diff): void

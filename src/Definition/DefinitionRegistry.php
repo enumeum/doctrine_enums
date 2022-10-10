@@ -22,7 +22,7 @@ class DefinitionRegistry
     private array $definitionsByEnum = [];
 
     /** @var Definition[] */
-    private array $definitionsByType = [];
+    private array $definitionsByName = [];
 
     public function __construct(iterable $enumClassNames = [])
     {
@@ -38,9 +38,9 @@ class DefinitionRegistry
         return $this->definitionsByEnum[$enumClassName] ?? null;
     }
 
-    public function getDefinitionByType(string $typeName): ?Definition
+    public function getDefinitionByName(string $name): ?Definition
     {
-        return $this->definitionsByType[$typeName] ?? null;
+        return $this->definitionsByName[$name] ?? null;
     }
 
     public function loadType(string $enumClassName): void
@@ -51,7 +51,7 @@ class DefinitionRegistry
 
         if ($created = $this->createDefinition($enumClassName)) {
             $this->definitionsByEnum[$enumClassName] = $created;
-            $this->definitionsByType[$created->name] = $created;
+            $this->definitionsByName[$created->name] = $created;
         }
     }
 

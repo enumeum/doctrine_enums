@@ -40,7 +40,7 @@ class ColumnDefinitionSubscriber implements EventSubscriber
     public function onSchemaColumnDefinition(SchemaColumnDefinitionEventArgs $event): void
     {
         $tableColumn = $event->getTableColumn();
-        $definition = $this->definitionRegistry->getDefinitionByType($tableColumn['type']);
+        $definition = $this->definitionRegistry->getDefinitionByName($tableColumn['type']);
         if (null === $definition) {
             return;
         }
@@ -51,7 +51,7 @@ class ColumnDefinitionSubscriber implements EventSubscriber
 
     private function createSchemaColumn(array $tableColumn, Definition $definition): Column
     {
-        $databaseDefinition = $this->databaseDefinitionRegistry->getTypeDefinition($tableColumn['type']);
+        $databaseDefinition = $this->databaseDefinitionRegistry->getTypeDefinitionByName($tableColumn['type']);
 
         return (new Column(
             $tableColumn['field'],

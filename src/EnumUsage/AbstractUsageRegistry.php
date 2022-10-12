@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Enumeum\DoctrineEnum\EnumUsage;
 
 use Doctrine\DBAL\Connection;
+use function array_values;
 
 abstract class AbstractUsageRegistry
 {
@@ -37,6 +38,18 @@ abstract class AbstractUsageRegistry
         }
 
         return $this->usagesByName[$name] ?? null;
+    }
+
+    /**
+     * @return iterable<Usage>
+     */
+    public function getUsagesHashedByName(): iterable
+    {
+        if (!$this->loaded) {
+            $this->load();
+        }
+
+        return array_values($this->usagesByName);
     }
 
     public function isUsedElsewhereExcept(string $name, string $table, string $column): bool

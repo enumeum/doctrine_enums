@@ -51,7 +51,7 @@ class ColumnDefinitionSubscriber implements EventSubscriber
 
     private function createSchemaColumn(array $tableColumn, Definition $definition): Column
     {
-        $databaseDefinition = $this->databaseDefinitionRegistry->getTypeDefinitionByName($tableColumn['type']);
+        $databaseDefinition = $this->databaseDefinitionRegistry->getDefinitionByName($tableColumn['type']);
 
         return (new Column(
             $tableColumn['field'],

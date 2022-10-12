@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Enumeum\DoctrineEnum;
 
 use Enumeum\DoctrineEnum\Definition\DatabaseDefinition;
-use Enumeum\DoctrineEnum\Definition\DatabaseDefinitionRegistry;
 use Enumeum\DoctrineEnum\Definition\Definition;
 use Enumeum\DoctrineEnum\Tools\EnumChangesTool;
 use function implode;
@@ -24,45 +23,32 @@ class EnumQueriesGenerator
     private const TYPE_ALTER_QUERY = "ALTER TYPE %1\$s ADD VALUE IF NOT EXISTS '%2\$s'";
     private const TYPE_DROP_QUERY = 'DROP TYPE %1$s';
 
-    public function __construct(
-        private readonly DatabaseDefinitionRegistry $registry,
-    ) {
+    public static function generateEnumTypeCreateSql(Definition $definition): iterable
+    {
+        return [sprintf(self::TYPE_CREATE_QUERY, $definition->name, implode("', '", [...$definition->cases]))];
     }
 
-    /**
-     * @return iterable<string>
-     */
-    public function generateEnumTypePersistenceSql(Definition $definition): iterable
+    public static function generateEnumTypeAlterSql(Definition $definition, DatabaseDefinition $databaseDefinition): iterable
     {
         $sql = [];
-
-        $databaseDefinition = $this->registry->getTypeDefinitionByName($definition->name);
-        if (null === $databaseDefinition) {
+        $add = EnumChangesTool::getAlterAddValues($databaseDefinition->cases, $definition->cases);
+        foreach ($add as $value) {
             $sql[] = sprintf(
-                self::TYPE_CREATE_QUERY,
+                self::TYPE_ALTER_QUERY,
                 $definition->name,
-                implode("', '", [...$definition->cases]),
+                $value,
             );
-        } elseif (EnumChangesTool::isChanged($databaseDefinition->cases, $definition->cases)) {
-            $add = EnumChangesTool::getAlterAddValues($databaseDefinition->cases, $definition->cases);
-            foreach ($add as $value) {
-                $sql[] = sprintf(
-                    self::TYPE_ALTER_QUERY,
-                    $definition->name,
-                    $value,
-                );
-            }
         }
 
         return $sql;
     }
 
-    public function generateEnumTypeDropSql(Definition $definition): iterable
+    public static function generateEnumTypeDropSql(Definition $definition): iterable
     {
         return [sprintf(self::TYPE_DROP_QUERY, $definition->name)];
     }
 
-    public function generateEnumTypeDropSqlFromDatabaseDefinition(DatabaseDefinition $definition): iterable
+    public static function generateEnumTypeDropSqlFromDatabaseDefinition(DatabaseDefinition $definition): iterable
     {
         return [sprintf(self::TYPE_DROP_QUERY, $definition->name)];
     }

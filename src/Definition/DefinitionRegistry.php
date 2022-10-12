@@ -43,6 +43,14 @@ class DefinitionRegistry
         return $this->definitionsByName[$name] ?? null;
     }
 
+    /**
+     * @return array<Definition>
+     */
+    public function getDefinitionsHashedByName(): array
+    {
+        return $this->definitionsByName;
+    }
+
     public function loadType(string $enumClassName): void
     {
         if (isset($this->definitionsByEnum[$enumClassName])) {

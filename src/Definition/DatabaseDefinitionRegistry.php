@@ -36,13 +36,25 @@ QUERY;
     ) {
     }
 
-    public function getTypeDefinitionByName(string $name): ?DatabaseDefinition
+    public function getDefinitionByName(string $name): ?DatabaseDefinition
     {
         if (!$this->loaded) {
             $this->loadDefinitions();
         }
 
         return $this->definitions[$name] ?? null;
+    }
+
+    /**
+     * @return array<DatabaseDefinition>
+     */
+    public function getDefinitionsHashedByName(): array
+    {
+        if (!$this->loaded) {
+            $this->loadDefinitions();
+        }
+
+        return $this->definitions;
     }
 
     private function loadDefinitions(): void

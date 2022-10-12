@@ -25,10 +25,8 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Enumeum\DoctrineEnum\Definition\DatabaseDefinitionRegistry;
 use Enumeum\DoctrineEnum\Definition\DefinitionRegistry;
-use Enumeum\DoctrineEnum\EnumQueriesGenerator;
 use Enumeum\DoctrineEnum\EnumUsage\MaterialViewUsageRegistry;
 use Enumeum\DoctrineEnum\EnumUsage\TableUsageRegistry;
-use Enumeum\DoctrineEnum\EnumUsagePersister;
 use Enumeum\DoctrineEnum\EventListener\ColumnDefinitionSubscriber;
 use Enumeum\DoctrineEnum\EventListener\SchemaChangedSubscriber;
 use Enumeum\DoctrineEnum\Type\EnumeumType;
@@ -45,8 +43,6 @@ abstract class BaseTestCaseSchema extends TestCase
     protected ?DefinitionRegistry $definitionRegistry = null;
     protected ?DatabaseDefinitionRegistry $databaseDefinitionRegistry = null;
     protected ?TableUsageRegistry $tableUsageRegistry = null;
-    protected ?EnumQueriesGenerator $enumQueriesGenerator = null;
-    protected ?EnumUsagePersister $enumUsagePersister = null;
     protected ?MaterialViewUsageRegistry $materialViewUsageRegistry = null;
     protected QueryAnalyzer $queryAnalyzer;
     protected MockObject|LoggerInterface $queryLogger;
@@ -100,11 +96,8 @@ abstract class BaseTestCaseSchema extends TestCase
         ));
         $em->getEventManager()->addEventSubscriber(new SchemaChangedSubscriber(
             $this->getDefinitionRegistry(),
-            $this->getEnumQueriesGenerator($this->getDatabaseDefinitionRegistry($em->getConnection())),
-            $this->getEnumUsagePersister(
-                $this->getTableUsageRegistry($em->getConnection()),
-                $this->getEnumQueriesGenerator($this->getDatabaseDefinitionRegistry($em->getConnection())),
-            ),
+            $this->getDatabaseDefinitionRegistry($em->getConnection()),
+            $this->getTableUsageRegistry($em->getConnection()),
         ));
 
         return $this->em = $em;
@@ -245,26 +238,6 @@ abstract class BaseTestCaseSchema extends TestCase
         }
 
         return $this->databaseDefinitionRegistry;
-    }
-
-    protected function getEnumQueriesGenerator(DatabaseDefinitionRegistry $registry): EnumQueriesGenerator
-    {
-        if (null === $this->enumQueriesGenerator) {
-            $this->enumQueriesGenerator = new EnumQueriesGenerator($registry);
-        }
-
-        return $this->enumQueriesGenerator;
-    }
-
-    protected function getEnumUsagePersister(
-        TableUsageRegistry $tableUsageRegistry,
-        EnumQueriesGenerator $registry
-    ): EnumUsagePersister {
-        if (null === $this->enumUsagePersister) {
-            $this->enumUsagePersister = new EnumUsagePersister($tableUsageRegistry, $registry);
-        }
-
-        return $this->enumUsagePersister;
     }
 
     protected function getTableUsageRegistry(Connection $connection): TableUsageRegistry

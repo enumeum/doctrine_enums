@@ -17,21 +17,21 @@ use Enumeum\DoctrineEnum\Tools\EnumChangesTool;
 use function implode;
 use function sprintf;
 
-class EnumQueriesGenerator
+class EnumQueryBuilder
 {
     private const TYPE_CREATE_QUERY = "CREATE TYPE %1\$s AS ENUM ('%2\$s')";
     private const TYPE_ALTER_QUERY = "ALTER TYPE %1\$s ADD VALUE IF NOT EXISTS '%2\$s'";
     private const TYPE_DROP_QUERY = 'DROP TYPE %1$s';
 
-    public static function generateEnumTypeCreateSql(Definition $definition): iterable
+    public static function buildEnumTypeCreateSql(Definition $definition): iterable
     {
         return [sprintf(self::TYPE_CREATE_QUERY, $definition->name, implode("', '", [...$definition->cases]))];
     }
 
-    public static function generateEnumTypeAlterSql(Definition $definition, DatabaseDefinition $databaseDefinition): iterable
+    public static function buildEnumTypeAlterSql(Definition $definition, DatabaseDefinition $databaseDefinition): iterable
     {
         $sql = [];
-        $add = EnumChangesTool::getAlterAddValues($databaseDefinition->cases, $definition->cases);
+        $add = EnumChangesTool::resolveAddingValues($databaseDefinition->cases, $definition->cases);
         foreach ($add as $value) {
             $sql[] = sprintf(
                 self::TYPE_ALTER_QUERY,
@@ -43,12 +43,12 @@ class EnumQueriesGenerator
         return $sql;
     }
 
-    public static function generateEnumTypeDropSql(Definition $definition): iterable
+    public static function buildEnumTypeDropSql(Definition $definition): iterable
     {
         return [sprintf(self::TYPE_DROP_QUERY, $definition->name)];
     }
 
-    public static function generateEnumTypeDropSqlFromDatabaseDefinition(DatabaseDefinition $definition): iterable
+    public static function buildEnumTypeDropSqlByDatabaseDefinition(DatabaseDefinition $definition): iterable
     {
         return [sprintf(self::TYPE_DROP_QUERY, $definition->name)];
     }

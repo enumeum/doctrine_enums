@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Enumeum\DoctrineEnum\Tools;
 
 use Enumeum\DoctrineEnum\Exception\InvalidArgumentException;
+use function array_key_exists;
 
 class EnumChangesTool
 {
@@ -27,7 +28,19 @@ class EnumChangesTool
         return false;
     }
 
-    public static function getAlterAddValues(iterable $current, iterable $target): iterable
+    public static function isReorderingRequired(iterable $current, iterable $target): bool
+    {
+        $current = [...$current];
+        foreach ($target as $order => $value) {
+            if (array_key_exists($order, $current) && $current[$order] !== $value) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static function resolveAddingValues(iterable $current, iterable $target): iterable
     {
         $add = [];
 

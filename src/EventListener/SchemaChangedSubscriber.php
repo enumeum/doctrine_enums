@@ -25,7 +25,7 @@ use Doctrine\DBAL\Schema\TableDiff;
 use Enumeum\DoctrineEnum\Definition\DatabaseDefinitionRegistry;
 use Enumeum\DoctrineEnum\Definition\Definition;
 use Enumeum\DoctrineEnum\Definition\DefinitionRegistry;
-use Enumeum\DoctrineEnum\EnumQueriesGenerator;
+use Enumeum\DoctrineEnum\EnumQueryBuilder;
 use Enumeum\DoctrineEnum\EnumUsage\TableUsageRegistry;
 use Enumeum\DoctrineEnum\Tools\CommentMarker;
 use Enumeum\DoctrineEnum\Tools\EnumChangesTool;
@@ -247,9 +247,9 @@ class SchemaChangedSubscriber implements EventSubscriber
 
         $databaseDefinition = $this->databaseRegistry->getDefinitionByName($definition->name);
         if (null === $databaseDefinition) {
-            array_push($sql, ...EnumQueriesGenerator::generateEnumTypeCreateSql($definition));
+            array_push($sql, ...EnumQueryBuilder::buildEnumTypeCreateSql($definition));
         } elseif (EnumChangesTool::isChanged($databaseDefinition->cases, $definition->cases)) {
-            array_push($sql, ...EnumQueriesGenerator::generateEnumTypeAlterSql($definition, $databaseDefinition));
+            array_push($sql, ...EnumQueryBuilder::buildEnumTypeAlterSql($definition, $databaseDefinition));
         }
 
         return $sql;
@@ -266,7 +266,7 @@ class SchemaChangedSubscriber implements EventSubscriber
                 }
             }
         } else {
-            foreach (EnumQueriesGenerator::generateEnumTypeDropSql($definition) as $sql) {
+            foreach (EnumQueryBuilder::buildEnumTypeDropSql($definition) as $sql) {
                 if (!TypeQueriesStack::hasRemovalQuery($sql, $definition->name)
                     && TypeQueriesStack::isPersistenceStackEmpty($definition->name)
                     && TypeQueriesStack::isUsageStackEmpty($definition->name)

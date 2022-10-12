@@ -19,6 +19,7 @@ use Doctrine\DBAL\Event\SchemaAlterTableRemoveColumnEventArgs;
 use Doctrine\DBAL\Event\SchemaCreateTableColumnEventArgs;
 use Doctrine\DBAL\Events;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\ColumnDiff;
 use Doctrine\DBAL\Schema\TableDiff;
@@ -56,6 +57,10 @@ class SchemaChangedSubscriber implements EventSubscriber
 
     public function onSchemaCreateTableColumn(SchemaCreateTableColumnEventArgs $event): void
     {
+        if ( ! $event->getPlatform() instanceof PostgreSqlPlatform) {
+            return;
+        }
+
         $column = $event->getColumn();
         if (null === $definition = $this->findTypeDefinition($column)) {
             return;
@@ -84,6 +89,10 @@ class SchemaChangedSubscriber implements EventSubscriber
 
     public function onSchemaAlterTableAddColumn(SchemaAlterTableAddColumnEventArgs $event): void
     {
+        if ( ! $event->getPlatform() instanceof PostgreSqlPlatform) {
+            return;
+        }
+
         $column = $event->getColumn();
         if (null === $definition = $this->findTypeDefinition($column)) {
             return;
@@ -110,6 +119,10 @@ class SchemaChangedSubscriber implements EventSubscriber
 
     public function onSchemaAlterTableChangeColumn(SchemaAlterTableChangeColumnEventArgs $event): void
     {
+        if ( ! $event->getPlatform() instanceof PostgreSqlPlatform) {
+            return;
+        }
+
         $diff = $event->getColumnDiff();
         $fromColumn = $diff->fromColumn;
         $column = $diff->column;
@@ -178,6 +191,10 @@ class SchemaChangedSubscriber implements EventSubscriber
 
     public function onSchemaAlterTableRemoveColumn(SchemaAlterTableRemoveColumnEventArgs $event): void
     {
+        if ( ! $event->getPlatform() instanceof PostgreSqlPlatform) {
+            return;
+        }
+
         $column = $event->getColumn();
         if (null === $definition = $this->findTypeDefinition($column)) {
             return;

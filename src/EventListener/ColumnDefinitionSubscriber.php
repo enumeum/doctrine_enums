@@ -14,6 +14,7 @@ namespace Enumeum\DoctrineEnum\EventListener;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\DBAL\Event\SchemaColumnDefinitionEventArgs;
 use Doctrine\DBAL\Events;
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Schema\Column;
 use Enumeum\DoctrineEnum\Definition\DatabaseDefinitionRegistry;
 use Enumeum\DoctrineEnum\Definition\Definition;
@@ -39,6 +40,10 @@ class ColumnDefinitionSubscriber implements EventSubscriber
 
     public function onSchemaColumnDefinition(SchemaColumnDefinitionEventArgs $event): void
     {
+        if ( ! $event->getConnection()->getDatabasePlatform() instanceof PostgreSqlPlatform) {
+            return;
+        }
+
         $tableColumn = $event->getTableColumn();
         $definition = $this->definitionRegistry->getDefinitionByName($tableColumn['type']);
         if (null === $definition) {

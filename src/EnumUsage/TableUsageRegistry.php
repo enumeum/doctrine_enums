@@ -14,19 +14,22 @@ namespace Enumeum\DoctrineEnum\EnumUsage;
 class TableUsageRegistry extends AbstractUsageRegistry
 {
     private const TABLES_USING_TYPES_QUERY = <<<QUERY
-SELECT col.udt_name AS "name",
-    col.table_name AS "table",
-    col.column_name AS "column"
-FROM information_schema.columns col
-JOIN information_schema.tables tab ON tab.table_schema = col.table_schema
-    AND tab.table_name = col.table_name
-    AND tab.table_type = 'BASE TABLE'
-JOIN pg_type typ ON col.udt_name = typ.typname
-JOIN pg_enum enu ON typ.oid = enu.enumtypid
-WHERE col.table_schema NOT IN ('information_schema', 'pg_catalog')
-GROUP BY col.table_name,
-    col.column_name,
-    col.udt_name
+SELECT DISTINCT
+    t.typname AS "name",
+    c.relname AS "table",
+    quote_ident(a.attname) AS "column",
+    pg_get_expr(d.adbin, d.adrelid) AS "default"
+FROM pg_catalog.pg_attribute a
+    JOIN pg_catalog.pg_class c ON a.attrelid = c.oid
+    JOIN pg_catalog.pg_type t ON a.atttypid = t.oid
+    JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+    JOIN pg_catalog.pg_enum e ON t.oid = e.enumtypid
+    LEFT JOIN pg_catalog.pg_attrdef d ON c.oid = d.adrelid AND a.attnum = d.adnum
+WHERE n.nspname NOT IN ('pg_catalog', 'information_schema', 'pg_toast')
+    AND n.nspname = ANY(current_schemas(false))
+    AND a.attnum > 0
+    AND c.relkind = 'r'
+    AND NOT a.attisdropped
 ;
 QUERY;
 

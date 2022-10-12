@@ -17,6 +17,7 @@ class UsageColumn
         public readonly string $name,
         public readonly string $table,
         public readonly string $column,
+        public readonly ?string $default,
     ) {
     }
 }

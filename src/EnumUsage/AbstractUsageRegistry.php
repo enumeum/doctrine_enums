@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Enumeum\DoctrineEnum\EnumUsage;
 
 use Doctrine\DBAL\Connection;
-use function array_values;
 
 abstract class AbstractUsageRegistry
 {
@@ -49,7 +48,7 @@ abstract class AbstractUsageRegistry
             $this->load();
         }
 
-        return array_values($this->usagesByName);
+        return $this->usagesByName;
     }
 
     public function isUsedElsewhereExcept(string $name, string $table, string $column): bool
@@ -78,7 +77,7 @@ abstract class AbstractUsageRegistry
         $values = $this->connection->executeQuery($this->getUsageQuery())->fetchAllAssociative();
         foreach ($values as $value) {
             $this->usagesByStructure[$value['name']][$value['table']][$value['column']] =
-                new UsageColumn($value['name'], $value['table'], $value['column']);
+                new UsageColumn($value['name'], $value['table'], $value['column'], $value['default']);
         }
 
         foreach ($this->usagesByStructure as $name => $tables) {

@@ -19,3 +19,13 @@ test:
 	./bin/phpunit -c tests/
 
 .PHONY: test
+
+start:
+	docker-compose up -d --build --remove-orphans --force-recreate
+
+.PHONY: start
+
+console:
+	docker-compose exec php bash
+
+.PHONY: console

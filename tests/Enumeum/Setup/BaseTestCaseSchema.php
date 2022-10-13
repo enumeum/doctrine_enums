@@ -23,6 +23,7 @@ use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
+use Enumeum\DoctrineEnum\DatabaseUpdateQueryBuilder;
 use Enumeum\DoctrineEnum\Definition\DatabaseDefinitionRegistry;
 use Enumeum\DoctrineEnum\Definition\DefinitionRegistry;
 use Enumeum\DoctrineEnum\EnumUsage\MaterialViewUsageRegistry;
@@ -44,6 +45,7 @@ abstract class BaseTestCaseSchema extends TestCase
     protected ?DatabaseDefinitionRegistry $databaseDefinitionRegistry = null;
     protected ?TableUsageRegistry $tableUsageRegistry = null;
     protected ?MaterialViewUsageRegistry $materialViewUsageRegistry = null;
+    protected ?DatabaseUpdateQueryBuilder $databaseUpdateQueryBuilder = null;
     protected QueryAnalyzer $queryAnalyzer;
     protected MockObject|LoggerInterface $queryLogger;
 
@@ -220,6 +222,29 @@ abstract class BaseTestCaseSchema extends TestCase
         foreach ($queries as $sql) {
             $this->em->getConnection()->executeQuery($sql);
         }
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function applySQLWithinTransaction(iterable $queries): void
+    {
+        $this->em->getConnection()->beginTransaction();
+        $this->applySQL($queries);
+        $this->em->getConnection()->commit();
+    }
+
+    protected function getDatabaseUpdateQueryBuilder(): DatabaseUpdateQueryBuilder
+    {
+        if (null === $this->databaseUpdateQueryBuilder) {
+            $this->databaseUpdateQueryBuilder = new DatabaseUpdateQueryBuilder(
+                $this->getDefinitionRegistry(),
+                $this->getDatabaseDefinitionRegistry($this->em->getConnection()),
+                $this->getTableUsageRegistry($this->em->getConnection()),
+            );
+        }
+
+        return $this->databaseUpdateQueryBuilder;
     }
 
     protected function getDefinitionRegistry(): DefinitionRegistry

@@ -18,10 +18,10 @@ abstract class AbstractUsageRegistry
     private bool $loaded = false;
 
     /** @var Usage[] */
-    private array $usagesByName;
+    private array $usagesByName = [];
 
     /** @var UsageColumn[][][] */
-    private array $usagesByStructure;
+    private array $usagesByStructure = [];
 
     public function __construct(
         private readonly Connection $connection,

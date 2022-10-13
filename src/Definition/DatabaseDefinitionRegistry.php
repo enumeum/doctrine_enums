@@ -29,7 +29,7 @@ QUERY;
     private bool $loaded = false;
 
     /** @var DatabaseDefinition[] */
-    private array $definitions;
+    private array $definitions = [];
 
     public function __construct(
         private readonly Connection $connection,

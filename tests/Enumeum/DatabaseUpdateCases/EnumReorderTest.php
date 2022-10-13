@@ -175,6 +175,41 @@ final class EnumReorderTest extends BaseTestCaseSchemaPostgres13
         $this->applySQLWithinTransaction($updateSql);
     }
 
+    public function testEnumTypeUsedByManyTablesWithRecordsAndDefault(): void
+    {
+        $this->applySQL([
+            "CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL DEFAULT 'started'::status_type)",
+            "INSERT INTO entity (id, status) VALUES (1, 'started')",
+            "INSERT INTO entity (id, status) VALUES (3, 'finished')",
+            "CREATE TABLE entity_one (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL DEFAULT 'finished'::status_type)",
+            "INSERT INTO entity_one (id, status) VALUES (1, 'started')",
+            "INSERT INTO entity_one (id, status) VALUES (3, 'finished')",
+        ]);
+
+        $this->getDefinitionRegistry()->loadType(RemovedValuesStatusType::class);
+
+        $updateSql = $this->getDatabaseUpdateQueryBuilder()->generateEnumReorderQueries();
+
+        self::assertSame(
+            [
+                "ALTER TYPE status_type RENAME TO status_type__",
+                "CREATE TYPE status_type AS ENUM ('started', 'finished')",
+                'LOCK TABLE entity',
+                'ALTER TABLE entity ALTER COLUMN status DROP DEFAULT',
+                'ALTER TABLE entity ALTER COLUMN status TYPE status_type USING status::text::status_type',
+                "ALTER TABLE entity ALTER COLUMN status SET DEFAULT 'started'::status_type",
+                'LOCK TABLE entity_one',
+                'ALTER TABLE entity_one ALTER COLUMN status DROP DEFAULT',
+                'ALTER TABLE entity_one ALTER COLUMN status TYPE status_type USING status::text::status_type',
+                "ALTER TABLE entity_one ALTER COLUMN status SET DEFAULT 'finished'::status_type",
+                'DROP TYPE status_type__',
+            ],
+            $updateSql,
+        );
+
+        $this->applySQLWithinTransaction($updateSql);
+    }
+
     /**
      * TODO: Probably need to add check of impossible data update
      */

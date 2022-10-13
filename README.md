@@ -1,5 +1,5 @@
-# doctrine_enums
-Doctrine enums extension
+# Doctrine Enums
+Doctrine enums for Postgres extension
 
 ### Running Tests
 

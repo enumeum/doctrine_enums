@@ -6,7 +6,7 @@ lint: lint-composer lint-php test
 .PHONY: lint
 
 lint-composer:
-	composer-normalize --dry-run
+	composer normalize
 	composer validate
 .PHONY: lint-composer
 

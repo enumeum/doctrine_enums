@@ -31,6 +31,7 @@
     "require-dev": {
         "doctrine/dbal": "^2.13 || ^3.2",
         "doctrine/orm": "^2.12",
+        "ergebnis/composer-normalize": "^2.28",
         "friendsofphp/php-cs-fixer": "^3.0",
         "nesbot/carbon": "^2.55",
         "phpstan/phpstan": "^1.1",
@@ -53,11 +54,13 @@
         }
     },
     "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true
+        },
         "bin-dir": "bin",
         "sort-packages": true
     },
-    "extra": {
-    },
+    "extra": {},
     "scripts": {
         "fix-cs": "php-cs-fixer fix --config=.php-cs-fixer.dist.php"
     }

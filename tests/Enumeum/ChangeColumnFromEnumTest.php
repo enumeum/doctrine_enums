@@ -26,7 +26,7 @@ final class ChangeColumnFromEnumTest extends BaseTestCaseSchemaPostgres13
 {
     public function testEnumTypeIsNotUsedElsewhere(): void
     {
-        $this->definitionRegistry->loadType(BaseStatusType::class);
+        $this->getDefinitionRegistry()->loadType(BaseStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
@@ -48,7 +48,7 @@ final class ChangeColumnFromEnumTest extends BaseTestCaseSchemaPostgres13
 
     public function testEnumTypeIsNotUsedElsewhereButNeedsAddValues(): void
     {
-        $this->definitionRegistry->loadType(AddedValuesStatusType::class);
+        $this->getDefinitionRegistry()->loadType(AddedValuesStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
@@ -70,7 +70,7 @@ final class ChangeColumnFromEnumTest extends BaseTestCaseSchemaPostgres13
 
     public function testEnumTypeIsNotUsedElsewhereButNeedsRemoveValues(): void
     {
-        $this->definitionRegistry->loadType(RemovedValuesStatusType::class);
+        $this->getDefinitionRegistry()->loadType(RemovedValuesStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
@@ -97,7 +97,7 @@ final class ChangeColumnFromEnumTest extends BaseTestCaseSchemaPostgres13
             "COMMENT ON COLUMN another_entity.status IS 'SOME Comment'",
         ]);
 
-        $this->definitionRegistry->loadType(BaseStatusType::class);
+        $this->getDefinitionRegistry()->loadType(BaseStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
@@ -124,7 +124,7 @@ final class ChangeColumnFromEnumTest extends BaseTestCaseSchemaPostgres13
             "COMMENT ON COLUMN another_entity.status IS 'SOME Comment'",
         ]);
 
-        $this->definitionRegistry->loadType(AddedValuesStatusType::class);
+        $this->getDefinitionRegistry()->loadType(AddedValuesStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
@@ -153,7 +153,7 @@ final class ChangeColumnFromEnumTest extends BaseTestCaseSchemaPostgres13
             "COMMENT ON COLUMN another_entity.status IS 'SOME Comment'",
         ]);
 
-        $this->definitionRegistry->loadType(RemovedValuesStatusType::class);
+        $this->getDefinitionRegistry()->loadType(RemovedValuesStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([

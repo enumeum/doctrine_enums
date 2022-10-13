@@ -25,7 +25,7 @@ final class SchemaChangedCommentOfEnumFieldTest extends BaseTestCaseSchemaPostgr
 {
     public function testEnumTypeAlreadyExists(): void
     {
-        $this->definitionRegistry->loadType(BaseStatusType::class);
+        $this->getDefinitionRegistry()->loadType(BaseStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
@@ -46,7 +46,7 @@ final class SchemaChangedCommentOfEnumFieldTest extends BaseTestCaseSchemaPostgr
 
     public function testEnumTypeAlreadyExistsAndNeedsAddValues(): void
     {
-        $this->definitionRegistry->loadType(AddedValuesStatusType::class);
+        $this->getDefinitionRegistry()->loadType(AddedValuesStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
@@ -69,7 +69,7 @@ final class SchemaChangedCommentOfEnumFieldTest extends BaseTestCaseSchemaPostgr
 
     public function testEnumTypeAlreadyExistsAndNeedsRemoveValues(): void
     {
-        $this->definitionRegistry->loadType(RemovedValuesStatusType::class);
+        $this->getDefinitionRegistry()->loadType(RemovedValuesStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([

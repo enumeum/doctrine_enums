@@ -25,7 +25,7 @@ final class CreateTableTest extends BaseTestCaseSchemaPostgres13
 {
     public function testEnumTypeNotExists(): void
     {
-        $this->definitionRegistry->loadType(BaseStatusType::class);
+        $this->getDefinitionRegistry()->loadType(BaseStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
@@ -53,7 +53,7 @@ final class CreateTableTest extends BaseTestCaseSchemaPostgres13
             "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
         ]);
 
-        $this->definitionRegistry->loadType(BaseStatusType::class);
+        $this->getDefinitionRegistry()->loadType(BaseStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
@@ -80,7 +80,7 @@ final class CreateTableTest extends BaseTestCaseSchemaPostgres13
             "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
         ]);
 
-        $this->definitionRegistry->loadType(AddedValuesStatusType::class);
+        $this->getDefinitionRegistry()->loadType(AddedValuesStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
@@ -109,7 +109,7 @@ final class CreateTableTest extends BaseTestCaseSchemaPostgres13
             "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
         ]);
 
-        $this->definitionRegistry->loadType(RemovedValuesStatusType::class);
+        $this->getDefinitionRegistry()->loadType(RemovedValuesStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([

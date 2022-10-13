@@ -81,7 +81,9 @@ class DatabaseUpdateQueryBuilder
             if ($usage = $this->usageRegistry->getUsage($name)) {
                 foreach ($usage->columns as $column) {
                     array_push($result, ...LockQueryBuilder::buildLockTableSql($column->table));
-                    array_push($result, ...ColumnDefaultQueryBuilder::buildDropColumnDefaultSql($column->table, $column->column));
+                    if ($column->default) {
+                        array_push($result, ...ColumnDefaultQueryBuilder::buildDropColumnDefaultSql($column->table, $column->column));
+                    }
                     array_push(
                         $result,
                         ...EnumQueryBuilder::buildEnumTypeAlterColumnSql($definition, $column->table, $column->column),

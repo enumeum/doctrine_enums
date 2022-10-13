@@ -32,6 +32,7 @@ use Enumeum\DoctrineEnum\Tools\CommentMarker;
 use Enumeum\DoctrineEnum\Tools\EnumChangesTool;
 use Enumeum\DoctrineEnum\Type\GenericEnumType;
 use Enumeum\DoctrineEnum\TypeQueriesStack;
+
 use function array_push;
 
 class SchemaChangedSubscriber implements EventSubscriber

@@ -14,6 +14,7 @@ namespace Enumeum\DoctrineEnum\QueryBuild;
 use Enumeum\DoctrineEnum\Definition\DatabaseDefinition;
 use Enumeum\DoctrineEnum\Definition\Definition;
 use Enumeum\DoctrineEnum\Tools\EnumChangesTool;
+
 use function implode;
 use function sprintf;
 

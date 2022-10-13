@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Enumeum\DoctrineEnum\Tools;
 
 use Enumeum\DoctrineEnum\Exception\InvalidArgumentException;
+
 use function array_key_exists;
 
 class EnumChangesTool

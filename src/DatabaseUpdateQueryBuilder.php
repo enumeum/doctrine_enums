@@ -18,6 +18,7 @@ use Enumeum\DoctrineEnum\QueryBuild\ColumnDefaultQueryBuilder;
 use Enumeum\DoctrineEnum\QueryBuild\EnumQueryBuilder;
 use Enumeum\DoctrineEnum\QueryBuild\LockQueryBuilder;
 use Enumeum\DoctrineEnum\Tools\EnumChangesTool;
+
 use function array_push;
 use function key_exists;
 

@@ -27,7 +27,6 @@ class EnumQueryBuilder
     private const TYPE_ALTER_TABLE_QUERY = 'ALTER TABLE %2$s ALTER COLUMN %3$s TYPE %1$s USING %3$s::text::%1$s';
     private const TYPE_DROP_QUERY = 'DROP TYPE %1$s';
 
-
     public static function buildEnumTypeCreateSql(Definition $definition): iterable
     {
         return [sprintf(self::TYPE_CREATE_QUERY, $definition->name, implode("', '", [...$definition->cases]))];
@@ -55,12 +54,12 @@ class EnumQueryBuilder
 
     public static function buildEnumTypeRenameToTemporarySql(Definition $definition): iterable
     {
-        return [sprintf(self::TYPE_ALTER_RENAME_QUERY, $definition->name, $definition->name . self::TEMPORARY_SUFFIX)];
+        return [sprintf(self::TYPE_ALTER_RENAME_QUERY, $definition->name, $definition->name.self::TEMPORARY_SUFFIX)];
     }
 
     public static function buildEnumTypeDropTemporarySql(Definition $definition): iterable
     {
-        return [sprintf(self::TYPE_DROP_QUERY, $definition->name . self::TEMPORARY_SUFFIX)];
+        return [sprintf(self::TYPE_DROP_QUERY, $definition->name.self::TEMPORARY_SUFFIX)];
     }
 
     public static function buildEnumTypeAlterColumnSql(Definition $definition, string $table, string $column): iterable

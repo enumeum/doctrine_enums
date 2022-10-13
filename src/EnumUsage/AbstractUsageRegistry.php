@@ -28,8 +28,6 @@ abstract class AbstractUsageRegistry
     ) {
     }
 
-    abstract protected function getUsageQuery(): string;
-
     public function getUsage(string $name): ?Usage
     {
         if (!$this->loaded) {
@@ -71,6 +69,8 @@ abstract class AbstractUsageRegistry
 
         return false;
     }
+
+    abstract protected function getUsageQuery(): string;
 
     private function load(): void
     {

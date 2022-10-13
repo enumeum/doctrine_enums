@@ -57,7 +57,7 @@ class SchemaChangedSubscriber implements EventSubscriber
 
     public function onSchemaCreateTableColumn(SchemaCreateTableColumnEventArgs $event): void
     {
-        if ( ! $event->getPlatform() instanceof PostgreSqlPlatform) {
+        if (!$event->getPlatform() instanceof PostgreSqlPlatform) {
             return;
         }
 
@@ -89,7 +89,7 @@ class SchemaChangedSubscriber implements EventSubscriber
 
     public function onSchemaAlterTableAddColumn(SchemaAlterTableAddColumnEventArgs $event): void
     {
-        if ( ! $event->getPlatform() instanceof PostgreSqlPlatform) {
+        if (!$event->getPlatform() instanceof PostgreSqlPlatform) {
             return;
         }
 
@@ -119,7 +119,7 @@ class SchemaChangedSubscriber implements EventSubscriber
 
     public function onSchemaAlterTableChangeColumn(SchemaAlterTableChangeColumnEventArgs $event): void
     {
-        if ( ! $event->getPlatform() instanceof PostgreSqlPlatform) {
+        if (!$event->getPlatform() instanceof PostgreSqlPlatform) {
             return;
         }
 
@@ -191,7 +191,7 @@ class SchemaChangedSubscriber implements EventSubscriber
 
     public function onSchemaAlterTableRemoveColumn(SchemaAlterTableRemoveColumnEventArgs $event): void
     {
-        if ( ! $event->getPlatform() instanceof PostgreSqlPlatform) {
+        if (!$event->getPlatform() instanceof PostgreSqlPlatform) {
             return;
         }
 
@@ -215,6 +215,23 @@ class SchemaChangedSubscriber implements EventSubscriber
 
         /** Disables removing this column with Doctrine */
         $event->preventDefault();
+    }
+
+    /**
+     * @return iterable<string>
+     */
+    public function getEnumTypePersistenceSql(Definition $definition): iterable
+    {
+        $sql = [];
+
+        $databaseDefinition = $this->databaseRegistry->getDefinitionByName($definition->name);
+        if (null === $databaseDefinition) {
+            array_push($sql, ...EnumQueryBuilder::buildEnumTypeCreateSql($definition));
+        } elseif (EnumChangesTool::isChanged($databaseDefinition->cases, $definition->cases)) {
+            array_push($sql, ...EnumQueryBuilder::buildEnumTypeAlterSql($definition, $databaseDefinition));
+        }
+
+        return $sql;
     }
 
     private function clearComment(ColumnDiff $diff): void
@@ -255,23 +272,6 @@ class SchemaChangedSubscriber implements EventSubscriber
         return $sql;
     }
 
-    /**
-     * @return iterable<string>
-     */
-    public function getEnumTypePersistenceSql(Definition $definition): iterable
-    {
-        $sql = [];
-
-        $databaseDefinition = $this->databaseRegistry->getDefinitionByName($definition->name);
-        if (null === $databaseDefinition) {
-            array_push($sql, ...EnumQueryBuilder::buildEnumTypeCreateSql($definition));
-        } elseif (EnumChangesTool::isChanged($databaseDefinition->cases, $definition->cases)) {
-            array_push($sql, ...EnumQueryBuilder::buildEnumTypeAlterSql($definition, $databaseDefinition));
-        }
-
-        return $sql;
-    }
-
     private function getEnumTypeRemovalSql(string $tableName, string $columnName, Definition $definition): iterable
     {
         $result = [];
@@ -292,7 +292,6 @@ class SchemaChangedSubscriber implements EventSubscriber
                     $result[] = $sql;
                 }
             }
-
         }
 
         return $result;

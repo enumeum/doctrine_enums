@@ -96,7 +96,6 @@ final class EnumCreateTest extends BaseTestCaseSchemaPostgres13
 
         /** There is no any loaded type. */
         /** $this->getDefinitionRegistry()->loadType(...); */
-
         $updateSql = $this->getDatabaseUpdateQueryBuilder()->generateEnumCreateQueries();
 
         self::assertSame(

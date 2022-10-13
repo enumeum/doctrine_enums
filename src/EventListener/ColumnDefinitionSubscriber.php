@@ -40,7 +40,7 @@ class ColumnDefinitionSubscriber implements EventSubscriber
 
     public function onSchemaColumnDefinition(SchemaColumnDefinitionEventArgs $event): void
     {
-        if ( ! $event->getConnection()->getDatabasePlatform() instanceof PostgreSqlPlatform) {
+        if (!$event->getConnection()->getDatabasePlatform() instanceof PostgreSqlPlatform) {
             return;
         }
 

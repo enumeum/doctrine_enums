@@ -23,12 +23,11 @@ final class EnumDropTest extends BaseTestCaseSchemaPostgres13
     {
         /** There is no any loaded type. */
         /** $this->getDefinitionRegistry()->loadType(...); */
-
         $updateSql = $this->getDatabaseUpdateQueryBuilder()->generateEnumDropQueries();
 
         self::assertSame(
             [
-                "DROP TYPE status_type",
+                'DROP TYPE status_type',
             ],
             $updateSql,
         );
@@ -42,17 +41,16 @@ final class EnumDropTest extends BaseTestCaseSchemaPostgres13
     public function testEnumTypeUsedByTable(): void
     {
         $this->applySQL([
-            "CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)",
+            'CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)',
         ]);
 
         /** There is no any loaded type. */
         /** $this->getDefinitionRegistry()->loadType(...); */
-
         $updateSql = $this->getDatabaseUpdateQueryBuilder()->generateEnumDropQueries();
 
         self::assertSame(
             [
-                "DROP TYPE status_type",
+                'DROP TYPE status_type',
             ],
             $updateSql,
         );
@@ -68,7 +66,7 @@ final class EnumDropTest extends BaseTestCaseSchemaPostgres13
     public function testEnumTypeCreating(): void
     {
         $this->applySQL([
-            "DROP TYPE status_type",
+            'DROP TYPE status_type',
         ]);
 
         $this->getDefinitionRegistry()->loadType(BaseStatusType::class);
@@ -114,7 +112,7 @@ final class EnumDropTest extends BaseTestCaseSchemaPostgres13
     protected function getBaseSQL(): array
     {
         return [
-            "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')"
+            "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
         ];
     }
 }

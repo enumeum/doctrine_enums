@@ -37,7 +37,7 @@ final class EnumAlterTest extends BaseTestCaseSchemaPostgres13
     public function testEnumTypeUsedByEmptyTable(): void
     {
         $this->applySQL([
-            "CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)",
+            'CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)',
         ]);
 
         $this->getDefinitionRegistry()->loadType(AddedValuesStatusType::class);
@@ -58,7 +58,7 @@ final class EnumAlterTest extends BaseTestCaseSchemaPostgres13
     public function testEnumTypeUsedByTableWithRecords(): void
     {
         $this->applySQL([
-            "CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)",
+            'CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)',
             "INSERT INTO entity (id, status) VALUES (1, 'started')",
             "INSERT INTO entity (id, status) VALUES (2, 'processing')",
             "INSERT INTO entity (id, status) VALUES (3, 'finished')",
@@ -82,7 +82,7 @@ final class EnumAlterTest extends BaseTestCaseSchemaPostgres13
     public function testEnumTypeCreating(): void
     {
         $this->applySQL([
-            "DROP TYPE status_type",
+            'DROP TYPE status_type',
         ]);
 
         $this->getDefinitionRegistry()->loadType(AddedValuesStatusType::class);
@@ -115,7 +115,6 @@ final class EnumAlterTest extends BaseTestCaseSchemaPostgres13
     {
         /** There is no any loaded type. */
         /** $this->getDefinitionRegistry()->loadType(...); */
-
         $updateSql = $this->getDatabaseUpdateQueryBuilder()->generateEnumAlterQueries();
 
         self::assertSame(
@@ -129,7 +128,7 @@ final class EnumAlterTest extends BaseTestCaseSchemaPostgres13
     protected function getBaseSQL(): array
     {
         return [
-            "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')"
+            "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
         ];
     }
 }

@@ -61,12 +61,71 @@ final class EnumReorderTest extends BaseTestCaseSchemaPostgres13
         $this->applySQLWithinTransaction($updateSql);
     }
 
+    public function testEnumTypeUsedByEmptyTableWithDefault(): void
+    {
+        $this->applySQL([
+            "CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL DEFAULT 'started'::status_type)",
+        ]);
+
+        $this->getDefinitionRegistry()->loadType(RemovedValuesStatusType::class);
+
+        $updateSql = $this->getDatabaseUpdateQueryBuilder()->generateEnumReorderQueries();
+
+        self::assertSame(
+            [
+                "ALTER TYPE status_type RENAME TO status_type__",
+                "CREATE TYPE status_type AS ENUM ('started', 'finished')",
+                'LOCK TABLE entity',
+                'ALTER TABLE entity ALTER COLUMN status DROP DEFAULT',
+                'ALTER TABLE entity ALTER COLUMN status TYPE status_type USING status::text::status_type',
+                "ALTER TABLE entity ALTER COLUMN status SET DEFAULT 'started'::status_type",
+                'DROP TYPE status_type__',
+            ],
+            $updateSql,
+        );
+
+        $this->applySQLWithinTransaction($updateSql);
+    }
+
+    /**
+     * TODO: Probably need to add check of impossible data update
+     */
+    public function testEnumTypeUsedByEmptyTableWithNotExistingDefault(): void
+    {
+        $this->applySQL([
+            "CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL DEFAULT 'processing'::status_type)",
+        ]);
+
+        $this->getDefinitionRegistry()->loadType(RemovedValuesStatusType::class);
+
+        $updateSql = $this->getDatabaseUpdateQueryBuilder()->generateEnumReorderQueries();
+
+        self::assertSame(
+            [
+                "ALTER TYPE status_type RENAME TO status_type__",
+                "CREATE TYPE status_type AS ENUM ('started', 'finished')",
+                'LOCK TABLE entity',
+                'ALTER TABLE entity ALTER COLUMN status DROP DEFAULT',
+                'ALTER TABLE entity ALTER COLUMN status TYPE status_type USING status::text::status_type',
+                "ALTER TABLE entity ALTER COLUMN status SET DEFAULT 'processing'::status_type",
+                'DROP TYPE status_type__',
+            ],
+            $updateSql,
+        );
+
+        $this->expectException(DriverException::class);
+        $this->expectExceptionMessage(
+            'An exception occurred while executing a query: SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input value for enum status_type: "processing"',
+        );
+
+        $this->applySQLWithinTransaction($updateSql);
+    }
+
     public function testEnumTypeUsedByTableWithRecords(): void
     {
         $this->applySQL([
             'CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)',
             "INSERT INTO entity (id, status) VALUES (1, 'started')",
-//            "INSERT INTO entity (id, status) VALUES (2, 'processing')",
             "INSERT INTO entity (id, status) VALUES (3, 'finished')",
         ]);
 
@@ -80,6 +139,34 @@ final class EnumReorderTest extends BaseTestCaseSchemaPostgres13
                 "CREATE TYPE status_type AS ENUM ('started', 'finished')",
                 'LOCK TABLE entity',
                 'ALTER TABLE entity ALTER COLUMN status TYPE status_type USING status::text::status_type',
+                'DROP TYPE status_type__',
+            ],
+            $updateSql,
+        );
+
+        $this->applySQLWithinTransaction($updateSql);
+    }
+
+    public function testEnumTypeUsedByTableWithRecordsAndDefault(): void
+    {
+        $this->applySQL([
+            "CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL DEFAULT 'started'::status_type)",
+            "INSERT INTO entity (id, status) VALUES (1, 'started')",
+            "INSERT INTO entity (id, status) VALUES (3, 'finished')",
+        ]);
+
+        $this->getDefinitionRegistry()->loadType(RemovedValuesStatusType::class);
+
+        $updateSql = $this->getDatabaseUpdateQueryBuilder()->generateEnumReorderQueries();
+
+        self::assertSame(
+            [
+                "ALTER TYPE status_type RENAME TO status_type__",
+                "CREATE TYPE status_type AS ENUM ('started', 'finished')",
+                'LOCK TABLE entity',
+                'ALTER TABLE entity ALTER COLUMN status DROP DEFAULT',
+                'ALTER TABLE entity ALTER COLUMN status TYPE status_type USING status::text::status_type',
+                "ALTER TABLE entity ALTER COLUMN status SET DEFAULT 'started'::status_type",
                 'DROP TYPE status_type__',
             ],
             $updateSql,

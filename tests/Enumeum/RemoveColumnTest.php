@@ -40,7 +40,7 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
         self::assertSame(
             [
                 'ALTER TABLE entity DROP status',
-                'DROP TYPE status_type',
+                'DROP TYPE IF EXISTS status_type',
             ],
             $updateSchemaSql,
         );
@@ -62,7 +62,7 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
         self::assertSame(
             [
                 'ALTER TABLE entity DROP status',
-                'DROP TYPE status_type',
+                'DROP TYPE IF EXISTS status_type',
             ],
             $updateSchemaSql,
         );
@@ -84,7 +84,7 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
         self::assertSame(
             [
                 'ALTER TABLE entity DROP status',
-                'DROP TYPE status_type',
+                'DROP TYPE IF EXISTS status_type',
             ],
             $updateSchemaSql,
         );

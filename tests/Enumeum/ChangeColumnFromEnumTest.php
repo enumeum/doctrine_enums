@@ -38,7 +38,7 @@ final class ChangeColumnFromEnumTest extends BaseTestCaseSchemaPostgres13
         self::assertSame(
             [
                 'ALTER TABLE entity ALTER status TYPE VARCHAR(255)',
-                'DROP TYPE status_type',
+                'DROP TYPE IF EXISTS status_type',
             ],
             $updateSchemaSql,
         );
@@ -60,7 +60,7 @@ final class ChangeColumnFromEnumTest extends BaseTestCaseSchemaPostgres13
         self::assertSame(
             [
                 'ALTER TABLE entity ALTER status TYPE VARCHAR(255)',
-                'DROP TYPE status_type',
+                'DROP TYPE IF EXISTS status_type',
             ],
             $updateSchemaSql,
         );
@@ -82,7 +82,7 @@ final class ChangeColumnFromEnumTest extends BaseTestCaseSchemaPostgres13
         self::assertSame(
             [
                 'ALTER TABLE entity ALTER status TYPE VARCHAR(255)',
-                'DROP TYPE status_type',
+                'DROP TYPE IF EXISTS status_type',
             ],
             $updateSchemaSql,
         );

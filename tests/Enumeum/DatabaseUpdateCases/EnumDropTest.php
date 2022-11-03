@@ -27,7 +27,7 @@ final class EnumDropTest extends BaseTestCaseSchemaPostgres13
 
         self::assertSame(
             [
-                'DROP TYPE status_type',
+                'DROP TYPE IF EXISTS status_type',
             ],
             $updateSql,
         );
@@ -50,14 +50,14 @@ final class EnumDropTest extends BaseTestCaseSchemaPostgres13
 
         self::assertSame(
             [
-                'DROP TYPE status_type',
+                'DROP TYPE IF EXISTS status_type',
             ],
             $updateSql,
         );
 
         $this->expectException(DriverException::class);
-        $this->expectExceptionMessage(
-            'An exception occurred while executing a query: SQLSTATE[2BP01]: Dependent objects still exist: 7 ERROR:  cannot drop type status_type because other objects depend on it',
+        $this->expectExceptionMessageMatches(
+            '~.*cannot drop type status_type because other objects depend on it.*~',
         );
 
         $this->applySQL($updateSql);
@@ -66,7 +66,7 @@ final class EnumDropTest extends BaseTestCaseSchemaPostgres13
     public function testEnumTypeCreating(): void
     {
         $this->applySQL([
-            'DROP TYPE status_type',
+            'DROP TYPE IF EXISTS status_type',
         ]);
 
         $this->getDefinitionRegistry()->loadType(BaseStatusType::class);

@@ -82,7 +82,7 @@ final class EnumAlterTest extends BaseTestCaseSchemaPostgres13
     public function testEnumTypeCreating(): void
     {
         $this->applySQL([
-            'DROP TYPE status_type',
+            'DROP TYPE IF EXISTS status_type',
         ]);
 
         $this->getDefinitionRegistry()->loadType(AddedValuesStatusType::class);

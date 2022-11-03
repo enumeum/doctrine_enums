@@ -26,7 +26,7 @@ class EnumQueryBuilder
     private const TYPE_ALTER_QUERY = "ALTER TYPE %1\$s ADD VALUE IF NOT EXISTS '%2\$s'";
     private const TYPE_ALTER_RENAME_QUERY = 'ALTER TYPE %1$s RENAME TO %2$s';
     private const TYPE_ALTER_TABLE_QUERY = 'ALTER TABLE %2$s ALTER COLUMN %3$s TYPE %1$s USING %3$s::text::%1$s';
-    private const TYPE_DROP_QUERY = 'DROP TYPE %1$s';
+    private const TYPE_DROP_QUERY = 'DROP TYPE IF EXISTS %1$s';
 
     public static function buildEnumTypeCreateSql(Definition $definition): iterable
     {

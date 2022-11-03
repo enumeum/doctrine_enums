@@ -29,7 +29,7 @@ final class EnumReorderTest extends BaseTestCaseSchemaPostgres13
             [
                 'ALTER TYPE status_type RENAME TO status_type__',
                 "CREATE TYPE status_type AS ENUM ('started', 'finished')",
-                'DROP TYPE status_type__',
+                'DROP TYPE IF EXISTS status_type__',
             ],
             $updateSql,
         );
@@ -53,7 +53,7 @@ final class EnumReorderTest extends BaseTestCaseSchemaPostgres13
                 "CREATE TYPE status_type AS ENUM ('started', 'finished')",
                 'LOCK TABLE entity',
                 'ALTER TABLE entity ALTER COLUMN status TYPE status_type USING status::text::status_type',
-                'DROP TYPE status_type__',
+                'DROP TYPE IF EXISTS status_type__',
             ],
             $updateSql,
         );
@@ -79,7 +79,7 @@ final class EnumReorderTest extends BaseTestCaseSchemaPostgres13
                 'ALTER TABLE entity ALTER COLUMN status DROP DEFAULT',
                 'ALTER TABLE entity ALTER COLUMN status TYPE status_type USING status::text::status_type',
                 "ALTER TABLE entity ALTER COLUMN status SET DEFAULT 'started'::status_type",
-                'DROP TYPE status_type__',
+                'DROP TYPE IF EXISTS status_type__',
             ],
             $updateSql,
         );
@@ -108,7 +108,7 @@ final class EnumReorderTest extends BaseTestCaseSchemaPostgres13
                 'ALTER TABLE entity ALTER COLUMN status DROP DEFAULT',
                 'ALTER TABLE entity ALTER COLUMN status TYPE status_type USING status::text::status_type',
                 "ALTER TABLE entity ALTER COLUMN status SET DEFAULT 'processing'::status_type",
-                'DROP TYPE status_type__',
+                'DROP TYPE IF EXISTS status_type__',
             ],
             $updateSql,
         );
@@ -139,7 +139,7 @@ final class EnumReorderTest extends BaseTestCaseSchemaPostgres13
                 "CREATE TYPE status_type AS ENUM ('started', 'finished')",
                 'LOCK TABLE entity',
                 'ALTER TABLE entity ALTER COLUMN status TYPE status_type USING status::text::status_type',
-                'DROP TYPE status_type__',
+                'DROP TYPE IF EXISTS status_type__',
             ],
             $updateSql,
         );
@@ -167,7 +167,7 @@ final class EnumReorderTest extends BaseTestCaseSchemaPostgres13
                 'ALTER TABLE entity ALTER COLUMN status DROP DEFAULT',
                 'ALTER TABLE entity ALTER COLUMN status TYPE status_type USING status::text::status_type',
                 "ALTER TABLE entity ALTER COLUMN status SET DEFAULT 'started'::status_type",
-                'DROP TYPE status_type__',
+                'DROP TYPE IF EXISTS status_type__',
             ],
             $updateSql,
         );
@@ -202,7 +202,7 @@ final class EnumReorderTest extends BaseTestCaseSchemaPostgres13
                 'ALTER TABLE entity_one ALTER COLUMN status DROP DEFAULT',
                 'ALTER TABLE entity_one ALTER COLUMN status TYPE status_type USING status::text::status_type',
                 "ALTER TABLE entity_one ALTER COLUMN status SET DEFAULT 'finished'::status_type",
-                'DROP TYPE status_type__',
+                'DROP TYPE IF EXISTS status_type__',
             ],
             $updateSql,
         );
@@ -232,7 +232,7 @@ final class EnumReorderTest extends BaseTestCaseSchemaPostgres13
                 "CREATE TYPE status_type AS ENUM ('started', 'finished')",
                 'LOCK TABLE entity',
                 'ALTER TABLE entity ALTER COLUMN status TYPE status_type USING status::text::status_type',
-                'DROP TYPE status_type__',
+                'DROP TYPE IF EXISTS status_type__',
             ],
             $updateSql,
         );
@@ -248,7 +248,7 @@ final class EnumReorderTest extends BaseTestCaseSchemaPostgres13
     public function testEnumTypeCreating(): void
     {
         $this->applySQL([
-            'DROP TYPE status_type',
+            'DROP TYPE IF EXISTS status_type',
         ]);
 
         $this->getDefinitionRegistry()->loadType(BaseStatusType::class);

@@ -9,21 +9,22 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace EnumeumTests;
+namespace EnumeumTests\SchemaListening;
 
 use Doctrine\ORM\Tools\SchemaTool;
 use Enumeum\DoctrineEnum\Exception\InvalidArgumentException;
 use EnumeumTests\Fixture\AddedValuesStatusType;
 use EnumeumTests\Fixture\BaseStatusType;
 use EnumeumTests\Fixture\Entity\Entity;
+use EnumeumTests\Fixture\Entity\EntityChangedComment;
 use EnumeumTests\Fixture\Entity\EntityEnumAddedValues;
 use EnumeumTests\Fixture\Entity\EntityEnumRemovedValues;
 use EnumeumTests\Fixture\RemovedValuesStatusType;
 use EnumeumTests\Setup\BaseTestCaseSchemaPostgres13;
 
-final class ChangeColumnToEnumTest extends BaseTestCaseSchemaPostgres13
+final class DiffTypeTest extends BaseTestCaseSchemaPostgres13
 {
-    public function testEnumTypeNotExists(): void
+    public function testNoTypeDiff(): void
     {
         $this->getDefinitionRegistry()->loadType(BaseStatusType::class);
 
@@ -34,35 +35,23 @@ final class ChangeColumnToEnumTest extends BaseTestCaseSchemaPostgres13
 
         $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
 
-        self::assertSame(
-            [
-                "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
-                'ALTER TABLE entity ALTER status TYPE status_type USING status::status_type',
-            ],
-            $updateSchemaSql,
-        );
-
-        $this->applySQL($updateSchemaSql);
+        self::assertCount(0, $updateSchemaSql);
     }
 
-    public function testEnumTypeAlreadyExists(): void
+    public function testNoTypeDiffButChangedComment(): void
     {
-        $this->applySQL([
-            "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
-        ]);
-
         $this->getDefinitionRegistry()->loadType(BaseStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
-            Entity::class,
+            EntityChangedComment::class,
         ]);
 
         $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
 
         self::assertSame(
             [
-                'ALTER TABLE entity ALTER status TYPE status_type USING status::status_type',
+                "COMMENT ON COLUMN entity.status IS 'CHANGED Comment'",
             ],
             $updateSchemaSql,
         );
@@ -70,12 +59,8 @@ final class ChangeColumnToEnumTest extends BaseTestCaseSchemaPostgres13
         $this->applySQL($updateSchemaSql);
     }
 
-    public function testEnumTypeAlreadyExistsAndNeedsAddValues(): void
+    public function testAddValues(): void
     {
-        $this->applySQL([
-            "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
-        ]);
-
         $this->getDefinitionRegistry()->loadType(AddedValuesStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
@@ -89,7 +74,6 @@ final class ChangeColumnToEnumTest extends BaseTestCaseSchemaPostgres13
             [
                 "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'accepted'",
                 "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'rejected'",
-                'ALTER TABLE entity ALTER status TYPE status_type USING status::status_type',
             ],
             $updateSchemaSql,
         );
@@ -97,12 +81,8 @@ final class ChangeColumnToEnumTest extends BaseTestCaseSchemaPostgres13
         $this->applySQL($updateSchemaSql);
     }
 
-    public function testEnumTypeAlreadyExistsAndNeedsRemoveValues(): void
+    public function testRemoveValues(): void
     {
-        $this->applySQL([
-            "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
-        ]);
-
         $this->getDefinitionRegistry()->loadType(RemovedValuesStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
@@ -123,7 +103,8 @@ final class ChangeColumnToEnumTest extends BaseTestCaseSchemaPostgres13
     protected function getBaseSQL(): array
     {
         return [
-            'CREATE TABLE entity (id INT NOT NULL, status VARCHAR(255) NOT NULL, PRIMARY KEY(id))',
+            "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
+            'CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)',
             "COMMENT ON COLUMN entity.status IS 'SOME Comment'",
         ];
     }

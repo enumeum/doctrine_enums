@@ -73,7 +73,7 @@ final class EnumReorderTest extends BaseTestCaseSchemaPostgres13
 
         self::assertSame(
             [
-                "ALTER TYPE status_type RENAME TO status_type__",
+                'ALTER TYPE status_type RENAME TO status_type__',
                 "CREATE TYPE status_type AS ENUM ('started', 'finished')",
                 'LOCK TABLE entity',
                 'ALTER TABLE entity ALTER COLUMN status DROP DEFAULT',
@@ -102,7 +102,7 @@ final class EnumReorderTest extends BaseTestCaseSchemaPostgres13
 
         self::assertSame(
             [
-                "ALTER TYPE status_type RENAME TO status_type__",
+                'ALTER TYPE status_type RENAME TO status_type__',
                 "CREATE TYPE status_type AS ENUM ('started', 'finished')",
                 'LOCK TABLE entity',
                 'ALTER TABLE entity ALTER COLUMN status DROP DEFAULT',
@@ -161,7 +161,7 @@ final class EnumReorderTest extends BaseTestCaseSchemaPostgres13
 
         self::assertSame(
             [
-                "ALTER TYPE status_type RENAME TO status_type__",
+                'ALTER TYPE status_type RENAME TO status_type__',
                 "CREATE TYPE status_type AS ENUM ('started', 'finished')",
                 'LOCK TABLE entity',
                 'ALTER TABLE entity ALTER COLUMN status DROP DEFAULT',
@@ -192,7 +192,7 @@ final class EnumReorderTest extends BaseTestCaseSchemaPostgres13
 
         self::assertSame(
             [
-                "ALTER TYPE status_type RENAME TO status_type__",
+                'ALTER TYPE status_type RENAME TO status_type__',
                 "CREATE TYPE status_type AS ENUM ('started', 'finished')",
                 'LOCK TABLE entity',
                 'ALTER TABLE entity ALTER COLUMN status DROP DEFAULT',

@@ -14,9 +14,9 @@ To set up and run the tests, follow these steps:
 
 ### Right usage
 
-If required just change enums values, their structure, adding ore dropping types then better to use EnumTool.
+If required just change enums values, their structure, adding or dropping types then better to use EnumTool.
 
-If required to chang not just enums but also a schema then firstly necessary to use EnumTool, then calculate schema diff.
+If required to change not just enums but also a schema then firstly necessary to use EnumTool, then calculate schema diff.
 
 ### Possible future feature
 Command for removing Enum value without recreating.

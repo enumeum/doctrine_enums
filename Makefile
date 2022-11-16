@@ -6,17 +6,18 @@ lint: lint-composer lint-php test
 .PHONY: lint
 
 lint-composer:
-	composer normalize
-	composer validate
+	docker-compose run --rm --no-deps php composer normalize
+	docker-compose run --rm --no-deps php composer validate
+
 .PHONY: lint-composer
 
 lint-php:
-	./bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php
+	docker-compose run --rm --no-deps php ./bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php
 
 .PHONY: lint-php
 
 test:
-	./bin/phpunit -c tests/
+	docker-compose run --rm --no-deps php ./bin/phpunit -c tests/
 
 .PHONY: test
 

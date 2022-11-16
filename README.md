@@ -14,7 +14,10 @@ To set up and run the tests, follow these steps:
 
 ### Right usage
 
+_EnumTool is Enumeum\DoctrineEnum\EnumTool class._
+
 If required just change enums values, their structure, adding or dropping types then better to use EnumTool.
+It will generate all SQL queries to synchronize configured enums. 
 
 If required to change not just enums but also a schema then firstly necessary to use EnumTool, then calculate schema diff.
 

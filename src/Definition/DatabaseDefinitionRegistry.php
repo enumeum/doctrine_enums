@@ -46,7 +46,7 @@ QUERY;
     }
 
     /**
-     * @return array<DatabaseDefinition>
+     * @return array<string, DatabaseDefinition>
      */
     public function getDefinitionsHashedByName(): array
     {

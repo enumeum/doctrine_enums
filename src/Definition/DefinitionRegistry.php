@@ -18,10 +18,10 @@ use Throwable;
 
 class DefinitionRegistry
 {
-    /** @var Definition[] */
+    /** @var array<string, Definition> */
     private array $definitionsByEnum = [];
 
-    /** @var Definition[] */
+    /** @var array<string, Definition> */
     private array $definitionsByName = [];
 
     public function __construct(iterable $enumClassNames = [])
@@ -44,7 +44,7 @@ class DefinitionRegistry
     }
 
     /**
-     * @return array<Definition>
+     * @return array<string, Definition>
      */
     public function getDefinitionsHashedByName(): array
     {

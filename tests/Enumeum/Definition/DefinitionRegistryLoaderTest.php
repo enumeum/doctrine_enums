@@ -1,4 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the "Doctrine extension to manage enumerations in PostgreSQL" package.
+ * (c) Alexey Sitka <alexey.sitka@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace EnumeumTests\Definition;
 
@@ -34,9 +43,9 @@ class DefinitionRegistryLoaderTest extends TestCase
             ],
             [
                 [
-                    DefinitionRegistryLoader::PATH_KEY => __DIR__ . '/../Fixture/DefinitionEnum/Two',
+                    DefinitionRegistryLoader::PATH_KEY => __DIR__.'/../Fixture/DefinitionEnum/Two',
                     DefinitionRegistryLoader::NAMESPACE_KEY => 'EnumeumTests\Fixture\DefinitionEnum\Two',
-                ]
+                ],
             ],
         );
         self::assertInstanceOf(DefinitionRegistryLoader::class, $loader);
@@ -72,7 +81,7 @@ class DefinitionRegistryLoaderTest extends TestCase
     {
         $loader = DefinitionRegistryLoader::create();
         $loader->loadDir(
-            __DIR__ . '/../Fixture/DefinitionEnum/One',
+            __DIR__.'/../Fixture/DefinitionEnum/One',
             'EnumeumTests\Fixture\DefinitionEnum\One',
         );
 
@@ -89,11 +98,11 @@ class DefinitionRegistryLoaderTest extends TestCase
         $loader = DefinitionRegistryLoader::create();
         $loader->loadDirs([
             [
-                DefinitionRegistryLoader::PATH_KEY => __DIR__ . '/../Fixture/DefinitionEnum/One',
+                DefinitionRegistryLoader::PATH_KEY => __DIR__.'/../Fixture/DefinitionEnum/One',
                 DefinitionRegistryLoader::NAMESPACE_KEY => 'EnumeumTests\Fixture\DefinitionEnum\One',
             ],
             [
-                DefinitionRegistryLoader::PATH_KEY => __DIR__ . '/../Fixture/DefinitionEnum/Two',
+                DefinitionRegistryLoader::PATH_KEY => __DIR__.'/../Fixture/DefinitionEnum/Two',
                 DefinitionRegistryLoader::NAMESPACE_KEY => 'EnumeumTests\Fixture\DefinitionEnum\Two',
             ],
         ]);

@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 
 $header = <<<'HEADER'
-This file is part of the "Doctrine enumerations extension for Postgres" package.
+This file is part of the "Doctrine extension to manage enumerations in PostgreSQL" package.
 (c) Alexey Sitka <alexey.sitka@gmail.com>
 For the full copyright and license information, please view the LICENSE
 file that was distributed with this source code.
@@ -34,6 +34,7 @@ return (new PhpCsFixer\Config())
         'combine_consecutive_unsets' => true,
         'declare_strict_types' => true,
         'error_suppression' => true,
+        'global_namespace_import' => ['import_classes' => true, 'import_functions' => true],
         'header_comment' => ['header' => $header],
         'is_null' => false,
         'list_syntax' => ['syntax' => 'short'],

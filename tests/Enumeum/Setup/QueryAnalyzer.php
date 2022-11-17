@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the "Doctrine enumerations extension for Postgres" package.
+ * This file is part of the "Doctrine extension to manage enumerations in PostgreSQL" package.
  * (c) Alexey Sitka <alexey.sitka@gmail.com>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace EnumeumTests\Setup;
 
+use DateTimeInterface;
 use Doctrine\DBAL\Logging\SQLLogger;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
@@ -91,7 +92,7 @@ final class QueryAnalyzer implements SQLLogger
                     $value = $type->convertToDatabaseValue($value, $this->platform);
                 }
             } else {
-                if ($value instanceof \DateTimeInterface) {
+                if ($value instanceof DateTimeInterface) {
                     $value = $value->format($this->platform->getDateTimeFormatString());
                 } elseif (null !== $value) {
                     $type = Type::getType(gettype($value));

@@ -1,5 +1,5 @@
 # Doctrine Enums
-Doctrine enums for Postgres extension
+Doctrine extension to manage enumerations in PostgreSQL.
 
 ### Running Tests
 

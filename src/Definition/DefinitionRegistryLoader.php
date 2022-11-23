@@ -13,7 +13,7 @@ namespace Enumeum\DoctrineEnum\Definition;
 
 class DefinitionRegistryLoader
 {
-    public const PATH_KEY = 'path';
+    public const DIR_KEY = 'dir';
     public const NAMESPACE_KEY = 'namespace';
 
     /**
@@ -32,7 +32,7 @@ class DefinitionRegistryLoader
 
     /**
      * @param iterable<class-string>|null                           $enumClassNames
-     * @param iterable<array{path: string, namespace: string}>|null $enumDirPaths
+     * @param iterable<array{dir: string, namespace: string}>|null $enumDirPaths
      */
     public static function create(
         ?DefinitionRegistry $registry = null,
@@ -86,7 +86,7 @@ class DefinitionRegistryLoader
      */
     public function loadDirs(iterable $dirPaths): void
     {
-        foreach ($dirPaths as [self::PATH_KEY => $path, self::NAMESPACE_KEY => $namespace]) {
+        foreach ($dirPaths as [self::DIR_KEY => $path, self::NAMESPACE_KEY => $namespace]) {
             $this->loadDir($path, $namespace);
         }
     }

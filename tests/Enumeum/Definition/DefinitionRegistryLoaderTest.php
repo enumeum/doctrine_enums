@@ -43,7 +43,7 @@ class DefinitionRegistryLoaderTest extends TestCase
             ],
             [
                 [
-                    DefinitionRegistryLoader::PATH_KEY => __DIR__.'/../Fixture/DefinitionEnum/Two',
+                    DefinitionRegistryLoader::DIR_KEY => __DIR__.'/../Fixture/DefinitionEnum/Two',
                     DefinitionRegistryLoader::NAMESPACE_KEY => 'EnumeumTests\Fixture\DefinitionEnum\Two',
                 ],
             ],
@@ -98,11 +98,11 @@ class DefinitionRegistryLoaderTest extends TestCase
         $loader = DefinitionRegistryLoader::create();
         $loader->loadDirs([
             [
-                DefinitionRegistryLoader::PATH_KEY => __DIR__.'/../Fixture/DefinitionEnum/One',
+                DefinitionRegistryLoader::DIR_KEY => __DIR__.'/../Fixture/DefinitionEnum/One',
                 DefinitionRegistryLoader::NAMESPACE_KEY => 'EnumeumTests\Fixture\DefinitionEnum\One',
             ],
             [
-                DefinitionRegistryLoader::PATH_KEY => __DIR__.'/../Fixture/DefinitionEnum/Two',
+                DefinitionRegistryLoader::DIR_KEY => __DIR__.'/../Fixture/DefinitionEnum/Two',
                 DefinitionRegistryLoader::NAMESPACE_KEY => 'EnumeumTests\Fixture\DefinitionEnum\Two',
             ],
         ]);

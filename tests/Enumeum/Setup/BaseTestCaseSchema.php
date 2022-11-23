@@ -92,14 +92,15 @@ abstract class BaseTestCaseSchema extends TestCase
     ): EntityManager {
         $config = null === $config ? $this->getDefaultConfiguration() : $config;
         $em = EntityManager::create($params, $config, $evm);
-        $em->getEventManager()->addEventSubscriber(new ColumnDefinitionSubscriber(
+        $conn = $em->getConnection();
+        $conn->getEventManager()->addEventSubscriber(new ColumnDefinitionSubscriber(
             $this->getDefinitionRegistry(),
-            $this->getDatabaseDefinitionRegistry($em->getConnection()),
+            $this->getDatabaseDefinitionRegistry($conn),
         ));
-        $em->getEventManager()->addEventSubscriber(new SchemaChangedSubscriber(
+        $conn->getEventManager()->addEventSubscriber(new SchemaChangedSubscriber(
             $this->getDefinitionRegistry(),
-            $this->getDatabaseDefinitionRegistry($em->getConnection()),
-            $this->getTableUsageRegistry($em->getConnection()),
+            $this->getDatabaseDefinitionRegistry($conn),
+            $this->getTableUsageRegistry($conn),
         ));
 
         return $this->em = $em;

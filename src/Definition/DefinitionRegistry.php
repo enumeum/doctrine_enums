@@ -16,6 +16,8 @@ use Enumeum\DoctrineEnum\Exception\UnexpectedValueException;
 use ReflectionEnum;
 use Throwable;
 
+use function array_values;
+
 class DefinitionRegistry
 {
     /** @var array<string, Definition> */
@@ -49,6 +51,24 @@ class DefinitionRegistry
     public function getDefinitionsHashedByName(): array
     {
         return $this->definitionsByName;
+    }
+
+    /**
+     * @return iterable<Definition>
+     */
+    public function getDefinitions(): iterable
+    {
+        return array_values($this->definitionsByName);
+    }
+
+    /**
+     * @param iterable<class-string> $enumClassNames
+     */
+    public function load(iterable $enumClassNames): void
+    {
+        foreach ($enumClassNames as $enumClassName) {
+            $this->loadType($enumClassName);
+        }
     }
 
     public function loadType(string $enumClassName): void

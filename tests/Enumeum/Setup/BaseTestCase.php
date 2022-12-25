@@ -16,7 +16,6 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Logging\Middleware;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
@@ -26,8 +25,9 @@ use Enumeum\DoctrineEnum\DatabaseUpdateQueryBuilder;
 use Enumeum\DoctrineEnum\Definition\DatabaseDefinitionRegistry;
 use Enumeum\DoctrineEnum\Definition\DefinitionRegistry;
 use Enumeum\DoctrineEnum\EnumUsage\MaterialViewUsageRegistry;
+use Enumeum\DoctrineEnum\EnumUsage\TableColumnRegistry;
 use Enumeum\DoctrineEnum\EnumUsage\TableUsageRegistry;
-use Enumeum\DoctrineEnum\Type\EnumeumType;
+use Enumeum\DoctrineEnum\Type\TypeRegistryLoader;
 use Enumeum\DoctrineEnum\TypeQueriesStack;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -41,6 +41,7 @@ abstract class BaseTestCase extends TestCase
     protected ?DefinitionRegistry $definitionRegistry = null;
     protected ?DatabaseDefinitionRegistry $databaseDefinitionRegistry = null;
     protected ?TableUsageRegistry $tableUsageRegistry = null;
+    protected ?TableColumnRegistry $tableColumnRegistry = null;
     protected ?MaterialViewUsageRegistry $materialViewUsageRegistry = null;
     protected ?DatabaseUpdateQueryBuilder $databaseUpdateQueryBuilder = null;
     protected QueryAnalyzer $queryAnalyzer;
@@ -51,7 +52,6 @@ abstract class BaseTestCase extends TestCase
         $params = $this->getConnectionParams();
 
         $this->resetDatabase($params);
-        $this->registerTypes();
 
         $this->queryLogger = $this->createMock(LoggerInterface::class);
         $em = $this->getDefaultMockEntityManager($params);
@@ -142,11 +142,13 @@ abstract class BaseTestCase extends TestCase
         $connection->close();
     }
 
-    protected function registerTypes(): void
+    /**
+     * @param iterable<class-string> $types
+     */
+    protected function registerTypes(iterable $types): void
     {
-        if (!Type::hasType(EnumeumType::NAME)) {
-            Type::addType(EnumeumType::NAME, EnumeumType::class);
-        }
+        $this->getDefinitionRegistry()->load($types);
+        TypeRegistryLoader::load($this->getDefinitionRegistry()->getDefinitions());
     }
 
     protected function setupPrerequisites(EntityManager $em): void
@@ -252,6 +254,15 @@ abstract class BaseTestCase extends TestCase
         }
 
         return $this->tableUsageRegistry;
+    }
+
+    protected function getTableColumnRegistry(Connection $connection): TableColumnRegistry
+    {
+        if (null === $this->tableUsageRegistry) {
+            $this->tableColumnRegistry = new TableColumnRegistry($connection);
+        }
+
+        return $this->tableColumnRegistry;
     }
 
     protected function getMaterialViewUsageRegistry(Connection $connection): MaterialViewUsageRegistry

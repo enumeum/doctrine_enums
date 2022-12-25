@@ -16,7 +16,7 @@ class MaterialViewUsageRegistry extends AbstractUsageRegistry
     private const MATERIAL_VIEWS_USING_TYPES_QUERY = <<<QUERY
 SELECT DISTINCT
     t.typname AS "name",
-    c.relname as "table",
+    c.relname AS "table",
     quote_ident(a.attname) AS "column",
     pg_get_expr(d.adbin, d.adrelid) AS "default"
 FROM pg_catalog.pg_attribute a

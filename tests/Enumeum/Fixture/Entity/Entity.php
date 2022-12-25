@@ -13,7 +13,6 @@ namespace EnumeumTests\Fixture\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Enumeum\DoctrineEnum\Type\EnumeumType;
 use EnumeumTests\Fixture\BaseStatusType;
 
 /**
@@ -33,9 +32,9 @@ class Entity
     private int $id;
 
     /**
-     * @ORM\Column(type="enumeum_enum", enumType=BaseStatusType::class, options={"comment":"SOME Comment"})
+     * @ORM\Column(type="string", enumType=BaseStatusType::class, options={"comment":"SOME Comment"})
      */
-    #[ORM\Column(type: EnumeumType::NAME, enumType: BaseStatusType::class, options: ['comment' => 'SOME Comment'])]
+    #[ORM\Column(type: Types::STRING, enumType: BaseStatusType::class, options: ['comment' => 'SOME Comment'])]
     private BaseStatusType $status;
 
     public function __construct(

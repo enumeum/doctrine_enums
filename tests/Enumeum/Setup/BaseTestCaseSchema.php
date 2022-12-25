@@ -15,10 +15,9 @@ use Doctrine\Common\EventManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Exception\ORMException;
-use Enumeum\DoctrineEnum\EventListener\ColumnDefinitionSubscriber;
-use Enumeum\DoctrineEnum\EventListener\SchemaChangedSubscriber;
+use Enumeum\DoctrineEnum\EventListener\PostGenerateSchemaSubscriber;
 
-abstract class BaseTestCaseSchemaDeprecated extends BaseTestCase
+abstract class BaseTestCaseSchema extends BaseTestCase
 {
     use ConnectionPostgres13Trait;
 
@@ -33,15 +32,9 @@ abstract class BaseTestCaseSchemaDeprecated extends BaseTestCase
         $config = null === $config ? $this->getDefaultConfiguration() : $config;
         $evm = $evm ?: new EventManager();
         $em = EntityManager::create($params, $config, $evm);
-        $conn = $em->getConnection();
-        $evm->addEventSubscriber(new ColumnDefinitionSubscriber(
+        $evm->addEventSubscriber(new PostGenerateSchemaSubscriber(
             $this->getDefinitionRegistry(),
-            $this->getDatabaseDefinitionRegistry($conn),
-        ));
-        $evm->addEventSubscriber(new SchemaChangedSubscriber(
-            $this->getDefinitionRegistry(),
-            $this->getDatabaseDefinitionRegistry($conn),
-            $this->getTableUsageRegistry($conn),
+            $this->getTableColumnRegistry($em->getConnection()),
         ));
 
         return $this->em = $em;

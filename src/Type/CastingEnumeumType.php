@@ -12,32 +12,27 @@ declare(strict_types=1);
 namespace Enumeum\DoctrineEnum\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\Type;
 
-class EnumeumType extends Type
+use function sprintf;
+
+class CastingEnumeumType extends EnumeumType
 {
-    private string $name;
+    private const CAST_EXPRESSION = '%1$s USING %2$s::text::%1$s';
 
-    public function getName(): string
+    private ?string $castColumn = null;
+
+    public function castColumn(string $column): self
     {
-        return $this->name;
-    }
+        $this->castColumn = $column;
 
-    public static function create(string $name): static
-    {
-        $type = new static();
-        $type->name = $name;
-
-        return $type;
+        return $this;
     }
 
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
-        return $this->name;
-    }
-
-    public function getMappedDatabaseTypes(AbstractPlatform $platform): iterable
-    {
-        return [$this->name];
+        return null === $this->castColumn
+            ? $this->getName()
+            : sprintf(self::CAST_EXPRESSION, $this->getName(), $this->castColumn)
+        ;
     }
 }

@@ -31,7 +31,7 @@ class DefinitionRegistryLoader
     }
 
     /**
-     * @param iterable<class-string>|null                           $enumClassNames
+     * @param iterable<class-string>|null                          $enumClassNames
      * @param iterable<array{dir: string, namespace: string}>|null $enumDirPaths
      */
     public static function create(

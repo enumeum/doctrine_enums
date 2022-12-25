@@ -9,79 +9,105 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace EnumeumTests\SchemaListening;
+namespace EnumeumTests\SchemaListeningDeprecated;
 
 use Doctrine\ORM\Tools\SchemaTool;
 use Enumeum\DoctrineEnum\Exception\InvalidArgumentException;
 use EnumeumTests\Fixture\AddedValuesStatusType;
 use EnumeumTests\Fixture\BaseStatusType;
-use EnumeumTests\Fixture\Entity\EntityAdditionalNotEnumField;
-use EnumeumTests\Fixture\Entity\EntityAdditionalNotEnumFieldAndEnumAddedValues;
-use EnumeumTests\Fixture\Entity\EntityAdditionalNotEnumFieldAndEnumRemovedValues;
+use EnumeumTests\Fixture\Entity\Entity;
+use EnumeumTests\Fixture\Entity\EntityEnumAddedValues;
+use EnumeumTests\Fixture\Entity\EntityEnumRemovedValues;
 use EnumeumTests\Fixture\RemovedValuesStatusType;
-use EnumeumTests\Setup\BaseTestCaseSchemaPostgres13;
+use EnumeumTests\Setup\BaseTestCaseSchemaDeprecated;
 
-final class SchemaChangedOutOfEnumFieldTest extends BaseTestCaseSchemaPostgres13
+final class ChangeColumnToEnumTest extends BaseTestCaseSchemaDeprecated
 {
-    public function testEnumTypeAlreadyExists(): void
+    public function testEnumTypeNotExists(): void
     {
         $this->getDefinitionRegistry()->loadType(BaseStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
-            EntityAdditionalNotEnumField::class,
+            Entity::class,
         ]);
 
         $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
 
         self::assertSame(
             [
-                'ALTER TABLE entity ALTER field TYPE INT',
+                "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
+                'ALTER TABLE entity ALTER status TYPE status_type USING status::status_type',
             ],
             $updateSchemaSql,
         );
 
-        /** Here needs manual update of migration SQL with type conversion "USING index::integer".
-         * But such manipulation is out of this package's responsibility.
-         * Thus, SQL should not be checked.
-         */
-        // $this->applySQL($updateSchemaSql);
+        $this->applySQL($updateSchemaSql);
+    }
+
+    public function testEnumTypeAlreadyExists(): void
+    {
+        $this->applySQL([
+            "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
+        ]);
+
+        $this->getDefinitionRegistry()->loadType(BaseStatusType::class);
+
+        $schemaTool = new SchemaTool($this->em);
+        $schema = $this->composeSchema([
+            Entity::class,
+        ]);
+
+        $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
+
+        self::assertSame(
+            [
+                'ALTER TABLE entity ALTER status TYPE status_type USING status::status_type',
+            ],
+            $updateSchemaSql,
+        );
+
+        $this->applySQL($updateSchemaSql);
     }
 
     public function testEnumTypeAlreadyExistsAndNeedsAddValues(): void
     {
+        $this->applySQL([
+            "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
+        ]);
+
         $this->getDefinitionRegistry()->loadType(AddedValuesStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
-            EntityAdditionalNotEnumFieldAndEnumAddedValues::class,
+            EntityEnumAddedValues::class,
         ]);
 
         $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
 
         self::assertSame(
             [
-                'ALTER TABLE entity ALTER field TYPE INT',
                 "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'accepted'",
                 "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'rejected'",
+                'ALTER TABLE entity ALTER status TYPE status_type USING status::status_type',
             ],
             $updateSchemaSql,
         );
 
-        /** Here needs manual update of migration SQL with type conversion "USING index::integer".
-         * But such manipulation is out of this package's responsibility.
-         * Thus, SQL should not be checked.
-         */
-        // $this->applySQL($updateSchemaSql);
+        $this->applySQL($updateSchemaSql);
     }
 
     public function testEnumTypeAlreadyExistsAndNeedsRemoveValues(): void
     {
+        $this->applySQL([
+            "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
+        ]);
+
         $this->getDefinitionRegistry()->loadType(RemovedValuesStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
-            EntityAdditionalNotEnumFieldAndEnumRemovedValues::class,
+            EntityEnumRemovedValues::class,
         ]);
 
         $this->expectException(InvalidArgumentException::class);
@@ -97,8 +123,7 @@ final class SchemaChangedOutOfEnumFieldTest extends BaseTestCaseSchemaPostgres13
     protected function getBaseSQL(): array
     {
         return [
-            "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
-            'CREATE TABLE entity (id INT NOT NULL, status status_type NOT NULL, field VARCHAR(255) NOT NULL, PRIMARY KEY(id))',
+            'CREATE TABLE entity (id INT NOT NULL, status VARCHAR(255) NOT NULL, PRIMARY KEY(id))',
             "COMMENT ON COLUMN entity.status IS 'SOME Comment'",
         ];
     }

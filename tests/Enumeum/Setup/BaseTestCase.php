@@ -19,7 +19,6 @@ use Doctrine\DBAL\Logging\Middleware;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
@@ -28,8 +27,6 @@ use Enumeum\DoctrineEnum\Definition\DatabaseDefinitionRegistry;
 use Enumeum\DoctrineEnum\Definition\DefinitionRegistry;
 use Enumeum\DoctrineEnum\EnumUsage\MaterialViewUsageRegistry;
 use Enumeum\DoctrineEnum\EnumUsage\TableUsageRegistry;
-use Enumeum\DoctrineEnum\EventListener\ColumnDefinitionSubscriber;
-use Enumeum\DoctrineEnum\EventListener\SchemaChangedSubscriber;
 use Enumeum\DoctrineEnum\Type\EnumeumType;
 use Enumeum\DoctrineEnum\TypeQueriesStack;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -37,7 +34,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 
-abstract class BaseTestCaseSchema extends TestCase
+abstract class BaseTestCase extends TestCase
 {
     protected readonly array $params;
     protected ?EntityManager $em = null;
@@ -82,29 +79,11 @@ abstract class BaseTestCaseSchema extends TestCase
 
     abstract protected function getConnectionParams(): array;
 
-    /**
-     * @throws ORMException
-     */
-    protected function getDefaultMockEntityManager(
+    abstract protected function getDefaultMockEntityManager(
         array $params,
         EventManager $evm = null,
         Configuration $config = null
-    ): EntityManager {
-        $config = null === $config ? $this->getDefaultConfiguration() : $config;
-        $em = EntityManager::create($params, $config, $evm);
-        $conn = $em->getConnection();
-        $conn->getEventManager()->addEventSubscriber(new ColumnDefinitionSubscriber(
-            $this->getDefinitionRegistry(),
-            $this->getDatabaseDefinitionRegistry($conn),
-        ));
-        $conn->getEventManager()->addEventSubscriber(new SchemaChangedSubscriber(
-            $this->getDefinitionRegistry(),
-            $this->getDatabaseDefinitionRegistry($conn),
-            $this->getTableUsageRegistry($conn),
-        ));
-
-        return $this->em = $em;
-    }
+    ): EntityManager;
 
     /**
      * TODO: Remove this method when dropping support of doctrine/dbal 2.

@@ -15,9 +15,9 @@ use Enumeum\DoctrineEnum\EnumTool;
 use EnumeumTests\Fixture\EnumToolType\AlterStatusType;
 use EnumeumTests\Fixture\EnumToolType\CreateStatusType;
 use EnumeumTests\Fixture\EnumToolType\ReorderStatusType;
-use EnumeumTests\Setup\BaseTestCaseSchemaPostgres13;
+use EnumeumTests\Setup\BaseTestCaseSchema;
 
-final class EnumToolTest extends BaseTestCaseSchemaPostgres13
+final class EnumToolTest extends BaseTestCaseSchema
 {
     public function testEnumTypeNotUsedAnywhere(): void
     {

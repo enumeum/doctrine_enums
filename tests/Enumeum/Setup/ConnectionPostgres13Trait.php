@@ -13,7 +13,7 @@ namespace EnumeumTests\Setup;
 
 use JetBrains\PhpStorm\ArrayShape;
 
-abstract class BaseTestCaseSchemaPostgres13 extends BaseTestCaseSchema
+trait ConnectionPostgres13Trait
 {
     #[ArrayShape([
         'driver' => 'string',

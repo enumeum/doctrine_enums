@@ -14,9 +14,9 @@ namespace EnumeumTests\DatabaseUpdateCases;
 use EnumeumTests\Fixture\AddedValuesStatusType;
 use EnumeumTests\Fixture\BaseStatusType;
 use EnumeumTests\Fixture\RemovedValuesStatusType;
-use EnumeumTests\Setup\BaseTestCaseSchemaPostgres13;
+use EnumeumTests\Setup\BaseTestCaseSchema;
 
-final class EnumCreateTest extends BaseTestCaseSchemaPostgres13
+final class EnumCreateTest extends BaseTestCaseSchema
 {
     public function testEnumTypeNotExists(): void
     {

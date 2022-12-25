@@ -9,22 +9,21 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace EnumeumTests\SchemaListening;
+namespace EnumeumTests\SchemaListeningDeprecated;
 
 use Doctrine\ORM\Tools\SchemaTool;
 use Enumeum\DoctrineEnum\Exception\InvalidArgumentException;
 use EnumeumTests\Fixture\AddedValuesStatusType;
 use EnumeumTests\Fixture\BaseStatusType;
 use EnumeumTests\Fixture\Entity\Entity;
-use EnumeumTests\Fixture\Entity\EntityChangedComment;
 use EnumeumTests\Fixture\Entity\EntityEnumAddedValues;
 use EnumeumTests\Fixture\Entity\EntityEnumRemovedValues;
 use EnumeumTests\Fixture\RemovedValuesStatusType;
-use EnumeumTests\Setup\BaseTestCaseSchemaPostgres13;
+use EnumeumTests\Setup\BaseTestCaseSchemaDeprecated;
 
-final class DiffTypeTest extends BaseTestCaseSchemaPostgres13
+final class AddColumnTest extends BaseTestCaseSchemaDeprecated
 {
-    public function testNoTypeDiff(): void
+    public function testEnumTypeNotExists(): void
     {
         $this->getDefinitionRegistry()->loadType(BaseStatusType::class);
 
@@ -35,23 +34,11 @@ final class DiffTypeTest extends BaseTestCaseSchemaPostgres13
 
         $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
 
-        self::assertCount(0, $updateSchemaSql);
-    }
-
-    public function testNoTypeDiffButChangedComment(): void
-    {
-        $this->getDefinitionRegistry()->loadType(BaseStatusType::class);
-
-        $schemaTool = new SchemaTool($this->em);
-        $schema = $this->composeSchema([
-            EntityChangedComment::class,
-        ]);
-
-        $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
-
         self::assertSame(
             [
-                "COMMENT ON COLUMN entity.status IS 'CHANGED Comment'",
+                "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
+                'ALTER TABLE entity ADD status status_type NOT NULL',
+                "COMMENT ON COLUMN entity.status IS 'SOME Comment'",
             ],
             $updateSchemaSql,
         );
@@ -59,8 +46,38 @@ final class DiffTypeTest extends BaseTestCaseSchemaPostgres13
         $this->applySQL($updateSchemaSql);
     }
 
-    public function testAddValues(): void
+    public function testEnumTypeAlreadyExists(): void
     {
+        $this->applySQL([
+            "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
+        ]);
+
+        $this->getDefinitionRegistry()->loadType(BaseStatusType::class);
+
+        $schemaTool = new SchemaTool($this->em);
+        $schema = $this->composeSchema([
+            Entity::class,
+        ]);
+
+        $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
+
+        self::assertSame(
+            [
+                'ALTER TABLE entity ADD status status_type NOT NULL',
+                "COMMENT ON COLUMN entity.status IS 'SOME Comment'",
+            ],
+            $updateSchemaSql,
+        );
+
+        $this->applySQL($updateSchemaSql);
+    }
+
+    public function testEnumTypeAlreadyExistsAndNeedsAddValues(): void
+    {
+        $this->applySQL([
+            "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
+        ]);
+
         $this->getDefinitionRegistry()->loadType(AddedValuesStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
@@ -74,6 +91,8 @@ final class DiffTypeTest extends BaseTestCaseSchemaPostgres13
             [
                 "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'accepted'",
                 "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'rejected'",
+                'ALTER TABLE entity ADD status status_type NOT NULL',
+                "COMMENT ON COLUMN entity.status IS 'SOME Comment'",
             ],
             $updateSchemaSql,
         );
@@ -81,8 +100,12 @@ final class DiffTypeTest extends BaseTestCaseSchemaPostgres13
         $this->applySQL($updateSchemaSql);
     }
 
-    public function testRemoveValues(): void
+    public function testEnumTypeAlreadyExistsAndNeedsRemoveValues(): void
     {
+        $this->applySQL([
+            "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
+        ]);
+
         $this->getDefinitionRegistry()->loadType(RemovedValuesStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
@@ -103,9 +126,7 @@ final class DiffTypeTest extends BaseTestCaseSchemaPostgres13
     protected function getBaseSQL(): array
     {
         return [
-            "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
-            'CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)',
-            "COMMENT ON COLUMN entity.status IS 'SOME Comment'",
+            'CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id))',
         ];
     }
 }

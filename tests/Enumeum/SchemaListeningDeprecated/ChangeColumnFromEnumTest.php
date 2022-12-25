@@ -9,37 +9,35 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace EnumeumTests\SchemaListening;
+namespace EnumeumTests\SchemaListeningDeprecated;
 
 use Doctrine\ORM\Tools\SchemaTool;
 use Enumeum\DoctrineEnum\Exception\InvalidArgumentException;
-use Enumeum\DoctrineEnum\Exception\SimultaneousManagementTypeException;
 use EnumeumTests\Fixture\AddedValuesStatusType;
 use EnumeumTests\Fixture\AnotherEntity\AnotherEntity;
 use EnumeumTests\Fixture\AnotherEntity\AnotherEntityEnumAddedValues;
 use EnumeumTests\Fixture\AnotherEntity\AnotherEntityEnumRemovedValues;
 use EnumeumTests\Fixture\BaseStatusType;
 use EnumeumTests\Fixture\Entity\EntityNotEnum;
-use EnumeumTests\Fixture\Entity\EntityWithoutTypedField;
 use EnumeumTests\Fixture\RemovedValuesStatusType;
-use EnumeumTests\Setup\BaseTestCaseSchemaPostgres13;
+use EnumeumTests\Setup\BaseTestCaseSchemaDeprecated;
 
-final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
+final class ChangeColumnFromEnumTest extends BaseTestCaseSchemaDeprecated
 {
-    public function testEnumTypeNotUsedAnymore(): void
+    public function testEnumTypeIsNotUsedElsewhere(): void
     {
         $this->getDefinitionRegistry()->loadType(BaseStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
-            EntityWithoutTypedField::class,
+            EntityNotEnum::class,
         ]);
 
         $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
 
         self::assertSame(
             [
-                'ALTER TABLE entity DROP status',
+                'ALTER TABLE entity ALTER status TYPE VARCHAR(255)',
                 'DROP TYPE IF EXISTS status_type',
             ],
             $updateSchemaSql,
@@ -54,14 +52,14 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
-            EntityWithoutTypedField::class,
+            EntityNotEnum::class,
         ]);
 
         $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
 
         self::assertSame(
             [
-                'ALTER TABLE entity DROP status',
+                'ALTER TABLE entity ALTER status TYPE VARCHAR(255)',
                 'DROP TYPE IF EXISTS status_type',
             ],
             $updateSchemaSql,
@@ -76,14 +74,14 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
-            EntityWithoutTypedField::class,
+            EntityNotEnum::class,
         ]);
 
         $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
 
         self::assertSame(
             [
-                'ALTER TABLE entity DROP status',
+                'ALTER TABLE entity ALTER status TYPE VARCHAR(255)',
                 'DROP TYPE IF EXISTS status_type',
             ],
             $updateSchemaSql,
@@ -103,7 +101,7 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
-            EntityWithoutTypedField::class,
+            EntityNotEnum::class,
             AnotherEntity::class,
         ]);
 
@@ -111,7 +109,7 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
 
         self::assertSame(
             [
-                'ALTER TABLE entity DROP status',
+                'ALTER TABLE entity ALTER status TYPE VARCHAR(255)',
             ],
             $updateSchemaSql,
         );
@@ -130,7 +128,7 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
-            EntityWithoutTypedField::class,
+            EntityNotEnum::class,
             AnotherEntityEnumAddedValues::class,
         ]);
 
@@ -138,7 +136,7 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
 
         self::assertSame(
             [
-                'ALTER TABLE entity DROP status',
+                'ALTER TABLE entity ALTER status TYPE VARCHAR(255)',
                 "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'accepted'",
                 "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'rejected'",
             ],
@@ -155,7 +153,7 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
             "COMMENT ON COLUMN another_entity.status IS 'SOME Comment'",
         ]);
 
-        $this->getDefinitionRegistry()->loadType(AddedValuesStatusType::class);
+        $this->getDefinitionRegistry()->loadType(RemovedValuesStatusType::class);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
@@ -171,116 +169,6 @@ final class RemoveColumnTest extends BaseTestCaseSchemaPostgres13
         $schemaTool->getUpdateSchemaSql($schema);
 
         self::fail('Test should not achieve this point.');
-    }
-
-    public function testEnumTypeWillBeUsedByAnotherTableDroppingGoesBeforeUsage(): void
-    {
-        $this->applySQL([
-            'CREATE TABLE another_entity (id INT NOT NULL, PRIMARY KEY(id))',
-        ]);
-
-        $this->getDefinitionRegistry()->loadType(BaseStatusType::class);
-
-        $schemaTool = new SchemaTool($this->em);
-        $schema = $this->composeSchema([
-            EntityWithoutTypedField::class,
-            AnotherEntity::class,
-        ]);
-
-        $this->expectException(SimultaneousManagementTypeException::class);
-        $this->expectExceptionMessage(
-            'Type "status_type" is already queued to be dropped and then attempted to be used. '.
-            'SQL generating stopped. '.
-            'To avoid this exception change fields and generate migrations consequentially, one by one.',
-        );
-
-        $schemaTool->getUpdateSchemaSql($schema);
-
-        self::fail('Test should not achieve this point.');
-    }
-
-    public function testEnumTypeWillBeUsedByAnotherTableWithAddingValuesDroppingGoesBeforeUsage(): void
-    {
-        $this->applySQL([
-            'CREATE TABLE another_entity (id INT NOT NULL, PRIMARY KEY(id))',
-        ]);
-
-        $this->getDefinitionRegistry()->loadType(AddedValuesStatusType::class);
-
-        $schemaTool = new SchemaTool($this->em);
-        $schema = $this->composeSchema([
-            EntityWithoutTypedField::class,
-            AnotherEntityEnumAddedValues::class,
-        ]);
-
-        $this->expectException(SimultaneousManagementTypeException::class);
-        $this->expectExceptionMessage(
-            'Type "status_type" is already queued to be dropped and then attempted to be persisted. '.
-            'SQL generating stopped. '.
-            'To avoid this exception change fields and generate migrations consequentially, one by one.',
-        );
-
-        $schemaTool->getUpdateSchemaSql($schema);
-
-        self::fail('Test should not achieve this point.');
-    }
-
-    public function testEnumTypeWillBeUsedByAnotherTableDroppingGoesAfterUsage(): void
-    {
-        $this->applySQL([
-            'CREATE TABLE another_entity (id INT NOT NULL, PRIMARY KEY(id))',
-        ]);
-
-        $this->getDefinitionRegistry()->loadType(BaseStatusType::class);
-
-        $schemaTool = new SchemaTool($this->em);
-        $schema = $this->composeSchema([
-            AnotherEntity::class,
-            EntityWithoutTypedField::class,
-        ]);
-
-        $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
-
-        self::assertSame(
-            [
-                'ALTER TABLE another_entity ADD status status_type NOT NULL',
-                "COMMENT ON COLUMN another_entity.status IS 'SOME Comment'",
-                'ALTER TABLE entity DROP status',
-            ],
-            $updateSchemaSql,
-        );
-
-        $this->applySQL($updateSchemaSql);
-    }
-
-    public function testEnumTypeWillBeUsedByAnotherTableWithAddingValuesDroppingGoesAfterUsage(): void
-    {
-        $this->applySQL([
-            'CREATE TABLE another_entity (id INT NOT NULL, PRIMARY KEY(id))',
-        ]);
-
-        $this->getDefinitionRegistry()->loadType(AddedValuesStatusType::class);
-
-        $schemaTool = new SchemaTool($this->em);
-        $schema = $this->composeSchema([
-            AnotherEntityEnumAddedValues::class,
-            EntityWithoutTypedField::class,
-        ]);
-
-        $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
-
-        self::assertSame(
-            [
-                "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'accepted'",
-                "ALTER TYPE status_type ADD VALUE IF NOT EXISTS 'rejected'",
-                'ALTER TABLE another_entity ADD status status_type NOT NULL',
-                "COMMENT ON COLUMN another_entity.status IS 'SOME Comment'",
-                'ALTER TABLE entity DROP status',
-            ],
-            $updateSchemaSql,
-        );
-
-        $this->applySQL($updateSchemaSql);
     }
 
     protected function getBaseSQL(): array

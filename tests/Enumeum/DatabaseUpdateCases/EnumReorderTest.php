@@ -15,9 +15,9 @@ use Doctrine\DBAL\Exception\DriverException;
 use EnumeumTests\Fixture\AddedValuesStatusType;
 use EnumeumTests\Fixture\BaseStatusType;
 use EnumeumTests\Fixture\RemovedValuesStatusType;
-use EnumeumTests\Setup\BaseTestCaseSchemaPostgres13;
+use EnumeumTests\Setup\BaseTestCaseSchema;
 
-final class EnumReorderTest extends BaseTestCaseSchemaPostgres13
+final class EnumReorderTest extends BaseTestCaseSchema
 {
     public function testEnumTypeNotUsedAnywhere(): void
     {

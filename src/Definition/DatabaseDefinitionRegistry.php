@@ -28,7 +28,7 @@ QUERY;
 
     private bool $loaded = false;
 
-    /** @var DatabaseDefinition[] */
+    /** @var Definition[] */
     private array $definitions = [];
 
     public function __construct(
@@ -36,7 +36,7 @@ QUERY;
     ) {
     }
 
-    public function getDefinitionByName(string $name): ?DatabaseDefinition
+    public function getDefinitionByName(string $name): ?Definition
     {
         if (!$this->loaded) {
             $this->loadDefinitions();
@@ -46,7 +46,7 @@ QUERY;
     }
 
     /**
-     * @return array<string, DatabaseDefinition>
+     * @return array<string, Definition>
      */
     public function getDefinitionsHashedByName(): array
     {
@@ -68,7 +68,7 @@ QUERY;
 
         foreach ($sorted as $name => $type) {
             usort($type, static fn (array $a, array $b) => $a['order'] > $b['order'] ? 1 : -1);
-            $this->definitions[$name] = new DatabaseDefinition(
+            $this->definitions[$name] = new Definition(
                 $name,
                 array_map(static fn (array $a) => $a['value'], $type),
             );

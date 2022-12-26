@@ -13,6 +13,7 @@ namespace Enumeum\DoctrineEnum\Definition;
 
 use Enumeum\DoctrineEnum\Attribute\EnumType;
 use Enumeum\DoctrineEnum\Exception\UnexpectedValueException;
+use Enumeum\DoctrineEnum\Tools\EnumCasesExtractor;
 use ReflectionEnum;
 use Throwable;
 
@@ -88,9 +89,10 @@ class DefinitionRegistry
         try {
             $reflection = new ReflectionEnum($enumClassName);
             if ($typeName = $this->tryMappedEnumName($reflection)) {
-                return new Definition($typeName, $enumClassName, (string) $reflection->getBackingType());
+                return new Definition($typeName, EnumCasesExtractor::fromEnum($enumClassName));
             }
-        } catch (Throwable) {
+        } catch (Throwable $e) {
+            dump($e);
         }
 
         throw UnexpectedValueException::enumIsNotRelatedToBeEnumeumType($enumClassName);

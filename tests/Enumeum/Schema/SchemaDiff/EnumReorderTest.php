@@ -49,6 +49,62 @@ final class EnumReorderTest extends BaseTestCaseSchema
         $this->applySQL($updateSql);
     }
 
+    public function testEnumTypeRemovedValuesWithKeptOrdering(): void
+    {
+        $this->applySQL([]);
+
+        $diff = new SchemaDiff(
+            alterChangeSet:[
+                new DefinitionDiff(
+                    new Definition('status_type', ['started', 'processing', 'finished']),
+                    new Definition('status_type', ['started', 'processing']),
+                    null,
+                ),
+            ],
+        );
+
+        $updateSql = $diff->toSql();
+
+        self::assertSame(
+            [
+                "ALTER TYPE status_type RENAME TO status_type__",
+                "CREATE TYPE status_type AS ENUM ('started', 'processing')",
+                "DROP TYPE IF EXISTS status_type__",
+            ],
+            $updateSql,
+        );
+
+        $this->applySQL($updateSql);
+    }
+
+    public function testEnumTypeSameValuesWithOtherOrdering(): void
+    {
+        $this->applySQL([]);
+
+        $diff = new SchemaDiff(
+            alterChangeSet:[
+                new DefinitionDiff(
+                    new Definition('status_type', ['started', 'processing', 'finished']),
+                    new Definition('status_type', ['started', 'finished', 'processing']),
+                    null,
+                ),
+            ],
+        );
+
+        $updateSql = $diff->toSql();
+
+        self::assertSame(
+            [
+                "ALTER TYPE status_type RENAME TO status_type__",
+                "CREATE TYPE status_type AS ENUM ('started', 'finished', 'processing')",
+                "DROP TYPE IF EXISTS status_type__",
+            ],
+            $updateSql,
+        );
+
+        $this->applySQL($updateSql);
+    }
+
     public function testEnumTypeUsedByEmptyTable(): void
     {
         $this->applySQL([

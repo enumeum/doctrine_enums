@@ -14,12 +14,19 @@ namespace Enumeum\DoctrineEnum\Tools;
 use Enumeum\DoctrineEnum\Exception\InvalidArgumentException;
 
 use function array_key_exists;
+use function count;
 
 class EnumCasesTool
 {
     public static function isChanged(iterable $current, iterable $target): bool
     {
         $current = (array) $current;
+        $target = (array) $target;
+
+        if (count($current) !== count($target)) {
+            return true;
+        }
+
         foreach ($target as $order => $value) {
             if (!array_key_exists($order, $current) || $current[$order] !== $value) {
                 return true;
@@ -32,6 +39,12 @@ class EnumCasesTool
     public static function isReorderingRequired(iterable $current, iterable $target): bool
     {
         $current = (array) $current;
+        $target = (array) $target;
+
+        if (count($current) > count($target)) {
+            return true;
+        }
+
         foreach ($target as $order => $value) {
             if (array_key_exists($order, $current) && $current[$order] !== $value) {
                 return true;

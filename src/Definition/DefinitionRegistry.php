@@ -17,8 +17,6 @@ use Enumeum\DoctrineEnum\Tools\EnumCasesExtractor;
 use ReflectionEnum;
 use Throwable;
 
-use function array_values;
-
 class DefinitionRegistry
 {
     /** @var array<string, Definition> */
@@ -41,7 +39,7 @@ class DefinitionRegistry
         return $this->definitionsByEnum[$enumClassName] ?? null;
     }
 
-    public function getDefinitionByName(string $name): ?Definition
+    public function getDefinition(string $name): ?Definition
     {
         return $this->definitionsByName[$name] ?? null;
     }
@@ -49,17 +47,9 @@ class DefinitionRegistry
     /**
      * @return array<string, Definition>
      */
-    public function getDefinitionsHashedByName(): array
+    public function getDefinitions(): array
     {
         return $this->definitionsByName;
-    }
-
-    /**
-     * @return iterable<Definition>
-     */
-    public function getDefinitions(): iterable
-    {
-        return array_values($this->definitionsByName);
     }
 
     /**

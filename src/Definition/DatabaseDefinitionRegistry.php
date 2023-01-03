@@ -48,7 +48,7 @@ QUERY;
     /**
      * @return array<string, Definition>
      */
-    public function getDefinitionsHashedByName(): array
+    public function getDefinitions(): array
     {
         if (!$this->loaded) {
             $this->loadDefinitions();

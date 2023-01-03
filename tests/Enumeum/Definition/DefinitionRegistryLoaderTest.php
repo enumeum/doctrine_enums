@@ -56,7 +56,7 @@ class DefinitionRegistryLoaderTest extends TestCase
         $loader = DefinitionRegistryLoader::create();
         $loader->loadType(AlphaStatusType::class);
 
-        $types = $loader->getRegistry()->getDefinitionsHashedByName();
+        $types = $loader->getRegistry()->getDefinitions();
 
         self::assertCount(1, $types);
         self::assertArrayHasKey('alpha_status_type_one', $types);
@@ -70,7 +70,7 @@ class DefinitionRegistryLoaderTest extends TestCase
             BetaStatusType::class,
         ]);
 
-        $types = $loader->getRegistry()->getDefinitionsHashedByName();
+        $types = $loader->getRegistry()->getDefinitions();
 
         self::assertCount(2, $types);
         self::assertArrayHasKey('alpha_status_type_one', $types);
@@ -85,7 +85,7 @@ class DefinitionRegistryLoaderTest extends TestCase
             'EnumeumTests\Fixture\DefinitionEnum\One',
         );
 
-        $types = $loader->getRegistry()->getDefinitionsHashedByName();
+        $types = $loader->getRegistry()->getDefinitions();
 
         self::assertCount(3, $types);
         self::assertArrayHasKey('alpha_status_type_one', $types);
@@ -107,7 +107,7 @@ class DefinitionRegistryLoaderTest extends TestCase
             ],
         ]);
 
-        $types = $loader->getRegistry()->getDefinitionsHashedByName();
+        $types = $loader->getRegistry()->getDefinitions();
 
         self::assertCount(6, $types);
         self::assertArrayHasKey('alpha_status_type_one', $types);

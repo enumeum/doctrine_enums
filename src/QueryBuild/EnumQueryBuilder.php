@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Enumeum\DoctrineEnum\QueryBuild;
 
 use Enumeum\DoctrineEnum\Definition\Definition;
-use Enumeum\DoctrineEnum\Tools\EnumChangesTool;
+use Enumeum\DoctrineEnum\Tools\EnumCasesTool;
 
 use function implode;
 use function sprintf;
@@ -32,10 +32,10 @@ class EnumQueryBuilder
         return [sprintf(self::TYPE_CREATE_QUERY, $definition->name, implode("', '", [...$definition->cases]))];
     }
 
-    public static function buildEnumTypeAlterSql(Definition $definition, Definition $databaseDefinition): iterable
+    public static function buildEnumTypeAlterSql(Definition $databaseDefinition, Definition $definition): iterable
     {
         $sql = [];
-        $add = EnumChangesTool::resolveAddingValues($databaseDefinition->cases, $definition->cases);
+        $add = EnumCasesTool::resolveAddingValues($databaseDefinition->cases, $definition->cases);
         foreach ($add as $value) {
             $sql[] = sprintf(
                 self::TYPE_ALTER_QUERY,
@@ -65,10 +65,5 @@ class EnumQueryBuilder
     public static function buildEnumTypeAlterColumnSql(Definition $definition, string $table, string $column): iterable
     {
         return [sprintf(self::TYPE_ALTER_TABLE_QUERY, $definition->name, $table, $column)];
-    }
-
-    public static function buildEnumTypeDropSqlByDatabaseDefinition(Definition $definition): iterable
-    {
-        return [sprintf(self::TYPE_DROP_QUERY, $definition->name)];
     }
 }

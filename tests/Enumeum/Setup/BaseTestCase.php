@@ -21,12 +21,12 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
-use Enumeum\DoctrineEnum\DatabaseUpdateQueryBuilder;
 use Enumeum\DoctrineEnum\Definition\DatabaseDefinitionRegistry;
 use Enumeum\DoctrineEnum\Definition\DefinitionRegistry;
 use Enumeum\DoctrineEnum\EnumUsage\MaterialViewUsageRegistry;
 use Enumeum\DoctrineEnum\EnumUsage\TableColumnRegistry;
 use Enumeum\DoctrineEnum\EnumUsage\TableUsageRegistry;
+use Enumeum\DoctrineEnum\QueryBuild\QueryBuilder;
 use Enumeum\DoctrineEnum\Type\TypeRegistryLoader;
 use Enumeum\DoctrineEnum\TypeQueriesStack;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -43,7 +43,7 @@ abstract class BaseTestCase extends TestCase
     protected ?TableUsageRegistry $tableUsageRegistry = null;
     protected ?TableColumnRegistry $tableColumnRegistry = null;
     protected ?MaterialViewUsageRegistry $materialViewUsageRegistry = null;
-    protected ?DatabaseUpdateQueryBuilder $databaseUpdateQueryBuilder = null;
+    protected ?QueryBuilder $queryBuilder = null;
     protected QueryAnalyzer $queryAnalyzer;
     protected MockObject|LoggerInterface $queryLogger;
 
@@ -216,17 +216,13 @@ abstract class BaseTestCase extends TestCase
         $this->em->getConnection()->commit();
     }
 
-    protected function getDatabaseUpdateQueryBuilder(): DatabaseUpdateQueryBuilder
+    protected function getQueryBuilder(): QueryBuilder
     {
-        if (null === $this->databaseUpdateQueryBuilder) {
-            $this->databaseUpdateQueryBuilder = new DatabaseUpdateQueryBuilder(
-                $this->getDefinitionRegistry(),
-                $this->getDatabaseDefinitionRegistry($this->em->getConnection()),
-                $this->getTableUsageRegistry($this->em->getConnection()),
-            );
+        if (null === $this->queryBuilder) {
+            $this->queryBuilder = QueryBuilder::create();
         }
 
-        return $this->databaseUpdateQueryBuilder;
+        return $this->queryBuilder;
     }
 
     protected function getDefinitionRegistry(): DefinitionRegistry

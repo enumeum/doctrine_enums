@@ -16,8 +16,6 @@ class SchemaDiff
         public readonly iterable $createChangeSet = [],
         /** @var iterable<DefinitionDiff> $alterChangeSet */
         public readonly iterable $alterChangeSet = [],
-        /** @var iterable<DefinitionDiff> $reorderChangeSet */
-        public readonly iterable $reorderChangeSet = [],
         /** @var iterable<Definition> $dropChangeSet */
         public readonly iterable $dropChangeSet = [],
     ) {
@@ -32,7 +30,6 @@ class SchemaDiff
 
         return array_merge(
             $builder->generateEnumDropQueries($this->dropChangeSet),
-            $builder->generateEnumReorderQueries($this->reorderChangeSet),
             $builder->generateEnumAlterQueries($this->alterChangeSet),
             $builder->generateEnumCreateQueries($this->createChangeSet),
         );

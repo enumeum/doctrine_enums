@@ -26,7 +26,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
         $this->applySQL([]);
 
         $diff = new SchemaDiff(
-            reorderChangeSet: [
+            alterChangeSet:[
                 new DefinitionDiff(
                     new Definition('status_type', ['started', 'processing', 'finished']),
                     new Definition('status_type', ['started', 'finished']),
@@ -56,7 +56,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
         ]);
 
         $diff = new SchemaDiff(
-            reorderChangeSet: [
+            alterChangeSet:[
                 new DefinitionDiff(
                     new Definition('status_type', ['started', 'processing', 'finished']),
                     new Definition('status_type', ['started', 'finished']),
@@ -90,7 +90,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
         ]);
 
         $diff = new SchemaDiff(
-            reorderChangeSet: [
+            alterChangeSet: [
                 new DefinitionDiff(
                     new Definition('status_type', ['started', 'processing', 'finished']),
                     new Definition('status_type', ['started', 'finished']),
@@ -129,7 +129,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
         ]);
 
         $diff = new SchemaDiff(
-            reorderChangeSet: [
+            alterChangeSet:[
                 new DefinitionDiff(
                     new Definition('status_type', ['started', 'processing', 'finished']),
                     new Definition('status_type', ['started', 'finished']),
@@ -172,7 +172,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
         ]);
 
         $diff = new SchemaDiff(
-            reorderChangeSet: [
+            alterChangeSet:[
                 new DefinitionDiff(
                     new Definition('status_type', ['started', 'processing', 'finished']),
                     new Definition('status_type', ['started', 'finished']),
@@ -208,7 +208,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
         ]);
 
         $diff = new SchemaDiff(
-            reorderChangeSet: [
+            alterChangeSet:[
                 new DefinitionDiff(
                     new Definition('status_type', ['started', 'processing', 'finished']),
                     new Definition('status_type', ['started', 'finished']),
@@ -249,7 +249,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
         ]);
 
         $diff = new SchemaDiff(
-            reorderChangeSet: [
+            alterChangeSet:[
                 new DefinitionDiff(
                     new Definition('status_type', ['started', 'processing', 'finished']),
                     new Definition('status_type', ['started', 'finished']),
@@ -296,7 +296,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
         ]);
 
         $diff = new SchemaDiff(
-            reorderChangeSet: [
+            alterChangeSet:[
                 new DefinitionDiff(
                     new Definition('status_type', ['started', 'processing', 'finished']),
                     new Definition('status_type', ['started', 'finished']),

@@ -13,6 +13,7 @@ namespace Enumeum\DoctrineEnum\QueryBuild;
 
 use Enumeum\DoctrineEnum\Definition\Definition;
 use Enumeum\DoctrineEnum\Schema\DefinitionDiff;
+use Enumeum\DoctrineEnum\Tools\EnumCasesTool;
 
 use function array_push;
 use function assert;
@@ -48,6 +49,31 @@ class QueryBuilder
      * @return iterable<string>
      */
     public function generateEnumAlterQueries(iterable $diffs): iterable
+    {
+        $result = [];
+        foreach ($diffs as $diff) {
+            assert($diff instanceof DefinitionDiff);
+            $reordering = EnumCasesTool::isReorderingRequired(
+                $diff->fromDefinition->cases,
+                $diff->targetDefinition->cases,
+            );
+
+            $queries = $reordering
+                ? self::generateEnumReorderQueries([$diff])
+                : self::generateEnumAddValuesQueries([$diff])
+            ;
+
+            array_push($result, ...$queries);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param iterable<DefinitionDiff> $diffs
+     * @return iterable<string>
+     */
+    public function generateEnumAddValuesQueries(iterable $diffs): iterable
     {
         $result = [];
         foreach ($diffs as $diff) {

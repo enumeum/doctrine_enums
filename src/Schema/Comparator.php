@@ -19,7 +19,6 @@ class Comparator
         return new SchemaDiff(
             $this->collectCreateChangeSet($fromSchema, $toSchema),
             $this->collectAlterChangeSet($fromSchema, $toSchema),
-            $this->collectReorderChangeSet($fromSchema, $toSchema),
             $this->collectDropChangeSet($fromSchema, $toSchema),
         );
     }
@@ -51,35 +50,8 @@ class Comparator
             }
 
             $targetDefinition = $toSchema->getDefinition($name);
-            if (EnumCasesTool::isChanged($definition->cases, $targetDefinition->cases)
-                && !EnumCasesTool::isReorderingRequired($definition->cases, $targetDefinition->cases)
-            ) {
+            if (EnumCasesTool::isChanged($definition->cases, $targetDefinition->cases)) {
                 $altering[] = new DefinitionDiff(
-                    $definition,
-                    $targetDefinition,
-                );
-            }
-        }
-
-        return $altering;
-    }
-
-    /**
-     * @return iterable<DefinitionDiff>
-     */
-    private function collectReorderChangeSet(Schema $fromSchema, Schema $toSchema): iterable
-    {
-        $reordering = [];
-        foreach ($fromSchema->getDefinitions() as $name => $definition) {
-            if (!$toSchema->hasDefinition($name)) {
-                continue;
-            }
-
-            $targetDefinition = $toSchema->getDefinition($name);
-            if (EnumCasesTool::isChanged($definition->cases, $targetDefinition->cases)
-                && EnumCasesTool::isReorderingRequired($definition->cases, $targetDefinition->cases)
-            ) {
-                $reordering[] = new DefinitionDiff(
                     $definition,
                     $targetDefinition,
                     $fromSchema->getUsage($name),
@@ -87,7 +59,7 @@ class Comparator
             }
         }
 
-        return $reordering;
+        return $altering;
     }
 
     /**

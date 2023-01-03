@@ -47,13 +47,13 @@ final class ComparatorTest extends BaseTestCaseSchema
         self::assertSame(
             [
                 'DROP TYPE IF EXISTS drop_status_type',
+                "ALTER TYPE alter_status_type ADD VALUE IF NOT EXISTS 'accepted'",
+                "ALTER TYPE alter_status_type ADD VALUE IF NOT EXISTS 'rejected'",
                 'ALTER TYPE reorder_status_type RENAME TO reorder_status_type__',
                 "CREATE TYPE reorder_status_type AS ENUM ('started', 'finished')",
                 'LOCK TABLE entity_two',
                 'ALTER TABLE entity_two ALTER COLUMN status TYPE reorder_status_type USING status::text::reorder_status_type',
                 'DROP TYPE IF EXISTS reorder_status_type__',
-                "ALTER TYPE alter_status_type ADD VALUE IF NOT EXISTS 'accepted'",
-                "ALTER TYPE alter_status_type ADD VALUE IF NOT EXISTS 'rejected'",
                 "CREATE TYPE create_status_type AS ENUM ('started', 'processing', 'finished')",
             ],
             $updateSql,

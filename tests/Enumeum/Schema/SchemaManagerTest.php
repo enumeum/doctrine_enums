@@ -54,7 +54,7 @@ final class SchemaManagerTest extends BaseTestCaseSchema
         $table = 'some_table';
         $column = 'some_column';
 
-        $this->getDefinitionRegistry()->loadType(SomeStatusType::class);
+        $this->registerTypes([SomeStatusType::class]);
 
         $manager = $this->createSchemaManager();
         $schema = $manager->createSchemaFromConfig();

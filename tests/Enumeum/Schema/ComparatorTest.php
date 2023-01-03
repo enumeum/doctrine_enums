@@ -31,9 +31,11 @@ final class ComparatorTest extends BaseTestCaseSchema
             'CREATE TABLE entity_two (id INT NOT NULL, PRIMARY KEY(id), status reorder_status_type NOT NULL)',
         ]);
 
-        $this->getDefinitionRegistry()->loadType(CreateStatusType::class);
-        $this->getDefinitionRegistry()->loadType(AlterStatusType::class);
-        $this->getDefinitionRegistry()->loadType(ReorderStatusType::class);
+        $this->registerTypes([
+            CreateStatusType::class,
+            AlterStatusType::class,
+            ReorderStatusType::class,
+        ]);
 
         $manager = $this->createSchemaManager();
 

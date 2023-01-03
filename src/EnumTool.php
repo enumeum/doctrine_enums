@@ -11,25 +11,183 @@ declare(strict_types=1);
 
 namespace Enumeum\DoctrineEnum;
 
-use function array_merge;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
+use Doctrine\ORM\Tools\ToolsException;
+use Enumeum\DoctrineEnum\Definition\Definition;
+use Enumeum\DoctrineEnum\Schema\Comparator;
+use Enumeum\DoctrineEnum\Schema\SchemaManager;
+use Throwable;
 
 class EnumTool
 {
     public function __construct(
-        private readonly DatabaseUpdateQueryBuilder $queryBuilder,
+        private readonly SchemaManager $manager,
+        private readonly Connection $connection,
     ) {
+    }
+
+    /**
+     * @param iterable<Definition> $definitions
+     *
+     * @throws ToolsException
+     */
+    public function createSchema(iterable $definitions): void
+    {
+        $createSchemaSql = $this->getCreateSchemaSql($definitions);
+
+        foreach ($createSchemaSql as $sql) {
+            try {
+                $this->connection->executeQuery($sql);
+            } catch (Throwable $e) {
+                throw ToolsException::schemaToolFailure($sql, $e);
+            }
+        }
+    }
+
+    /**
+     * @param iterable<Definition> $definitions
+     * @return iterable<string>
+     */
+    public function getCreateSchemaSql(iterable $definitions): iterable
+    {
+        $schema = $this->manager->createSchema($definitions);
+
+        return $schema->toSql();
+    }
+
+    /**
+     * @param iterable<Definition> $definitions
+     */
+    public function dropSchema(iterable $definitions): void
+    {
+        $dropSchemaSql = $this->getDropSchemaSQL($definitions);
+
+        foreach ($dropSchemaSql as $sql) {
+            try {
+                $this->connection->executeQuery($sql);
+            } catch (Throwable) {
+                // ignored
+            }
+        }
+    }
+
+    /**
+     * @param iterable<Definition> $definitions
+     * @return iterable<string>
+     */
+    public function getDropSchemaSQL(iterable $definitions): iterable
+    {
+        $schema = $this->manager->createSchema($definitions);
+
+        return $schema->toDropSql();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function updateSchema(): void
+    {
+        $updateSchemaSql = $this->getUpdateSchemaSql();
+
+        foreach ($updateSchemaSql as $sql) {
+            $this->connection->executeQuery($sql);
+        }
     }
 
     /**
      * @return iterable<string>
      */
-    public function __invoke(): iterable
+    public function getUpdateSchemaSql(): iterable
     {
-        return array_merge(
-            $this->queryBuilder->generateEnumDropQueries(),
-            $this->queryBuilder->generateEnumReorderQueries(),
-            $this->queryBuilder->generateEnumAlterQueries(),
-            $this->queryBuilder->generateEnumCreateQueries(),
-        );
+        $toSchema = $this->manager->createSchemaFromConfig();
+        $fromSchema = $this->manager->createSchemaFromDatabase();
+
+        $schemaDiff = Comparator::create()->compareSchemas($fromSchema, $toSchema);
+
+        return $schemaDiff->toSql();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function rollbackSchema(): void
+    {
+        $updateSchemaSql = $this->getRollbackSchemaSql();
+
+        foreach ($updateSchemaSql as $sql) {
+            $this->connection->executeQuery($sql);
+        }
+    }
+
+    /**
+     * @return iterable<string>
+     */
+    public function getRollbackSchemaSql(): iterable
+    {
+        $toSchema = $this->manager->createSchemaFromDatabase();
+        $fromSchema = $this->manager->createSchemaFromConfig();
+
+        $schemaDiff = Comparator::create()->compareSchemas($fromSchema, $toSchema);
+
+        return $schemaDiff->toSql();
+    }
+
+    /**
+     * @param iterable<Definition> $definitions
+     *
+     * @throws Exception
+     */
+    public function updateSchemaFromDefinitions(iterable $definitions): void
+    {
+        $updateSchemaSql = $this->getUpdateSchemaSqlFromDefinitions($definitions);
+
+        foreach ($updateSchemaSql as $sql) {
+            $this->connection->executeQuery($sql);
+        }
+    }
+
+    /**
+     * @param iterable<Definition> $definitions
+     *
+     * @return iterable<string>
+     */
+    public function getUpdateSchemaSqlFromDefinitions(iterable $definitions): iterable
+    {
+        $toSchema = $this->manager->createSchemaFromDefinitions($definitions);
+        $fromSchema = $this->manager->createSchemaFromDatabase();
+
+        $schemaDiff = Comparator::create()->compareSchemas($fromSchema, $toSchema);
+
+        return $schemaDiff->toSql();
+    }
+
+    /**
+     * @param iterable<Definition> $definitions
+     *
+     * @throws Exception
+     */
+    public function rollbackSchemaFromDefinitions(iterable $definitions): void
+    {
+        $updateSchemaSql = $this->getRollbackSchemaSqlFromDefinitions($definitions);
+
+        foreach ($updateSchemaSql as $sql) {
+            $this->connection->executeQuery($sql);
+        }
+    }
+
+    /**
+     * @param iterable<Definition> $definitions
+     *
+     * @return iterable<string>
+     */
+    public function getRollbackSchemaSqlFromDefinitions(iterable $definitions): iterable
+    {
+        $toSchema = $this->manager->createSchemaFromDatabase();
+        $fromSchema = $this->manager->createSchemaFromDefinitions($definitions);
+
+        $schemaDiff = Comparator::create()->compareSchemas($fromSchema, $toSchema);
+
+        return $schemaDiff->toSql();
     }
 }

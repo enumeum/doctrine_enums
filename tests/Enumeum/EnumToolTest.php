@@ -145,20 +145,17 @@ final class EnumToolTest extends BaseTestCaseSchema
         $this->applySQLWithinTransaction($updateSql);
     }
 
-    protected function createEnumTool(): EnumTool
+    private function createEnumTool(): EnumTool
     {
-        return new EnumTool(
-            $this->createSchemaManager(),
-            $this->em->getConnection(),
-        );
-    }
-
-    protected function createSchemaManager(): SchemaManager
-    {
-        return new SchemaManager(
+        $manager = new SchemaManager(
             $this->getDefinitionRegistry(),
             $this->getDatabaseDefinitionRegistry($this->em->getConnection()),
             $this->getTableUsageRegistry($this->em->getConnection()),
+        );
+
+        return new EnumTool(
+            $manager,
+            $this->em->getConnection(),
         );
     }
 

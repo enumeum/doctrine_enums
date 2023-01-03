@@ -150,7 +150,7 @@ final class SchemaManagerTest extends BaseTestCaseSchema
         self::assertArrayHasKey($name, $schema->getUsages());
     }
 
-    protected function createSchemaManager(): SchemaManager
+    private function createSchemaManager(): SchemaManager
     {
         return new SchemaManager(
             $this->getDefinitionRegistry(),

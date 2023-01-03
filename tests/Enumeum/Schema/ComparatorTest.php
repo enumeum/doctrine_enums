@@ -62,7 +62,7 @@ final class ComparatorTest extends BaseTestCaseSchema
         $this->applySQLWithinTransaction($updateSql);
     }
 
-    protected function createSchemaManager(): SchemaManager
+    private function createSchemaManager(): SchemaManager
     {
         return new SchemaManager(
             $this->getDefinitionRegistry(),

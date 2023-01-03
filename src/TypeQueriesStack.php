@@ -13,7 +13,11 @@ namespace Enumeum\DoctrineEnum;
 
 use Enumeum\DoctrineEnum\Exception\SimultaneousManagementTypeException;
 
-/** TODO: This should resettable in Symfony */
+/**
+ * @deprecated Not sure this class is useful anywhere out of version >= 2.0
+ *
+ * TODO: This should resettable in Symfony
+ */
 class TypeQueriesStack
 {
     private static array $persistenceStack = [];

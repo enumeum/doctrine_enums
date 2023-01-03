@@ -15,11 +15,11 @@ use Enumeum\DoctrineEnum\Exception\InvalidArgumentException;
 
 use function array_key_exists;
 
-class EnumChangesTool
+class EnumCasesTool
 {
     public static function isChanged(iterable $current, iterable $target): bool
     {
-        $current = [...$current];
+        $current = (array) $current;
         foreach ($target as $order => $value) {
             if (!array_key_exists($order, $current) || $current[$order] !== $value) {
                 return true;
@@ -31,7 +31,7 @@ class EnumChangesTool
 
     public static function isReorderingRequired(iterable $current, iterable $target): bool
     {
-        $current = [...$current];
+        $current = (array) $current;
         foreach ($target as $order => $value) {
             if (array_key_exists($order, $current) && $current[$order] !== $value) {
                 return true;
@@ -45,7 +45,7 @@ class EnumChangesTool
     {
         $add = [];
 
-        $current = [...$current];
+        $current = (array) $current;
         foreach ($target as $order => $value) {
             if (array_key_exists($order, $current) && $current[$order] !== $value) {
                 throw InvalidArgumentException::enumReorderingIsProhibited();

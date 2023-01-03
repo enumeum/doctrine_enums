@@ -9,19 +9,24 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace EnumeumTests\DatabaseUpdateCases;
+namespace EnumeumTests\Schema;
 
-use Enumeum\DoctrineEnum\EnumTool;
+use Enumeum\DoctrineEnum\Schema\Comparator;
+use Enumeum\DoctrineEnum\Schema\SchemaManager;
 use EnumeumTests\Fixture\EnumToolType\AlterStatusType;
 use EnumeumTests\Fixture\EnumToolType\CreateStatusType;
 use EnumeumTests\Fixture\EnumToolType\ReorderStatusType;
 use EnumeumTests\Setup\BaseTestCaseSchema;
 
-final class EnumToolTest extends BaseTestCaseSchema
+final class ComparatorTest extends BaseTestCaseSchema
 {
-    public function testEnumTypeNotUsedAnywhere(): void
+    public function testEnumTypeNotExists(): void
     {
         $this->applySQL([
+            "CREATE TYPE alter_status_type AS ENUM ('started', 'processing', 'finished')",
+            "CREATE TYPE reorder_status_type AS ENUM ('started', 'processing', 'finished')",
+            "CREATE TYPE drop_status_type AS ENUM ('started', 'processing', 'finished')",
+
             'CREATE TABLE entity_one (id INT NOT NULL, PRIMARY KEY(id), status alter_status_type NOT NULL)',
             'CREATE TABLE entity_two (id INT NOT NULL, PRIMARY KEY(id), status reorder_status_type NOT NULL)',
         ]);
@@ -30,9 +35,12 @@ final class EnumToolTest extends BaseTestCaseSchema
         $this->getDefinitionRegistry()->loadType(AlterStatusType::class);
         $this->getDefinitionRegistry()->loadType(ReorderStatusType::class);
 
-        $tool = new EnumTool($this->getDatabaseUpdateQueryBuilder());
+        $manager = $this->createSchemaManager();
 
-        $updateSql = $tool();
+        $comparator = Comparator::create();
+        $diff = $comparator->compareSchemas($manager->createSchemaFromDatabase(), $manager->createSchemaFromConfig());
+
+        $updateSql = $diff->toSql();
 
         self::assertSame(
             [
@@ -52,12 +60,17 @@ final class EnumToolTest extends BaseTestCaseSchema
         $this->applySQLWithinTransaction($updateSql);
     }
 
+    protected function createSchemaManager(): SchemaManager
+    {
+        return new SchemaManager(
+            $this->getDefinitionRegistry(),
+            $this->getDatabaseDefinitionRegistry($this->em->getConnection()),
+            $this->getTableUsageRegistry($this->em->getConnection()),
+        );
+    }
+
     protected function getBaseSQL(): array
     {
-        return [
-            "CREATE TYPE alter_status_type AS ENUM ('started', 'processing', 'finished')",
-            "CREATE TYPE reorder_status_type AS ENUM ('started', 'processing', 'finished')",
-            "CREATE TYPE drop_status_type AS ENUM ('started', 'processing', 'finished')",
-        ];
+        return [];
     }
 }

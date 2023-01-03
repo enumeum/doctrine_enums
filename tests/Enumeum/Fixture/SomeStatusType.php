@@ -9,15 +9,14 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Enumeum\DoctrineEnum\EnumUsage;
+namespace EnumeumTests\Fixture;
 
-class UsageColumn
+use Enumeum\DoctrineEnum\Attribute\EnumType;
+
+#[EnumType(name: 'some_type')]
+enum SomeStatusType: string
 {
-    public function __construct(
-        public readonly string $name,
-        public readonly string $table,
-        public readonly string $column,
-        public readonly ?string $default = null,
-    ) {
-    }
+    case One = 'one';
+    case Two = 'two';
+    case Three = 'three';
 }

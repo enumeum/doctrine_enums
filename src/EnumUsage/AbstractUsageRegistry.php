@@ -38,9 +38,9 @@ abstract class AbstractUsageRegistry
     }
 
     /**
-     * @return iterable<Usage>
+     * @return array<string, Usage>
      */
-    public function getUsagesHashedByName(): iterable
+    public function getUsages(): array
     {
         if (!$this->loaded) {
             $this->load();
@@ -49,6 +49,9 @@ abstract class AbstractUsageRegistry
         return $this->usagesByName;
     }
 
+    /**
+     * @deprecated Not sure this method is useful anywhere out of version >= 2.0
+     */
     public function isUsedElsewhereExcept(string $name, string $table, string $column): bool
     {
         if (!$this->loaded) {

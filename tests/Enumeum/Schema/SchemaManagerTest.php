@@ -18,6 +18,9 @@ use Enumeum\DoctrineEnum\Schema\SchemaManager;
 use EnumeumTests\Fixture\SomeStatusType;
 use EnumeumTests\Setup\BaseTestCaseSchema;
 
+use function array_shift;
+use function assert;
+
 final class SchemaManagerTest extends BaseTestCaseSchema
 {
     public function testCreateSchema(): void
@@ -40,6 +43,41 @@ final class SchemaManagerTest extends BaseTestCaseSchema
         self::assertEquals($usage, $schema->getUsage($name));
         self::assertArrayHasKey($name, $schema->getUsages());
         self::assertContains($usage, $schema->getUsages());
+    }
+
+    public function testCreateSchemaFromDefinitions(): void
+    {
+        $this->applySQL([
+            "CREATE TYPE some_type AS ENUM ('one', 'two')",
+            "CREATE TABLE some_table (id INT NOT NULL, PRIMARY KEY(id), some_column some_type NOT NULL)",
+            "INSERT INTO some_table VALUES (1, 'two')",
+        ]);
+
+        $name = 'some_type';
+        $table = 'some_table';
+        $column = 'some_column';
+        $definition = new Definition($name, ['one', 'two', 'three']);
+
+        $manager = $this->createSchemaManager();
+        $schema = $manager->createSchemaFromDefinitions([$definition]);
+
+        self::assertTrue($schema->hasDefinition($name));
+        self::assertNotNull($schema->getDefinition($name));
+        self::assertEquals(['one', 'two', 'three'], $schema->getDefinition($name)->cases);
+        self::assertArrayHasKey($name, $schema->getDefinitions());
+
+        self::assertTrue($schema->hasUsage($name));
+        self::assertNotNull($schema->getUsage($name));
+
+        $columns = $schema->getUsage($name)->columns;
+        self::assertCount(1, $columns);
+        $usageColumn = array_shift($columns);
+        assert($usageColumn instanceof UsageColumn);
+        self::assertEquals($name, $usageColumn->name);
+        self::assertEquals($table, $usageColumn->table);
+        self::assertEquals($column, $usageColumn->column);
+
+        self::assertArrayHasKey($name, $schema->getUsages());
     }
 
     public function testCreateSchemaFromConfig(): void

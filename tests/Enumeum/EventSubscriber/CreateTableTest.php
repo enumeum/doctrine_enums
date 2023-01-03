@@ -9,16 +9,16 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace EnumeumTests\SchemaListening;
+namespace EnumeumTests\EventSubscriber;
 
 use Doctrine\ORM\Tools\SchemaTool;
 use EnumeumTests\Fixture\BaseStatusType;
 use EnumeumTests\Fixture\Entity\Entity;
 use EnumeumTests\Setup\BaseTestCaseSchema;
 
-final class AddColumnTest extends BaseTestCaseSchema
+final class CreateTableTest extends BaseTestCaseSchema
 {
-    public function test(): void
+    public function testEnumTypeAlreadyExists(): void
     {
         $this->registerTypes([BaseStatusType::class]);
 
@@ -31,7 +31,7 @@ final class AddColumnTest extends BaseTestCaseSchema
 
         self::assertSame(
             [
-                'ALTER TABLE entity ADD status status_type NOT NULL',
+                'CREATE TABLE entity (id INT NOT NULL, status status_type NOT NULL, PRIMARY KEY(id))',
                 "COMMENT ON COLUMN entity.status IS 'SOME Comment'",
             ],
             $updateSchemaSql,
@@ -43,7 +43,6 @@ final class AddColumnTest extends BaseTestCaseSchema
     protected function getBaseSQL(): array
     {
         return [
-            'CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id))',
             "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
         ];
     }

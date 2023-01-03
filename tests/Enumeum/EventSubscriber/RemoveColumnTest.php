@@ -9,33 +9,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace EnumeumTests\SchemaListening;
+namespace EnumeumTests\EventSubscriber;
 
 use Doctrine\ORM\Tools\SchemaTool;
-use EnumeumTests\Fixture\AnotherStatusType;
 use EnumeumTests\Fixture\BaseStatusType;
-use EnumeumTests\Fixture\Entity\EntityAnotherType;
+use EnumeumTests\Fixture\Entity\EntityWithoutTypedField;
 use EnumeumTests\Setup\BaseTestCaseSchema;
 
-final class ChangeColumnFromEnumToEnumTest extends BaseTestCaseSchema
+final class RemoveColumnTest extends BaseTestCaseSchema
 {
     public function test(): void
     {
-        $this->registerTypes([
-            BaseStatusType::class,
-            AnotherStatusType::class,
-        ]);
+        $this->registerTypes([BaseStatusType::class]);
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
-            EntityAnotherType::class,
+            EntityWithoutTypedField::class,
         ]);
 
         $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
 
         self::assertSame(
             [
-                'ALTER TABLE entity ALTER status TYPE another_status_type USING status::text::another_status_type',
+                'ALTER TABLE entity DROP status',
             ],
             $updateSchemaSql,
         );
@@ -49,8 +45,6 @@ final class ChangeColumnFromEnumToEnumTest extends BaseTestCaseSchema
             "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
             'CREATE TABLE entity (id INT NOT NULL, status status_type NOT NULL, PRIMARY KEY(id))',
             "COMMENT ON COLUMN entity.status IS 'SOME Comment'",
-
-            "CREATE TYPE another_status_type AS ENUM ('started', 'processing', 'finished')",
         ];
     }
 }

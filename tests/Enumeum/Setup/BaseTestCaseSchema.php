@@ -15,7 +15,7 @@ use Doctrine\Common\EventManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Exception\ORMException;
-use Enumeum\DoctrineEnum\EventListener\PostGenerateSchemaSubscriber;
+use Enumeum\DoctrineEnum\EventSubscriber\PostGenerateSchemaSubscriber;
 
 abstract class BaseTestCaseSchema extends BaseTestCase
 {

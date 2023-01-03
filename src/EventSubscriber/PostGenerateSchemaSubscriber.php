@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Enumeum\DoctrineEnum\EventListener;
+namespace Enumeum\DoctrineEnum\EventSubscriber;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\DBAL\Schema\Column;

@@ -9,14 +9,14 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace EnumeumTests\SchemaListening;
+namespace EnumeumTests\EventSubscriber;
 
 use Doctrine\ORM\Tools\SchemaTool;
 use EnumeumTests\Fixture\BaseStatusType;
-use EnumeumTests\Fixture\Entity\EntityWithoutTypedField;
+use EnumeumTests\Fixture\Entity\Entity;
 use EnumeumTests\Setup\BaseTestCaseSchema;
 
-final class RemoveColumnTest extends BaseTestCaseSchema
+final class ChangeColumnToEnumTest extends BaseTestCaseSchema
 {
     public function test(): void
     {
@@ -24,14 +24,14 @@ final class RemoveColumnTest extends BaseTestCaseSchema
 
         $schemaTool = new SchemaTool($this->em);
         $schema = $this->composeSchema([
-            EntityWithoutTypedField::class,
+            Entity::class,
         ]);
 
         $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
 
         self::assertSame(
             [
-                'ALTER TABLE entity DROP status',
+                'ALTER TABLE entity ALTER status TYPE status_type USING status::text::status_type',
             ],
             $updateSchemaSql,
         );
@@ -43,7 +43,7 @@ final class RemoveColumnTest extends BaseTestCaseSchema
     {
         return [
             "CREATE TYPE status_type AS ENUM ('started', 'processing', 'finished')",
-            'CREATE TABLE entity (id INT NOT NULL, status status_type NOT NULL, PRIMARY KEY(id))',
+            'CREATE TABLE entity (id INT NOT NULL, status VARCHAR(255) NOT NULL, PRIMARY KEY(id))',
             "COMMENT ON COLUMN entity.status IS 'SOME Comment'",
         ];
     }

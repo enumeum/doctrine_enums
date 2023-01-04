@@ -15,6 +15,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\Tools\ToolsException;
 use Enumeum\DoctrineEnum\Definition\Definition;
+use Enumeum\DoctrineEnum\Definition\DefinitionRegistry;
 use Enumeum\DoctrineEnum\Schema\Comparator;
 use Enumeum\DoctrineEnum\Schema\SchemaManager;
 use Throwable;
@@ -25,6 +26,14 @@ class EnumTool
         private readonly SchemaManager $manager,
         private readonly Connection $connection,
     ) {
+    }
+
+    public static function create(DefinitionRegistry $registry, Connection $connection): self
+    {
+        return new self(
+            SchemaManager::create($registry, $connection),
+            $connection,
+        );
     }
 
     /**

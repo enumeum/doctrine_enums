@@ -21,6 +21,16 @@ use EnumeumTests\Setup\BaseTestCaseSchema;
 
 final class EnumToolTest extends BaseTestCaseSchema
 {
+    public function testCreateWithMethod(): void
+    {
+        $tool = EnumTool::create(
+            $this->getDefinitionRegistry(),
+            $this->em->getConnection(),
+        );
+
+        self::assertInstanceOf(EnumTool::class, $tool);
+    }
+
     public function testGetCreateSchemaSql(): void
     {
         $definition = new Definition('status_type', ['started', 'processing', 'finished']);

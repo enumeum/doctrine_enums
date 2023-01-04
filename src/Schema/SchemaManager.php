@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Enumeum\DoctrineEnum\Schema;
 
+use Doctrine\DBAL\Connection;
 use Enumeum\DoctrineEnum\Definition\DatabaseDefinitionRegistry;
 use Enumeum\DoctrineEnum\Definition\Definition;
 use Enumeum\DoctrineEnum\Definition\DefinitionRegistry;
@@ -23,6 +24,15 @@ class SchemaManager
         private readonly DatabaseDefinitionRegistry $databaseRegistry,
         private readonly TableUsageRegistry $usageRegistry,
     ) {
+    }
+
+    public static function create(Connection $connection, DefinitionRegistry $registry): self
+    {
+        return new self(
+            $registry,
+            new DatabaseDefinitionRegistry($connection),
+            new TableUsageRegistry($connection),
+        );
     }
 
     public function createSchema(iterable $definitions, iterable $usages = []): Schema

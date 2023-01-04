@@ -34,7 +34,6 @@ class DefinitionRegistryLoaderTest extends TestCase
     public function testStaticCreate(): void
     {
         $loader = DefinitionRegistryLoader::create(
-            new DefinitionRegistry(),
             new EnumClassLocator([]),
             [
                 AlphaStatusType::class,

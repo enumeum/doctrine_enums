@@ -21,9 +21,8 @@ class DefinitionRegistryLoader
      * @param iterable<array{path: string, namespace: string}> $enumDirPaths
      */
     public function __construct(
-        private readonly DefinitionRegistry $registry,
         private readonly EnumClassLocator $locator,
-        iterable $enumClassNames = [],
+        private iterable $enumClassNames = [],
         iterable $enumDirPaths = [],
     ) {
         $this->loadTypes($enumClassNames);
@@ -35,13 +34,11 @@ class DefinitionRegistryLoader
      * @param iterable<array{dir: string, namespace: string}>|null $enumDirPaths
      */
     public static function create(
-        ?DefinitionRegistry $registry = null,
         ?EnumClassLocator $locator = null,
         iterable $enumClassNames = [],
         iterable $enumDirPaths = [],
     ): self {
         return new self(
-            $registry ?? new DefinitionRegistry(),
             $locator ?? new EnumClassLocator([]),
             $enumClassNames,
             $enumDirPaths
@@ -50,7 +47,7 @@ class DefinitionRegistryLoader
 
     public function getRegistry(): DefinitionRegistry
     {
-        return $this->registry;
+        return new DefinitionRegistry($this->enumClassNames);
     }
 
     /**
@@ -58,7 +55,7 @@ class DefinitionRegistryLoader
      */
     public function loadType(string $name): void
     {
-        $this->registry->loadType($name);
+        $this->enumClassNames[] = $name;
     }
 
     /**
@@ -67,7 +64,7 @@ class DefinitionRegistryLoader
     public function loadTypes(iterable $names): void
     {
         foreach ($names as $name) {
-            $this->registry->loadType($name);
+            $this->loadType($name);
         }
     }
 

@@ -26,7 +26,7 @@ class SchemaManager
     ) {
     }
 
-    public static function create(Connection $connection, DefinitionRegistry $registry): self
+    public static function create(DefinitionRegistry $registry, Connection $connection): self
     {
         return new self(
             $registry,

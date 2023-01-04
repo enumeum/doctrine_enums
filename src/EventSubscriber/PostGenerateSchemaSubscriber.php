@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Enumeum\DoctrineEnum\EventSubscriber;
 
 use Doctrine\Common\EventSubscriber;
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\ORM\Tools\Event\GenerateSchemaEventArgs;
 use Doctrine\ORM\Tools\ToolEvents;
@@ -37,6 +38,10 @@ class PostGenerateSchemaSubscriber implements EventSubscriber
 
     public function postGenerateSchema(GenerateSchemaEventArgs $event): void
     {
+        if (!$event->getEntityManager()->getConnection()->getDatabasePlatform() instanceof PostgreSqlPlatform) {
+            return;
+        }
+
         foreach ($event->getSchema()->getTables() as $table) {
             foreach ($table->getColumns() as $column) {
                 if ($enumType = $this->extractEnumType($column)) {

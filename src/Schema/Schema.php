@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the "Doctrine extension to manage enumerations in PostgreSQL" package.
+ * (c) Alexey Sitka <alexey.sitka@gmail.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Enumeum\DoctrineEnum\Schema;
 
 use Enumeum\DoctrineEnum\Definition\Definition;
@@ -18,7 +25,7 @@ class Schema
 
     /**
      * @param iterable<Definition> $definitions
-     * @param iterable<Usage> $usages
+     * @param iterable<Usage>      $usages
      */
     public function __construct(
         iterable $definitions = [],
@@ -30,6 +37,17 @@ class Schema
 
         foreach ($usages as $usage) {
             $this->addUsage($usage);
+        }
+    }
+
+    public function __clone()
+    {
+        foreach ($this->usages as $k => $usage) {
+            $this->usages[$k] = clone $usage;
+        }
+
+        foreach ($this->definitions as $k => $definition) {
+            $this->definitions[$k] = clone $definition;
         }
     }
 
@@ -93,16 +111,5 @@ class Schema
     public function addDefinition(Definition $definition): void
     {
         $this->definitions[$definition->name] = $definition;
-    }
-
-    public function __clone()
-    {
-        foreach ($this->usages as $k => $usage) {
-            $this->usages[$k] = clone $usage;
-        }
-
-        foreach ($this->definitions as $k => $definition) {
-            $this->definitions[$k] = clone $definition;
-        }
     }
 }

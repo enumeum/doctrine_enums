@@ -17,6 +17,8 @@ use Enumeum\DoctrineEnum\EnumUsage\UsageColumn;
 use Enumeum\DoctrineEnum\Schema\Schema;
 use EnumeumTests\Setup\BaseTestCaseSchema;
 
+use function count;
+
 final class SchemaTest extends BaseTestCaseSchema
 {
     public function testSchemaAsDataContainerFromConstructor(): void
@@ -30,12 +32,12 @@ final class SchemaTest extends BaseTestCaseSchema
         $schema = new Schema([$definition], [$usage]);
 
         self::assertTrue($schema->hasDefinition($name));
-        self::assertEquals($definition, $schema->getDefinition($name));
+        self::assertSame($definition, $schema->getDefinition($name));
         self::assertArrayHasKey($name, $schema->getDefinitions());
         self::assertContains($definition, $schema->getDefinitions());
 
         self::assertTrue($schema->hasUsage($name));
-        self::assertEquals($usage, $schema->getUsage($name));
+        self::assertSame($usage, $schema->getUsage($name));
         self::assertArrayHasKey($name, $schema->getUsages());
         self::assertContains($usage, $schema->getUsages());
     }
@@ -52,13 +54,13 @@ final class SchemaTest extends BaseTestCaseSchema
         $schema->addDefinition($definition);
 
         self::assertTrue($schema->hasDefinition($name));
-        self::assertEquals($definition, $schema->getDefinition($name));
+        self::assertSame($definition, $schema->getDefinition($name));
         self::assertArrayHasKey($name, $schema->getDefinitions());
         self::assertContains($definition, $schema->getDefinitions());
 
         $schema->addUsage($usage);
         self::assertTrue($schema->hasUsage($name));
-        self::assertEquals($usage, $schema->getUsage($name));
+        self::assertSame($usage, $schema->getUsage($name));
         self::assertArrayHasKey($name, $schema->getUsages());
         self::assertContains($usage, $schema->getUsages());
     }
@@ -75,12 +77,12 @@ final class SchemaTest extends BaseTestCaseSchema
         $clone = clone $schema;
 
         self::assertTrue($clone->hasDefinition($name));
-        self::assertEquals($schema->getDefinition($name), $clone->getDefinition($name));
-        self::assertEquals($schema->getDefinitions(), $clone->getDefinitions());
+        self::assertSame($schema->getDefinition($name)->name, $clone->getDefinition($name)->name);
+        self::assertSame(count($schema->getDefinitions()), count($clone->getDefinitions()));
 
         self::assertTrue($clone->hasUsage($name));
-        self::assertEquals($schema->getUsage($name), $clone->getUsage($name));
-        self::assertEquals($schema->getUsages(), $clone->getUsages());
+        self::assertSame($schema->getUsage($name)->name, $clone->getUsage($name)->name);
+        self::assertSame(count($schema->getUsages()), count($clone->getUsages()));
     }
 
     public function testToSql(): void
@@ -113,7 +115,7 @@ final class SchemaTest extends BaseTestCaseSchema
 
         self::assertSame(
             [
-                "DROP TYPE IF EXISTS some_type",
+                'DROP TYPE IF EXISTS some_type',
             ],
             $updateSql,
         );

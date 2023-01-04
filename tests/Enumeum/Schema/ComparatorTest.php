@@ -62,6 +62,11 @@ final class ComparatorTest extends BaseTestCaseSchema
         $this->applySQLWithinTransaction($updateSql);
     }
 
+    protected function getBaseSQL(): array
+    {
+        return [];
+    }
+
     private function createSchemaManager(): SchemaManager
     {
         return new SchemaManager(
@@ -69,10 +74,5 @@ final class ComparatorTest extends BaseTestCaseSchema
             $this->getDatabaseDefinitionRegistry($this->em->getConnection()),
             $this->getTableUsageRegistry($this->em->getConnection()),
         );
-    }
-
-    protected function getBaseSQL(): array
-    {
-        return [];
     }
 }

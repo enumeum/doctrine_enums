@@ -50,7 +50,7 @@ final class EnumAlterTest extends BaseTestCaseSchema
     public function testEnumTypeUsedByEmptyTable(): void
     {
         $this->applySQL([
-            "CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)",
+            'CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)',
         ]);
 
         $diff = new SchemaDiff(
@@ -81,7 +81,7 @@ final class EnumAlterTest extends BaseTestCaseSchema
     public function testEnumTypeUsedByTableWithRecords(): void
     {
         $this->applySQL([
-            "CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)",
+            'CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)',
             "INSERT INTO entity (id, status) VALUES (1, 'started')",
             "INSERT INTO entity (id, status) VALUES (2, 'processing')",
             "INSERT INTO entity (id, status) VALUES (3, 'finished')",

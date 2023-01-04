@@ -22,7 +22,7 @@ final class ColumnDefaultQueryBuilderTest extends BaseTestCaseSchema
 
         self::assertSame(
             [
-                "ALTER TABLE some_table ALTER COLUMN some_column DROP DEFAULT",
+                'ALTER TABLE some_table ALTER COLUMN some_column DROP DEFAULT',
             ],
             $updateSql,
         );
@@ -30,7 +30,7 @@ final class ColumnDefaultQueryBuilderTest extends BaseTestCaseSchema
         $this->applySQL([
             "CREATE TYPE some_type AS ENUM ('one', 'two', 'three')",
             "CREATE TABLE some_table (id INT NOT NULL, PRIMARY KEY(id), some_column some_type NOT NULL DEFAULT 'one'::some_type)",
-            "INSERT INTO some_table VALUES (1)",
+            'INSERT INTO some_table VALUES (1)',
         ]);
 
         $this->applySQL($updateSql);
@@ -49,7 +49,7 @@ final class ColumnDefaultQueryBuilderTest extends BaseTestCaseSchema
 
         $this->applySQL([
             "CREATE TYPE some_type AS ENUM ('one', 'two', 'three')",
-            "CREATE TABLE some_table (id INT NOT NULL, PRIMARY KEY(id), some_column some_type NOT NULL)",
+            'CREATE TABLE some_table (id INT NOT NULL, PRIMARY KEY(id), some_column some_type NOT NULL)',
             "INSERT INTO some_table VALUES (1, 'two')",
         ]);
 

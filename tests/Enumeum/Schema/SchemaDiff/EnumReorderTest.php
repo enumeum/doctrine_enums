@@ -26,7 +26,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
         $this->applySQL([]);
 
         $diff = new SchemaDiff(
-            alterChangeSet:[
+            alterChangeSet: [
                 new DefinitionDiff(
                     new Definition('status_type', ['started', 'processing', 'finished']),
                     new Definition('status_type', ['started', 'finished']),
@@ -39,9 +39,9 @@ final class EnumReorderTest extends BaseTestCaseSchema
 
         self::assertSame(
             [
-                "ALTER TYPE status_type RENAME TO status_type__",
+                'ALTER TYPE status_type RENAME TO status_type__',
                 "CREATE TYPE status_type AS ENUM ('started', 'finished')",
-                "DROP TYPE IF EXISTS status_type__",
+                'DROP TYPE IF EXISTS status_type__',
             ],
             $updateSql,
         );
@@ -54,7 +54,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
         $this->applySQL([]);
 
         $diff = new SchemaDiff(
-            alterChangeSet:[
+            alterChangeSet: [
                 new DefinitionDiff(
                     new Definition('status_type', ['started', 'processing', 'finished']),
                     new Definition('status_type', ['started', 'processing']),
@@ -67,9 +67,9 @@ final class EnumReorderTest extends BaseTestCaseSchema
 
         self::assertSame(
             [
-                "ALTER TYPE status_type RENAME TO status_type__",
+                'ALTER TYPE status_type RENAME TO status_type__',
                 "CREATE TYPE status_type AS ENUM ('started', 'processing')",
-                "DROP TYPE IF EXISTS status_type__",
+                'DROP TYPE IF EXISTS status_type__',
             ],
             $updateSql,
         );
@@ -82,7 +82,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
         $this->applySQL([]);
 
         $diff = new SchemaDiff(
-            alterChangeSet:[
+            alterChangeSet: [
                 new DefinitionDiff(
                     new Definition('status_type', ['started', 'processing', 'finished']),
                     new Definition('status_type', ['started', 'finished', 'processing']),
@@ -95,9 +95,9 @@ final class EnumReorderTest extends BaseTestCaseSchema
 
         self::assertSame(
             [
-                "ALTER TYPE status_type RENAME TO status_type__",
+                'ALTER TYPE status_type RENAME TO status_type__',
                 "CREATE TYPE status_type AS ENUM ('started', 'finished', 'processing')",
-                "DROP TYPE IF EXISTS status_type__",
+                'DROP TYPE IF EXISTS status_type__',
             ],
             $updateSql,
         );
@@ -108,11 +108,11 @@ final class EnumReorderTest extends BaseTestCaseSchema
     public function testEnumTypeUsedByEmptyTable(): void
     {
         $this->applySQL([
-            "CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)",
+            'CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)',
         ]);
 
         $diff = new SchemaDiff(
-            alterChangeSet:[
+            alterChangeSet: [
                 new DefinitionDiff(
                     new Definition('status_type', ['started', 'processing', 'finished']),
                     new Definition('status_type', ['started', 'finished']),
@@ -127,11 +127,11 @@ final class EnumReorderTest extends BaseTestCaseSchema
 
         self::assertSame(
             [
-                "ALTER TYPE status_type RENAME TO status_type__",
+                'ALTER TYPE status_type RENAME TO status_type__',
                 "CREATE TYPE status_type AS ENUM ('started', 'finished')",
-                "LOCK TABLE entity",
-                "ALTER TABLE entity ALTER COLUMN status TYPE status_type USING status::text::status_type",
-                "DROP TYPE IF EXISTS status_type__",
+                'LOCK TABLE entity',
+                'ALTER TABLE entity ALTER COLUMN status TYPE status_type USING status::text::status_type',
+                'DROP TYPE IF EXISTS status_type__',
             ],
             $updateSql,
         );
@@ -185,7 +185,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
         ]);
 
         $diff = new SchemaDiff(
-            alterChangeSet:[
+            alterChangeSet: [
                 new DefinitionDiff(
                     new Definition('status_type', ['started', 'processing', 'finished']),
                     new Definition('status_type', ['started', 'finished']),
@@ -222,13 +222,13 @@ final class EnumReorderTest extends BaseTestCaseSchema
     public function testEnumTypeUsedByTableWithRecords(): void
     {
         $this->applySQL([
-            "CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)",
+            'CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)',
             "INSERT INTO entity (id, status) VALUES (1, 'started')",
             "INSERT INTO entity (id, status) VALUES (3, 'finished')",
         ]);
 
         $diff = new SchemaDiff(
-            alterChangeSet:[
+            alterChangeSet: [
                 new DefinitionDiff(
                     new Definition('status_type', ['started', 'processing', 'finished']),
                     new Definition('status_type', ['started', 'finished']),
@@ -264,7 +264,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
         ]);
 
         $diff = new SchemaDiff(
-            alterChangeSet:[
+            alterChangeSet: [
                 new DefinitionDiff(
                     new Definition('status_type', ['started', 'processing', 'finished']),
                     new Definition('status_type', ['started', 'finished']),
@@ -305,7 +305,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
         ]);
 
         $diff = new SchemaDiff(
-            alterChangeSet:[
+            alterChangeSet: [
                 new DefinitionDiff(
                     new Definition('status_type', ['started', 'processing', 'finished']),
                     new Definition('status_type', ['started', 'finished']),
@@ -352,7 +352,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
         ]);
 
         $diff = new SchemaDiff(
-            alterChangeSet:[
+            alterChangeSet: [
                 new DefinitionDiff(
                     new Definition('status_type', ['started', 'processing', 'finished']),
                     new Definition('status_type', ['started', 'finished']),

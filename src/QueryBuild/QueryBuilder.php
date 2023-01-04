@@ -27,6 +27,7 @@ class QueryBuilder
 
     /**
      * @param iterable<Definition> $definitions
+     *
      * @return iterable<string>
      */
     public function generateEnumCreateQueries(iterable $definitions): iterable
@@ -46,6 +47,7 @@ class QueryBuilder
 
     /**
      * @param iterable<DefinitionDiff> $diffs
+     *
      * @return iterable<string>
      */
     public function generateEnumAlterQueries(iterable $diffs): iterable
@@ -71,6 +73,7 @@ class QueryBuilder
 
     /**
      * @param iterable<DefinitionDiff> $diffs
+     *
      * @return iterable<string>
      */
     public function generateEnumAddValuesQueries(iterable $diffs): iterable
@@ -89,6 +92,7 @@ class QueryBuilder
 
     /**
      * @param iterable<DefinitionDiff> $diffs
+     *
      * @return iterable<string>
      */
     public function generateEnumReorderQueries(iterable $diffs): iterable
@@ -124,6 +128,7 @@ class QueryBuilder
 
     /**
      * @param iterable<Definition> $definitions
+     *
      * @return iterable<string>
      */
     public function generateEnumDropQueries(iterable $definitions): iterable

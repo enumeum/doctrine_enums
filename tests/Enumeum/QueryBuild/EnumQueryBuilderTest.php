@@ -62,7 +62,7 @@ final class EnumQueryBuilderTest extends BaseTestCaseSchema
 
         self::assertSame(
             [
-                "DROP TYPE IF EXISTS some_type",
+                'DROP TYPE IF EXISTS some_type',
             ],
             $updateSql,
         );
@@ -82,7 +82,7 @@ final class EnumQueryBuilderTest extends BaseTestCaseSchema
 
         self::assertSame(
             [
-                "ALTER TYPE some_type RENAME TO some_type__",
+                'ALTER TYPE some_type RENAME TO some_type__',
             ],
             $updateSql,
         );
@@ -102,14 +102,14 @@ final class EnumQueryBuilderTest extends BaseTestCaseSchema
 
         self::assertSame(
             [
-                "DROP TYPE IF EXISTS some_type__",
+                'DROP TYPE IF EXISTS some_type__',
             ],
             $updateSql,
         );
 
         $this->applySQL([
             "CREATE TYPE some_type AS ENUM ('one', 'two', 'three')",
-            "ALTER TYPE some_type RENAME TO some_type__",
+            'ALTER TYPE some_type RENAME TO some_type__',
         ]);
 
         $this->applySQL($updateSql);
@@ -125,7 +125,7 @@ final class EnumQueryBuilderTest extends BaseTestCaseSchema
 
         self::assertSame(
             [
-                "ALTER TABLE some_table ALTER COLUMN some_column TYPE some_type USING some_column::text::some_type",
+                'ALTER TABLE some_table ALTER COLUMN some_column TYPE some_type USING some_column::text::some_type',
             ],
             $updateSql,
         );

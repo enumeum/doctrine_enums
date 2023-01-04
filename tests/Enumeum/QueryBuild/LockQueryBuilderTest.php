@@ -22,14 +22,14 @@ final class LockQueryBuilderTest extends BaseTestCaseSchema
 
         self::assertSame(
             [
-                "LOCK TABLE some_table",
+                'LOCK TABLE some_table',
             ],
             $updateSql,
         );
 
         $this->applySQL([
-            "CREATE TABLE some_table (id INT NOT NULL, PRIMARY KEY(id))",
-            "INSERT INTO some_table VALUES (1)",
+            'CREATE TABLE some_table (id INT NOT NULL, PRIMARY KEY(id))',
+            'INSERT INTO some_table VALUES (1)',
         ]);
 
         $this->applySQLWithinTransaction($updateSql);

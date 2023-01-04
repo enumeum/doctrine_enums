@@ -47,6 +47,7 @@ class EnumTool
 
     /**
      * @param iterable<Definition> $definitions
+     *
      * @return iterable<string>
      */
     public function getCreateSchemaSql(iterable $definitions): iterable
@@ -74,6 +75,7 @@ class EnumTool
 
     /**
      * @param iterable<Definition> $definitions
+     *
      * @return iterable<string>
      */
     public function getDropSchemaSQL(iterable $definitions): iterable

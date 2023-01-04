@@ -44,7 +44,7 @@ final class EnumDropTest extends BaseTestCaseSchema
     public function testEnumTypeUsedByTable(): void
     {
         $this->applySQL([
-            "CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)",
+            'CREATE TABLE entity (id INT NOT NULL, PRIMARY KEY(id), status status_type NOT NULL)',
         ]);
 
         $diff = new SchemaDiff(

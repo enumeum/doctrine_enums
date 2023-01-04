@@ -119,12 +119,12 @@ final class QueryBuilderTest extends BaseTestCaseSchema
 
         self::assertSame(
             [
-                "ALTER TYPE some_type RENAME TO some_type__",
+                'ALTER TYPE some_type RENAME TO some_type__',
                 "CREATE TYPE some_type AS ENUM ('one', 'three', 'four')",
-                "DROP TYPE IF EXISTS some_type__",
-                "ALTER TYPE other_type RENAME TO other_type__",
+                'DROP TYPE IF EXISTS some_type__',
+                'ALTER TYPE other_type RENAME TO other_type__',
                 "CREATE TYPE other_type AS ENUM ('один', 'три', 'четыре')",
-                "DROP TYPE IF EXISTS other_type__",
+                'DROP TYPE IF EXISTS other_type__',
             ],
             $updateSql,
         );
@@ -164,21 +164,21 @@ final class QueryBuilderTest extends BaseTestCaseSchema
 
         self::assertSame(
             [
-                "ALTER TYPE some_type RENAME TO some_type__",
+                'ALTER TYPE some_type RENAME TO some_type__',
                 "CREATE TYPE some_type AS ENUM ('one', 'three', 'four')",
-                "LOCK TABLE some_table",
-                "ALTER TABLE some_table ALTER COLUMN some_column DROP DEFAULT",
-                "ALTER TABLE some_table ALTER COLUMN some_column TYPE some_type USING some_column::text::some_type",
+                'LOCK TABLE some_table',
+                'ALTER TABLE some_table ALTER COLUMN some_column DROP DEFAULT',
+                'ALTER TABLE some_table ALTER COLUMN some_column TYPE some_type USING some_column::text::some_type',
                 "ALTER TABLE some_table ALTER COLUMN some_column SET DEFAULT 'one'::some_type",
-                "DROP TYPE IF EXISTS some_type__",
+                'DROP TYPE IF EXISTS some_type__',
 
-                "ALTER TYPE other_type RENAME TO other_type__",
+                'ALTER TYPE other_type RENAME TO other_type__',
                 "CREATE TYPE other_type AS ENUM ('один', 'три', 'четыре')",
-                "LOCK TABLE other_table",
-                "ALTER TABLE other_table ALTER COLUMN other_column DROP DEFAULT",
-                "ALTER TABLE other_table ALTER COLUMN other_column TYPE other_type USING other_column::text::other_type",
+                'LOCK TABLE other_table',
+                'ALTER TABLE other_table ALTER COLUMN other_column DROP DEFAULT',
+                'ALTER TABLE other_table ALTER COLUMN other_column TYPE other_type USING other_column::text::other_type',
                 "ALTER TABLE other_table ALTER COLUMN other_column SET DEFAULT 'один'::other_type",
-                "DROP TYPE IF EXISTS other_type__",
+                'DROP TYPE IF EXISTS other_type__',
             ],
             $updateSql,
         );
@@ -252,12 +252,12 @@ final class QueryBuilderTest extends BaseTestCaseSchema
 
         self::assertSame(
             [
-                "ALTER TYPE some_type RENAME TO some_type__",
+                'ALTER TYPE some_type RENAME TO some_type__',
                 "CREATE TYPE some_type AS ENUM ('one', 'three', 'four')",
-                "DROP TYPE IF EXISTS some_type__",
-                "ALTER TYPE other_type RENAME TO other_type__",
+                'DROP TYPE IF EXISTS some_type__',
+                'ALTER TYPE other_type RENAME TO other_type__',
                 "CREATE TYPE other_type AS ENUM ('один', 'три', 'четыре')",
-                "DROP TYPE IF EXISTS other_type__",
+                'DROP TYPE IF EXISTS other_type__',
             ],
             $updateSql,
         );
@@ -297,21 +297,21 @@ final class QueryBuilderTest extends BaseTestCaseSchema
 
         self::assertSame(
             [
-                "ALTER TYPE some_type RENAME TO some_type__",
+                'ALTER TYPE some_type RENAME TO some_type__',
                 "CREATE TYPE some_type AS ENUM ('one', 'three', 'four')",
-                "LOCK TABLE some_table",
-                "ALTER TABLE some_table ALTER COLUMN some_column DROP DEFAULT",
-                "ALTER TABLE some_table ALTER COLUMN some_column TYPE some_type USING some_column::text::some_type",
+                'LOCK TABLE some_table',
+                'ALTER TABLE some_table ALTER COLUMN some_column DROP DEFAULT',
+                'ALTER TABLE some_table ALTER COLUMN some_column TYPE some_type USING some_column::text::some_type',
                 "ALTER TABLE some_table ALTER COLUMN some_column SET DEFAULT 'one'::some_type",
-                "DROP TYPE IF EXISTS some_type__",
+                'DROP TYPE IF EXISTS some_type__',
 
-                "ALTER TYPE other_type RENAME TO other_type__",
+                'ALTER TYPE other_type RENAME TO other_type__',
                 "CREATE TYPE other_type AS ENUM ('один', 'три', 'четыре')",
-                "LOCK TABLE other_table",
-                "ALTER TABLE other_table ALTER COLUMN other_column DROP DEFAULT",
-                "ALTER TABLE other_table ALTER COLUMN other_column TYPE other_type USING other_column::text::other_type",
+                'LOCK TABLE other_table',
+                'ALTER TABLE other_table ALTER COLUMN other_column DROP DEFAULT',
+                'ALTER TABLE other_table ALTER COLUMN other_column TYPE other_type USING other_column::text::other_type',
                 "ALTER TABLE other_table ALTER COLUMN other_column SET DEFAULT 'один'::other_type",
-                "DROP TYPE IF EXISTS other_type__",
+                'DROP TYPE IF EXISTS other_type__',
             ],
             $updateSql,
         );
@@ -341,8 +341,8 @@ final class QueryBuilderTest extends BaseTestCaseSchema
 
         self::assertSame(
             [
-                "DROP TYPE IF EXISTS some_type",
-                "DROP TYPE IF EXISTS other_type",
+                'DROP TYPE IF EXISTS some_type',
+                'DROP TYPE IF EXISTS other_type',
             ],
             $updateSql,
         );

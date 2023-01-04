@@ -35,12 +35,12 @@ final class SchemaManagerTest extends BaseTestCaseSchema
         $schema = $manager->createSchema([$definition], [$usage]);
 
         self::assertTrue($schema->hasDefinition($name));
-        self::assertEquals($definition, $schema->getDefinition($name));
+        self::assertSame($definition, $schema->getDefinition($name));
         self::assertArrayHasKey($name, $schema->getDefinitions());
         self::assertContains($definition, $schema->getDefinitions());
 
         self::assertTrue($schema->hasUsage($name));
-        self::assertEquals($usage, $schema->getUsage($name));
+        self::assertSame($usage, $schema->getUsage($name));
         self::assertArrayHasKey($name, $schema->getUsages());
         self::assertContains($usage, $schema->getUsages());
     }
@@ -49,7 +49,7 @@ final class SchemaManagerTest extends BaseTestCaseSchema
     {
         $this->applySQL([
             "CREATE TYPE some_type AS ENUM ('one', 'two')",
-            "CREATE TABLE some_table (id INT NOT NULL, PRIMARY KEY(id), some_column some_type NOT NULL)",
+            'CREATE TABLE some_table (id INT NOT NULL, PRIMARY KEY(id), some_column some_type NOT NULL)',
             "INSERT INTO some_table VALUES (1, 'two')",
         ]);
 
@@ -63,7 +63,7 @@ final class SchemaManagerTest extends BaseTestCaseSchema
 
         self::assertTrue($schema->hasDefinition($name));
         self::assertNotNull($schema->getDefinition($name));
-        self::assertEquals(['one', 'two', 'three'], $schema->getDefinition($name)->cases);
+        self::assertSame(['one', 'two', 'three'], $schema->getDefinition($name)->cases);
         self::assertArrayHasKey($name, $schema->getDefinitions());
 
         self::assertTrue($schema->hasUsage($name));
@@ -73,9 +73,9 @@ final class SchemaManagerTest extends BaseTestCaseSchema
         self::assertCount(1, $columns);
         $usageColumn = array_shift($columns);
         assert($usageColumn instanceof UsageColumn);
-        self::assertEquals($name, $usageColumn->name);
-        self::assertEquals($table, $usageColumn->table);
-        self::assertEquals($column, $usageColumn->column);
+        self::assertSame($name, $usageColumn->name);
+        self::assertSame($table, $usageColumn->table);
+        self::assertSame($column, $usageColumn->column);
 
         self::assertArrayHasKey($name, $schema->getUsages());
     }
@@ -84,7 +84,7 @@ final class SchemaManagerTest extends BaseTestCaseSchema
     {
         $this->applySQL([
             "CREATE TYPE some_type AS ENUM ('one', 'two')",
-            "CREATE TABLE some_table (id INT NOT NULL, PRIMARY KEY(id), some_column some_type NOT NULL)",
+            'CREATE TABLE some_table (id INT NOT NULL, PRIMARY KEY(id), some_column some_type NOT NULL)',
             "INSERT INTO some_table VALUES (1, 'two')",
         ]);
 
@@ -99,7 +99,7 @@ final class SchemaManagerTest extends BaseTestCaseSchema
 
         self::assertTrue($schema->hasDefinition($name));
         self::assertNotNull($schema->getDefinition($name));
-        self::assertEquals(['one', 'two', 'three'], $schema->getDefinition($name)->cases);
+        self::assertSame(['one', 'two', 'three'], $schema->getDefinition($name)->cases);
         self::assertArrayHasKey($name, $schema->getDefinitions());
 
         self::assertTrue($schema->hasUsage($name));
@@ -109,9 +109,9 @@ final class SchemaManagerTest extends BaseTestCaseSchema
         self::assertCount(1, $columns);
         $usageColumn = array_shift($columns);
         assert($usageColumn instanceof UsageColumn);
-        self::assertEquals($name, $usageColumn->name);
-        self::assertEquals($table, $usageColumn->table);
-        self::assertEquals($column, $usageColumn->column);
+        self::assertSame($name, $usageColumn->name);
+        self::assertSame($table, $usageColumn->table);
+        self::assertSame($column, $usageColumn->column);
 
         self::assertArrayHasKey($name, $schema->getUsages());
     }
@@ -120,7 +120,7 @@ final class SchemaManagerTest extends BaseTestCaseSchema
     {
         $this->applySQL([
             "CREATE TYPE some_type AS ENUM ('one', 'two')",
-            "CREATE TABLE some_table (id INT NOT NULL, PRIMARY KEY(id), some_column some_type NOT NULL)",
+            'CREATE TABLE some_table (id INT NOT NULL, PRIMARY KEY(id), some_column some_type NOT NULL)',
             "INSERT INTO some_table VALUES (1, 'two')",
         ]);
 
@@ -133,7 +133,7 @@ final class SchemaManagerTest extends BaseTestCaseSchema
 
         self::assertTrue($schema->hasDefinition($name));
         self::assertNotNull($schema->getDefinition($name));
-        self::assertEquals(['one', 'two'], $schema->getDefinition($name)->cases);
+        self::assertSame(['one', 'two'], $schema->getDefinition($name)->cases);
         self::assertArrayHasKey($name, $schema->getDefinitions());
 
         self::assertTrue($schema->hasUsage($name));
@@ -143,11 +143,16 @@ final class SchemaManagerTest extends BaseTestCaseSchema
         self::assertCount(1, $columns);
         $usageColumn = array_shift($columns);
         assert($usageColumn instanceof UsageColumn);
-        self::assertEquals($name, $usageColumn->name);
-        self::assertEquals($table, $usageColumn->table);
-        self::assertEquals($column, $usageColumn->column);
+        self::assertSame($name, $usageColumn->name);
+        self::assertSame($table, $usageColumn->table);
+        self::assertSame($column, $usageColumn->column);
 
         self::assertArrayHasKey($name, $schema->getUsages());
+    }
+
+    protected function getBaseSQL(): array
+    {
+        return [];
     }
 
     private function createSchemaManager(): SchemaManager
@@ -157,10 +162,5 @@ final class SchemaManagerTest extends BaseTestCaseSchema
             $this->getDatabaseDefinitionRegistry($this->em->getConnection()),
             $this->getTableUsageRegistry($this->em->getConnection()),
         );
-    }
-
-    protected function getBaseSQL(): array
-    {
-        return [];
     }
 }

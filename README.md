@@ -17,7 +17,7 @@ Minimum PHP version is 8.1.
 - **#[Enumeum\DoctrineEnum\Attribute\EnumType(name: 'type_name')]** this attribute tells that this enum is database type.
   By default, it creates type in database with its own cases.
 
-### Example
+### Enum setup
 
 ```php
 <?php
@@ -34,6 +34,8 @@ enum StatusType: string
 }
 ```
 
+### Entity setup
+Please note that the configuration of the entity is no different from the usual one. Doctrine supports "enumType" property and converts it transparently.
 ```php
 <?php
 namespace App\Entities;
@@ -84,7 +86,6 @@ class Entity
 }
 ```
 
-Please note that the configuration of the entity is no different from the usual one. Doctrine supports "enumType" property and converts it transparently.
 
 ### DBAL Configuration
 ```php

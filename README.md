@@ -129,13 +129,18 @@ $loader->loadDirs([
 ]);
 ```
 
-Filled loader provides Enumeum\DoctrineEnum\Definition\DefinitionRegistry instance with collection of enums definitions.
+Filled loader provides **Enumeum\DoctrineEnum\Definition\DefinitionRegistry** instance with collection of enums definitions.
+Every call creates new Registry instance.
 ```php
-// Every call creates new Registry instance.
 $registry = $loader->getRegistry();
 ```
 
-Next step is to create Enumeum\DoctrineEnum\EnumTool and use it to generate SQL queries or update Database directly.
+DBAL Schema manipulation needs to have new types loaded thus use special **Enumeum\DoctrineEnum\Type\TypeRegistryLoader** for that.
+```php
+TypeRegistryLoader::load($registry->getDefinitions());
+```
+
+Next step is to create **Enumeum\DoctrineEnum\EnumTool** and use it to generate SQL queries for database Enums persistence or update Database directly.
 ```php
 <?php
 
@@ -145,15 +150,39 @@ use Enumeum\DoctrineEnum\EnumTool;
 
 $tool = EnumTool::create($registry, $doctrineDbalConnection);
 
+// Updates database with configured enums
+$tool->createSchema();
+// ... OR generates SQL queries for update 
 $sql = $tool->getCreateSchemaSql();
-// ...
+
 ```
 
-## Usage
+### ORM Configuration
 
-If you have changed enums values, their structure, adding or dropping types then use EnumTool.
-It will generate SQL queries to synchronize configured enums.
-After that if it is required to change not just enums but also a schema then calculate schema diff.
+ORM part needs just adding **Enumeum\DoctrineEnum\EventSubscriber\PostGenerateSchemaSubscriber** into Doctrine's EventManager
+```php
+<?php
+
+namespace App;
+
+use Doctrine\Common\EventManager;
+use Doctrine\ORM\EntityManager;
+use Enumeum\DoctrineEnum\EnumUsage\TableColumnRegistry;
+use Enumeum\DoctrineEnum\EventSubscriber\PostGenerateSchemaSubscriber;
+
+$evm = new EventManager();
+$em = EntityManager::create($params, $config, $evm);
+$evm->addEventSubscriber(new PostGenerateSchemaSubscriber(
+    $registry,
+    new TableColumnRegistry($em->getConnection()),
+));
+```
+
+### Usage
+
+If you have changed enums values, their structure, adding or dropping types then use **Enumeum\DoctrineEnum\EnumTool**.
+It will generate SQL queries to synchronize configured enums or updates database directly.
+After that if it is required to change not just enums but also a schema then do schema diff/update.
 
 
 ## Running Tests

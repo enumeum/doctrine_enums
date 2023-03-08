@@ -28,23 +28,23 @@ final class EntityRetrievingTest extends BaseTestCaseSchema
         ]);
 
         $this->composeSchema([
-            Entity::class
+            Entity::class,
         ]);
 
         $entity = $this->em->find(Entity::class, 1);
 
-        $this->assertInstanceOf(Entity::class, $entity);
-        $this->assertSame(BaseStatusType::STARTED, $entity->getStatus());
+        self::assertInstanceOf(Entity::class, $entity);
+        self::assertSame(BaseStatusType::STARTED, $entity->getStatus());
 
         $entity = $this->em->find(Entity::class, 2);
 
-        $this->assertInstanceOf(Entity::class, $entity);
-        $this->assertSame(BaseStatusType::PROCESSING, $entity->getStatus());
+        self::assertInstanceOf(Entity::class, $entity);
+        self::assertSame(BaseStatusType::PROCESSING, $entity->getStatus());
 
         $entity = $this->em->find(Entity::class, 3);
 
-        $this->assertInstanceOf(Entity::class, $entity);
-        $this->assertSame(BaseStatusType::FINISHED, $entity->getStatus());
+        self::assertInstanceOf(Entity::class, $entity);
+        self::assertSame(BaseStatusType::FINISHED, $entity->getStatus());
     }
 
     protected function getBaseSQL(): array

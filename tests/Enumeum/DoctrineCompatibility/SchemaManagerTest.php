@@ -38,9 +38,9 @@ final class SchemaManagerTest extends BaseTestCaseSchema
 
         $statusColumnType = $schema->getTable('entity')->getColumn('status')->getType();
 
-        $this->assertInstanceOf(EnumeumType::class, $statusColumnType);
-        $this->assertSame('status_type', $statusColumnType->getName());
-        $this->assertSame(['status_type'], $statusColumnType->getMappedDatabaseTypes(new PostgreSQLPlatform()));
+        self::assertInstanceOf(EnumeumType::class, $statusColumnType);
+        self::assertSame('status_type', $statusColumnType->getName());
+        self::assertSame(['status_type'], $statusColumnType->getMappedDatabaseTypes(new PostgreSQLPlatform()));
     }
 
     protected function getBaseSQL(): array

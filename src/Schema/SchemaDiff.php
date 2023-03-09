@@ -31,14 +31,14 @@ class SchemaDiff
     /**
      * @return iterable<string>
      */
-    public function toSql(): iterable
+    public function toSql(bool $withoutDropping = false, bool $withoutCreating = false): iterable
     {
         $builder = QueryBuilder::create();
 
         return array_merge(
-            $builder->generateEnumDropQueries($this->dropChangeSet),
+            $withoutDropping ? [] : $builder->generateEnumDropQueries($this->dropChangeSet),
             $builder->generateEnumAlterQueries($this->alterChangeSet),
-            $builder->generateEnumCreateQueries($this->createChangeSet),
+            $withoutCreating ? [] : $builder->generateEnumCreateQueries($this->createChangeSet),
         );
     }
 }

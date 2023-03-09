@@ -33,7 +33,7 @@ final class BackwardCompatibilityTest extends BaseTestCaseSchema
             $this->getTableUsageRegistry($this->em->getConnection()),
         );
 
-        $comparator = Comparator::create();
+        $comparator = new Comparator();
         $diff = $comparator->compareSchemas($manager->createSchemaFromDatabase(), $manager->createSchemaFromConfig());
 
         $updateSql = $diff->toSql();

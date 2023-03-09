@@ -38,6 +38,19 @@ final class EnumDropTest extends BaseTestCaseSchema
         $this->applySQL($updateSql);
     }
 
+    public function testEnumTypeNotUsedAnywhereWithoutDropping(): void
+    {
+        $this->applySQL([]);
+
+        $diff = new SchemaDiff(
+            dropChangeSet: [new Definition('status_type', ['started', 'processing', 'finished'])],
+        );
+
+        $updateSql = $diff->toSql(withoutDropping: true);
+
+        self::assertCount(0, $updateSql);
+    }
+
     /**
      * TODO: Probably need to add check of impossible type dropping
      */

@@ -35,6 +35,17 @@ final class EnumCreateTest extends BaseTestCaseSchema
         $this->applySQL($updateSql);
     }
 
+    public function testEnumTypeNotExistsWithoutCreating(): void
+    {
+        $diff = new SchemaDiff(
+            createChangeSet: [new Definition('status_type', ['started', 'processing', 'finished'])],
+        );
+
+        $updateSql = $diff->toSql(withoutCreating: true);
+
+        self::assertCount(0, $updateSql);
+    }
+
     protected function getBaseSQL(): array
     {
         return [];

@@ -25,14 +25,20 @@ class EnumTool
     public function __construct(
         private readonly SchemaManager $manager,
         private readonly Connection $connection,
+        private readonly bool $ignoreUnknownDatabaseTypes = false,
+        private readonly Comparator $comparator = new Comparator(),
     ) {
     }
 
-    public static function create(DefinitionRegistry $registry, Connection $connection): self
-    {
+    public static function create(
+        DefinitionRegistry $registry,
+        Connection $connection,
+        bool $ignoreUnknownDatabaseTypes = false
+    ): self {
         return new self(
             SchemaManager::create($registry, $connection),
             $connection,
+            $ignoreUnknownDatabaseTypes,
         );
     }
 
@@ -114,9 +120,9 @@ class EnumTool
         $toSchema = $this->manager->createSchemaFromConfig();
         $fromSchema = $this->manager->createSchemaFromDatabase();
 
-        $schemaDiff = Comparator::create()->compareSchemas($fromSchema, $toSchema);
+        $schemaDiff = $this->comparator->compareSchemas($fromSchema, $toSchema);
 
-        return $schemaDiff->toSql();
+        return $schemaDiff->toSql(withoutDropping: $this->ignoreUnknownDatabaseTypes);
     }
 
     /**
@@ -139,9 +145,9 @@ class EnumTool
         $toSchema = $this->manager->createSchemaFromDatabase();
         $fromSchema = $this->manager->createSchemaFromConfig();
 
-        $schemaDiff = Comparator::create()->compareSchemas($fromSchema, $toSchema);
+        $schemaDiff = $this->comparator->compareSchemas($fromSchema, $toSchema);
 
-        return $schemaDiff->toSql();
+        return $schemaDiff->toSql(withoutCreating: $this->ignoreUnknownDatabaseTypes);
     }
 
     /**
@@ -168,9 +174,9 @@ class EnumTool
         $toSchema = $this->manager->createSchemaFromDefinitions($definitions);
         $fromSchema = $this->manager->createSchemaFromDatabase();
 
-        $schemaDiff = Comparator::create()->compareSchemas($fromSchema, $toSchema);
+        $schemaDiff = $this->comparator->compareSchemas($fromSchema, $toSchema);
 
-        return $schemaDiff->toSql();
+        return $schemaDiff->toSql(withoutDropping: $this->ignoreUnknownDatabaseTypes);
     }
 
     /**
@@ -197,8 +203,8 @@ class EnumTool
         $toSchema = $this->manager->createSchemaFromDatabase();
         $fromSchema = $this->manager->createSchemaFromDefinitions($definitions);
 
-        $schemaDiff = Comparator::create()->compareSchemas($fromSchema, $toSchema);
+        $schemaDiff = $this->comparator->compareSchemas($fromSchema, $toSchema);
 
-        return $schemaDiff->toSql();
+        return $schemaDiff->toSql(withoutCreating: $this->ignoreUnknownDatabaseTypes);
     }
 }

@@ -72,7 +72,7 @@ class Comparator
     /**
      * @return iterable<Definition>
      */
-    private function collectDropChangeSet(Schema $fromSchema, Schema $toSchema): array
+    private function collectDropChangeSet(Schema $fromSchema, Schema $toSchema): iterable
     {
         $dropping = [];
         foreach ($fromSchema->getDefinitions() as $name => $definition) {

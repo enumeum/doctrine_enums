@@ -11,26 +11,21 @@ declare(strict_types=1);
 
 namespace EnumeumTests\DoctrineCompatibility;
 
+use Doctrine\ORM\Tools\SchemaTool;
 use Enumeum\DoctrineEnum\Schema\Comparator;
 use Enumeum\DoctrineEnum\Schema\SchemaManager;
-use EnumeumTests\Fixture\Entity\Entity;
+use EnumeumTests\Fixture\Entity\EntityWithNotEnumeumEnum;
 use EnumeumTests\Setup\BaseTestCaseSchema;
 
 final class BackwardCompatibilityTest extends BaseTestCaseSchema
 {
-    public function testSkipEnumUsedInEntityButNotMarkedAsEnumeumType(): void
+    public function testOnEnumeumDiffSkipEnumUsedInEntityButNotMarkedAsEnumeumType(): void
     {
-        $this->applySQL([
-            'CREATE TABLE entity (id INT NOT NULL, status VARCHAR(255) NOT NULL, PRIMARY KEY(id))',
-            "COMMENT ON COLUMN entity.status IS 'SOME Comment'",
-        ]);
-
         $this->composeSchema([
-            Entity::class,
+            EntityWithNotEnumeumEnum::class,
         ]);
 
-        $this->registerTypes([
-        ]);
+        $this->registerTypes([]);
 
         $manager = new SchemaManager(
             $this->getDefinitionRegistry(),
@@ -44,16 +39,27 @@ final class BackwardCompatibilityTest extends BaseTestCaseSchema
         $updateSql = $diff->toSql();
 
         self::assertCount(0, $updateSql);
-        self::assertSame(
-            [],
-            $updateSql,
-        );
+    }
 
-        $this->applySQLWithinTransaction($updateSql);
+    public function testOnDoctrineDiffSkipEnumUsedInEntityButNotMarkedAsEnumeumType(): void
+    {
+        $schema = $this->composeSchema([
+            EntityWithNotEnumeumEnum::class,
+        ]);
+
+        $this->registerTypes([]);
+
+        $schemaTool = new SchemaTool($this->em);
+        $updateSchemaSql = $schemaTool->getUpdateSchemaSql($schema);
+
+        self::assertCount(0, $updateSchemaSql);
     }
 
     protected function getBaseSQL(): array
     {
-        return [];
+        return [
+            'CREATE TABLE entity (id INT NOT NULL, status VARCHAR(255) NOT NULL, PRIMARY KEY(id))',
+            "COMMENT ON COLUMN entity.status IS 'SOME Comment'",
+        ];
     }
 }

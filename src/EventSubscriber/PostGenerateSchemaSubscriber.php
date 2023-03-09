@@ -44,9 +44,11 @@ class PostGenerateSchemaSubscriber implements EventSubscriber
 
         foreach ($event->getSchema()->getTables() as $table) {
             foreach ($table->getColumns() as $column) {
-                if ($enumType = $this->extractEnumType($column)) {
-                    $definition = $this->registry->getDefinitionByEnum($enumType);
+                if (!($enumType = $this->extractEnumType($column))) {
+                    continue;
+                }
 
+                if ($definition = $this->registry->getDefinitionByEnum($enumType)) {
                     $genericType = EnumeumType::create($definition->name);
 
                     if ($this->columnRegistry->isColumnExists($table->getName(), $column->getName())) {

@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Enumeum\DoctrineEnum\Definition;
 
 use Enumeum\DoctrineEnum\Attribute\EnumType;
-use Enumeum\DoctrineEnum\Exception\UnexpectedValueException;
 use Enumeum\DoctrineEnum\Tools\EnumCasesExtractor;
 use ReflectionEnum;
 use Throwable;
@@ -81,11 +80,10 @@ class DefinitionRegistry
             if ($typeName = $this->tryMappedEnumName($reflection)) {
                 return new Definition($typeName, EnumCasesExtractor::fromEnum($enumClassName));
             }
-        } catch (Throwable $e) {
-            dump($e);
+        } catch (Throwable) {
         }
 
-        throw UnexpectedValueException::enumIsNotRelatedToBeEnumeumType($enumClassName);
+        return null;
     }
 
     private function tryMappedEnumName(ReflectionEnum $reflection): ?string

@@ -21,6 +21,8 @@ use EnumeumTests\Fixture\DefinitionEnum\One\AlphaStatusType;
 use EnumeumTests\Fixture\DefinitionEnum\One\BetaStatusType;
 use EnumeumTests\Fixture\DefinitionEnum\One\GammaStatusType;
 use EnumeumTests\Fixture\DuplicatedBaseStatusType;
+use EnumeumTests\Fixture\GeneralEnumStatusType;
+use EnumeumTests\Fixture\IntegerStatusType;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -63,6 +65,30 @@ class DefinitionRegistryLoaderTest extends TestCase
 
         self::assertCount(1, $types);
         self::assertArrayHasKey('status_type', $types);
+    }
+
+    public function testLoadIntegerBackedType(): void
+    {
+        $loader = DefinitionRegistryLoader::create();
+        $loader->loadType(IntegerStatusType::class);
+
+        $types = $loader->getRegistry()->getDefinitions();
+
+        self::assertCount(1, $types);
+        self::assertArrayHasKey('status_type', $types);
+    }
+
+    public function testLoadGeneralEnumType(): void
+    {
+        $loader = DefinitionRegistryLoader::create();
+        $loader->loadType(GeneralEnumStatusType::class);
+
+        self::expectException(MappingException::class);
+        self::expectExceptionMessage(
+            'Type with name "EnumeumTests\Fixture\GeneralEnumStatusType" is not a BackedEnum, thus does not supported.',
+        );
+
+        $loader->getRegistry()->getDefinitions();
     }
 
     public function testLoadAlreadyLoadedEnum(): void

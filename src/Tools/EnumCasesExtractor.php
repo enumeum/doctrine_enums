@@ -12,13 +12,19 @@ declare(strict_types=1);
 namespace Enumeum\DoctrineEnum\Tools;
 
 use BackedEnum;
+use Enumeum\DoctrineEnum\Exception\MappingException;
+
+use function array_map;
+use function is_a;
 
 class EnumCasesExtractor
 {
     public static function fromEnum(string $enumClassName): iterable
     {
-        assert(is_a($enumClassName, BackedEnum::class, true));
+        if (is_a($enumClassName, BackedEnum::class, true)) {
+            return array_map(static fn (BackedEnum $value) => (string) $value->value, $enumClassName::cases());
+        }
 
-        return array_map(static fn (BackedEnum $value) => $value->value, $enumClassName::cases());
+        throw MappingException::typeMappedOnNonBackedEnumWhichNotSupported($enumClassName);
     }
 }

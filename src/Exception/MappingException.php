@@ -42,4 +42,10 @@ class MappingException extends Exception
             $currentType,
         ));
     }
+
+    public static function typeMappedOnNonBackedEnumWhichNotSupported(
+        string $type,
+    ): self {
+        return new self(sprintf('Type with name "%s" is not a BackedEnum, thus does not supported.', $type));
+    }
 }

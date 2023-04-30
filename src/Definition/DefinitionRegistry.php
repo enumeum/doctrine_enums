@@ -15,7 +15,7 @@ use Enumeum\DoctrineEnum\Attribute\EnumType;
 use Enumeum\DoctrineEnum\Exception\MappingException;
 use Enumeum\DoctrineEnum\Tools\EnumCasesExtractor;
 use ReflectionEnum;
-use Throwable;
+use ReflectionException;
 
 class DefinitionRegistry
 {
@@ -57,6 +57,9 @@ class DefinitionRegistry
 
     /**
      * @param iterable<class-string> $enumClassNames
+     *
+     * @throws ReflectionException
+     * @throws MappingException
      */
     public function load(iterable $enumClassNames): void
     {
@@ -65,6 +68,10 @@ class DefinitionRegistry
         }
     }
 
+    /**
+     * @throws ReflectionException
+     * @throws MappingException
+     */
     public function loadType(string $enumClassName): void
     {
         if (isset($this->definitionsByEnum[$enumClassName])) {
@@ -82,14 +89,15 @@ class DefinitionRegistry
         }
     }
 
+    /**
+     * @throws ReflectionException
+     * @throws MappingException
+     */
     private function createDefinition(string $enumClassName): ?Definition
     {
-        try {
-            $reflection = new ReflectionEnum($enumClassName);
-            if ($typeName = $this->tryMappedEnumName($reflection)) {
-                return new Definition($typeName, EnumCasesExtractor::fromEnum($enumClassName));
-            }
-        } catch (Throwable) {
+        $reflection = new ReflectionEnum($enumClassName);
+        if ($typeName = $this->tryMappedEnumName($reflection)) {
+            return new Definition($typeName, EnumCasesExtractor::fromEnum($enumClassName));
         }
 
         return null;

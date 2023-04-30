@@ -52,7 +52,7 @@ final class EnumDropTest extends BaseTestCaseSchema
     }
 
     /**
-     * TODO: Probably need to add check of impossible type dropping
+     * TODO: Probably need to add check of impossible type dropping.
      */
     public function testEnumTypeUsedByTable(): void
     {

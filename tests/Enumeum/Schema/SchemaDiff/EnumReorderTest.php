@@ -176,7 +176,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
     }
 
     /**
-     * TODO: Probably need to add check of impossible data update
+     * TODO: Probably need to add check of impossible data update.
      */
     public function testEnumTypeUsedByEmptyTableWithNotExistingDefault(): void
     {
@@ -340,7 +340,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
     }
 
     /**
-     * TODO: Probably need to add check of impossible data update
+     * TODO: Probably need to add check of impossible data update.
      */
     public function testEnumTypeUsedByTableWithRecordsHavingRemovedValues(): void
     {

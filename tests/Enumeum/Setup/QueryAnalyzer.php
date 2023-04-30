@@ -17,7 +17,7 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 
 /**
- * TODO: Remove it when dropping support of doctrine/dbal 2
+ * TODO: Remove it when dropping support of doctrine/dbal 2.
  */
 final class QueryAnalyzer implements SQLLogger
 {

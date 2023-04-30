@@ -73,8 +73,8 @@ final class EnumDropTest extends BaseTestCaseSchema
             $updateSql,
         );
 
-        $this->expectException(DriverException::class);
-        $this->expectExceptionMessageMatches(
+        self::expectException(DriverException::class);
+        self::expectExceptionMessageMatches(
             '~.*cannot drop type status_type because other objects depend on it.*~',
         );
 

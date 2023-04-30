@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Enumeum\DoctrineEnum\Definition;
 
 use Enumeum\DoctrineEnum\Attribute\EnumType;
+use Enumeum\DoctrineEnum\Exception\MappingException;
 use Enumeum\DoctrineEnum\Tools\EnumCasesExtractor;
 use ReflectionEnum;
 use Throwable;
@@ -23,6 +24,9 @@ class DefinitionRegistry
 
     /** @var array<string, Definition> */
     private array $definitionsByName = [];
+
+    /** @var array<string, class-string> */
+    private array $enumsByName = [];
 
     public function __construct(iterable $enumClassNames = [])
     {
@@ -68,8 +72,13 @@ class DefinitionRegistry
         }
 
         if ($created = $this->createDefinition($enumClassName)) {
+            if (isset($this->enumsByName[$created->name])) {
+                throw MappingException::typeWithSameNameAlreadyLoadedFromAnotherEnum($created->name, $enumClassName, $this->enumsByName[$created->name]);
+            }
+
             $this->definitionsByEnum[$enumClassName] = $created;
             $this->definitionsByName[$created->name] = $created;
+            $this->enumsByName[$created->name] = $enumClassName;
         }
     }
 

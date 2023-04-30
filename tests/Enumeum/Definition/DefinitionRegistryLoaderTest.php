@@ -14,9 +14,13 @@ namespace EnumeumTests\Definition;
 use Enumeum\DoctrineEnum\Definition\DefinitionRegistry;
 use Enumeum\DoctrineEnum\Definition\DefinitionRegistryLoader;
 use Enumeum\DoctrineEnum\Definition\EnumClassLocator;
+use Enumeum\DoctrineEnum\Exception\MappingException;
+use EnumeumTests\Fixture\AnotherStatusType;
+use EnumeumTests\Fixture\BaseStatusType;
 use EnumeumTests\Fixture\DefinitionEnum\One\AlphaStatusType;
 use EnumeumTests\Fixture\DefinitionEnum\One\BetaStatusType;
 use EnumeumTests\Fixture\DefinitionEnum\One\GammaStatusType;
+use EnumeumTests\Fixture\DuplicatedBaseStatusType;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -53,27 +57,58 @@ class DefinitionRegistryLoaderTest extends TestCase
     public function testLoadType(): void
     {
         $loader = DefinitionRegistryLoader::create();
-        $loader->loadType(AlphaStatusType::class);
+        $loader->loadType(BaseStatusType::class);
 
         $types = $loader->getRegistry()->getDefinitions();
 
         self::assertCount(1, $types);
-        self::assertArrayHasKey('alpha_status_type_one', $types);
+        self::assertArrayHasKey('status_type', $types);
+    }
+
+    public function testLoadAlreadyLoadedEnum(): void
+    {
+        $loader = DefinitionRegistryLoader::create();
+        $loader->loadType(BaseStatusType::class);
+
+        /* Adding same enum. */
+        $loader->loadType(BaseStatusType::class);
+
+        $types = $loader->getRegistry()->getDefinitions();
+
+        self::assertCount(1, $types);
+        self::assertArrayHasKey('status_type', $types);
+    }
+
+    public function testLoadAnotherEnumWithAlreadyLoadedName(): void
+    {
+        $loader = DefinitionRegistryLoader::create();
+        $loader->loadType(BaseStatusType::class);
+
+        /* Adding another enum, but with same name. */
+        $loader->loadType(DuplicatedBaseStatusType::class);
+
+        self::expectException(MappingException::class);
+        self::expectExceptionMessage(
+            'Type with name "status_type" was already loaded from enum "EnumeumTests\Fixture\BaseStatusType", '.
+            'but attempted to be loaded again from enum "EnumeumTests\Fixture\DuplicatedBaseStatusType".',
+        );
+
+        $loader->getRegistry()->getDefinitions();
     }
 
     public function testLoadTypes(): void
     {
         $loader = DefinitionRegistryLoader::create();
         $loader->loadTypes([
-            AlphaStatusType::class,
-            BetaStatusType::class,
+            BaseStatusType::class,
+            AnotherStatusType::class,
         ]);
 
         $types = $loader->getRegistry()->getDefinitions();
 
         self::assertCount(2, $types);
-        self::assertArrayHasKey('alpha_status_type_one', $types);
-        self::assertArrayHasKey('beta_status_type_one', $types);
+        self::assertArrayHasKey('status_type', $types);
+        self::assertArrayHasKey('another_status_type', $types);
     }
 
     public function testLoadDir(): void

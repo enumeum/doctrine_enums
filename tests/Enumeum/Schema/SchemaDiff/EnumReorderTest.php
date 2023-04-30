@@ -211,8 +211,8 @@ final class EnumReorderTest extends BaseTestCaseSchema
             $updateSql,
         );
 
-        $this->expectException(DriverException::class);
-        $this->expectExceptionMessage(
+        self::expectException(DriverException::class);
+        self::expectExceptionMessage(
             'An exception occurred while executing a query: SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input value for enum status_type: "processing"',
         );
 
@@ -376,8 +376,8 @@ final class EnumReorderTest extends BaseTestCaseSchema
             $updateSql,
         );
 
-        $this->expectException(DriverException::class);
-        $this->expectExceptionMessage(
+        self::expectException(DriverException::class);
+        self::expectExceptionMessage(
             'An exception occurred while executing a query: SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  invalid input value for enum status_type: "processing"',
         );
 

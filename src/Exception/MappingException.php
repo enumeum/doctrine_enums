@@ -29,4 +29,17 @@ class MappingException extends Exception
             $path
         ));
     }
+
+    public static function typeWithSameNameAlreadyLoadedFromAnotherEnum(
+        string $name,
+        string $currentType,
+        string $loadedType,
+    ): self {
+        return new self(sprintf(
+            'Type with name "%s" was already loaded from enum "%s", but attempted to be loaded again from enum "%s".',
+            $name,
+            $loadedType,
+            $currentType,
+        ));
+    }
 }

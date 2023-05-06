@@ -28,7 +28,6 @@ use Enumeum\DoctrineEnum\EnumUsage\TableColumnRegistry;
 use Enumeum\DoctrineEnum\EnumUsage\TableUsageRegistry;
 use Enumeum\DoctrineEnum\QueryBuild\QueryBuilder;
 use Enumeum\DoctrineEnum\Type\TypeRegistryLoader;
-use Enumeum\DoctrineEnum\TypeQueriesStack;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -56,8 +55,6 @@ abstract class BaseTestCase extends TestCase
         $this->queryLogger = $this->createMock(LoggerInterface::class);
         $em = $this->getDefaultMockEntityManager($params);
         $this->setupPrerequisites($em);
-
-        TypeQueriesStack::reset();
     }
 
     protected function tearDown(): void

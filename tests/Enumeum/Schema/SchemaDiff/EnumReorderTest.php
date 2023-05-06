@@ -118,7 +118,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
                     new Definition('status_type', ['started', 'finished']),
                     new Usage('status_type', [
                         new UsageColumn('status_type', 'entity', 'status'),
-                    ])
+                    ]),
                 ),
             ],
         );
@@ -152,7 +152,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
                     new Definition('status_type', ['started', 'finished']),
                     new Usage('status_type', [
                         new UsageColumn('status_type', 'entity', 'status', '\'started\'::status_type'),
-                    ])
+                    ]),
                 ),
             ],
         );
@@ -191,7 +191,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
                     new Definition('status_type', ['started', 'finished']),
                     new Usage('status_type', [
                         new UsageColumn('status_type', 'entity', 'status', '\'processing\'::status_type'),
-                    ])
+                    ]),
                 ),
             ],
         );
@@ -234,7 +234,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
                     new Definition('status_type', ['started', 'finished']),
                     new Usage('status_type', [
                         new UsageColumn('status_type', 'entity', 'status'),
-                    ])
+                    ]),
                 ),
             ],
         );
@@ -270,7 +270,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
                     new Definition('status_type', ['started', 'finished']),
                     new Usage('status_type', [
                         new UsageColumn('status_type', 'entity', 'status', '\'started\'::status_type'),
-                    ])
+                    ]),
                 ),
             ],
         );
@@ -312,7 +312,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
                     new Usage('status_type', [
                         new UsageColumn('status_type', 'entity', 'status', '\'started\'::status_type'),
                         new UsageColumn('status_type', 'entity_one', 'status', '\'finished\'::status_type'),
-                    ])
+                    ]),
                 ),
             ],
         );
@@ -358,7 +358,7 @@ final class EnumReorderTest extends BaseTestCaseSchema
                     new Definition('status_type', ['started', 'finished']),
                     new Usage('status_type', [
                         new UsageColumn('status_type', 'entity', 'status'),
-                    ])
+                    ]),
                 ),
             ],
         );

@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Enumeum\DoctrineEnum\Exception;
 
 use Exception;
-
 use function sprintf;
 
 class MappingException extends Exception
@@ -20,13 +19,13 @@ class MappingException extends Exception
     public static function fileMappingDriversRequireConfiguredDirectoryPath(?string $path = null): self
     {
         if (null !== $path) {
-            $path = '['.$path.']';
+            $path = '[' . $path . ']';
         }
 
         return new self(sprintf(
-            'File mapping drivers must have a valid directory path, '.
+            'File mapping drivers must have a valid directory path, ' .
             'however the given path %s seems to be incorrect!',
-            $path
+            $path,
         ));
     }
 

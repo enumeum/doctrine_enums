@@ -41,7 +41,7 @@ class DefinitionRegistryLoader
         return new self(
             $locator ?? new EnumClassLocator([]),
             $enumClassNames,
-            $enumDirPaths
+            $enumDirPaths,
         );
     }
 

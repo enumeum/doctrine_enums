@@ -48,7 +48,7 @@ class DefinitionRegistryLoaderTest extends TestCase
             ],
             [
                 [
-                    DefinitionRegistryLoader::DIR_KEY => __DIR__.'/../Fixture/DefinitionEnum/Two',
+                    DefinitionRegistryLoader::DIR_KEY => __DIR__ . '/../Fixture/DefinitionEnum/Two',
                     DefinitionRegistryLoader::NAMESPACE_KEY => 'EnumeumTests\Fixture\DefinitionEnum\Two',
                 ],
             ],
@@ -115,7 +115,7 @@ class DefinitionRegistryLoaderTest extends TestCase
 
         self::expectException(MappingException::class);
         self::expectExceptionMessage(
-            'Type with name "status_type" was already loaded from enum "EnumeumTests\Fixture\BaseStatusType", '.
+            'Type with name "status_type" was already loaded from enum "EnumeumTests\Fixture\BaseStatusType", ' .
             'but attempted to be loaded again from enum "EnumeumTests\Fixture\DuplicatedBaseStatusType".',
         );
 
@@ -141,7 +141,7 @@ class DefinitionRegistryLoaderTest extends TestCase
     {
         $loader = DefinitionRegistryLoader::create();
         $loader->loadDir(
-            __DIR__.'/../Fixture/DefinitionEnum/One',
+            __DIR__ . '/../Fixture/DefinitionEnum/One',
             'EnumeumTests\Fixture\DefinitionEnum\One',
         );
 
@@ -158,11 +158,11 @@ class DefinitionRegistryLoaderTest extends TestCase
         $loader = DefinitionRegistryLoader::create();
         $loader->loadDirs([
             [
-                DefinitionRegistryLoader::DIR_KEY => __DIR__.'/../Fixture/DefinitionEnum/One',
+                DefinitionRegistryLoader::DIR_KEY => __DIR__ . '/../Fixture/DefinitionEnum/One',
                 DefinitionRegistryLoader::NAMESPACE_KEY => 'EnumeumTests\Fixture\DefinitionEnum\One',
             ],
             [
-                DefinitionRegistryLoader::DIR_KEY => __DIR__.'/../Fixture/DefinitionEnum/Two',
+                DefinitionRegistryLoader::DIR_KEY => __DIR__ . '/../Fixture/DefinitionEnum/Two',
                 DefinitionRegistryLoader::NAMESPACE_KEY => 'EnumeumTests\Fixture\DefinitionEnum\Two',
             ],
         ]);

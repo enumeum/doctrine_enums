@@ -27,7 +27,7 @@ abstract class BaseTestCaseSchema extends BaseTestCase
     protected function getDefaultMockEntityManager(
         array $params,
         EventManager $evm = null,
-        Configuration $config = null
+        Configuration $config = null,
     ): EntityManager {
         $config = null === $config ? $this->getDefaultConfiguration() : $config;
         $evm = $evm ?: new EventManager();

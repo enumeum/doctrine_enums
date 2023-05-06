@@ -33,7 +33,7 @@ class EnumTool
     public static function create(
         DefinitionRegistry $registry,
         Connection $connection,
-        bool $ignoreUnknownDatabaseTypes = false
+        bool $ignoreUnknownDatabaseTypes = false,
     ): self {
         return new self(
             SchemaManager::create($registry, $connection),

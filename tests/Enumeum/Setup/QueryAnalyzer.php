@@ -72,7 +72,7 @@ final class QueryAnalyzer implements SQLLogger
             }, $sql);
         } else {
             foreach ($converted as $key => $value) {
-                $sql = str_replace(':'.$key, $value, $sql);
+                $sql = str_replace(':' . $key, $value, $sql);
             }
         }
 

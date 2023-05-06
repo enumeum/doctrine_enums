@@ -17,7 +17,7 @@ class CommentMarker
 
     public static function mark(?string $comment): ?string
     {
-        return $comment ? $comment.self::COMMENT_MARK : $comment;
+        return $comment ? $comment . self::COMMENT_MARK : $comment;
     }
 
     public static function unmark(?string $comment): ?string

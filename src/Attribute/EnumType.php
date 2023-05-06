@@ -17,7 +17,7 @@ use Attribute;
 final class EnumType
 {
     public function __construct(
-        public string $name
+        public string $name,
     ) {
     }
 }

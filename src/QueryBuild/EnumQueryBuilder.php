@@ -13,7 +13,6 @@ namespace Enumeum\DoctrineEnum\QueryBuild;
 
 use Enumeum\DoctrineEnum\Definition\Definition;
 use Enumeum\DoctrineEnum\Tools\EnumCasesTool;
-
 use function implode;
 use function sprintf;
 
@@ -54,12 +53,12 @@ class EnumQueryBuilder
 
     public static function buildEnumTypeRenameToTemporarySql(Definition $definition): iterable
     {
-        return [sprintf(self::TYPE_ALTER_RENAME_QUERY, $definition->name, $definition->name.self::TEMPORARY_SUFFIX)];
+        return [sprintf(self::TYPE_ALTER_RENAME_QUERY, $definition->name, $definition->name . self::TEMPORARY_SUFFIX)];
     }
 
     public static function buildEnumTypeDropTemporarySql(Definition $definition): iterable
     {
-        return [sprintf(self::TYPE_DROP_QUERY, $definition->name.self::TEMPORARY_SUFFIX)];
+        return [sprintf(self::TYPE_DROP_QUERY, $definition->name . self::TEMPORARY_SUFFIX)];
     }
 
     public static function buildEnumTypeAlterColumnSql(Definition $definition, string $table, string $column): iterable

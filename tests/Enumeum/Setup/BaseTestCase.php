@@ -79,7 +79,7 @@ abstract class BaseTestCase extends TestCase
     abstract protected function getDefaultMockEntityManager(
         array $params,
         EventManager $evm = null,
-        Configuration $config = null
+        Configuration $config = null,
     ): EntityManager;
 
     /**

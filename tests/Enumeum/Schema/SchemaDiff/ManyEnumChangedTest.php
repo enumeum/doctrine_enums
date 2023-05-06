@@ -30,14 +30,14 @@ final class ManyEnumChangedTest extends BaseTestCaseSchema
                     new Definition('alter_status_type', ['started', 'processing', 'finished', 'accepted', 'rejected']),
                     new Usage('alter_status_type', [
                         new UsageColumn('alter_status_type', 'entity_one', 'status'),
-                    ])
+                    ]),
                 ),
                 new DefinitionDiff(
                     new Definition('reorder_status_type', ['started', 'processing', 'finished']),
                     new Definition('reorder_status_type', ['started', 'finished']),
                     new Usage('reorder_status_type', [
                         new UsageColumn('reorder_status_type', 'entity_two', 'status'),
-                    ])
+                    ]),
                 ),
             ],
             dropChangeSet: [new Definition('drop_status_type', ['started', 'processing', 'finished'])],
@@ -73,14 +73,14 @@ final class ManyEnumChangedTest extends BaseTestCaseSchema
                     new Definition('alter_status_type', ['started', 'processing', 'finished', 'accepted', 'rejected']),
                     new Usage('alter_status_type', [
                         new UsageColumn('alter_status_type', 'entity_one', 'status'),
-                    ])
+                    ]),
                 ),
                 new DefinitionDiff(
                     new Definition('reorder_status_type', ['started', 'processing', 'finished']),
                     new Definition('reorder_status_type', ['started', 'finished']),
                     new Usage('reorder_status_type', [
                         new UsageColumn('reorder_status_type', 'entity_two', 'status'),
-                    ])
+                    ]),
                 ),
             ],
             dropChangeSet: [new Definition('drop_status_type', ['started', 'processing', 'finished'])],
@@ -115,14 +115,14 @@ final class ManyEnumChangedTest extends BaseTestCaseSchema
                     new Definition('alter_status_type', ['started', 'processing', 'finished', 'accepted', 'rejected']),
                     new Usage('alter_status_type', [
                         new UsageColumn('alter_status_type', 'entity_one', 'status'),
-                    ])
+                    ]),
                 ),
                 new DefinitionDiff(
                     new Definition('reorder_status_type', ['started', 'processing', 'finished']),
                     new Definition('reorder_status_type', ['started', 'finished']),
                     new Usage('reorder_status_type', [
                         new UsageColumn('reorder_status_type', 'entity_two', 'status'),
-                    ])
+                    ]),
                 ),
             ],
             dropChangeSet: [new Definition('drop_status_type', ['started', 'processing', 'finished'])],

@@ -15,7 +15,6 @@ use Enumeum\DoctrineEnum\Exception\MappingException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
-
 use function array_merge;
 use function array_unique;
 use function assert;
@@ -57,7 +56,7 @@ class EnumClassLocator
 
             $iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($path),
-                RecursiveIteratorIterator::LEAVES_ONLY
+                RecursiveIteratorIterator::LEAVES_ONLY,
             );
 
             foreach ($iterator as $file) {
@@ -78,7 +77,7 @@ class EnumClassLocator
 
                 require_once $file->getPathname();
 
-                $class = sprintf('%s\\%s%s', $globalBasename, $subSpace.($subSpace ? '\\' : ''), $className);
+                $class = sprintf('%s\\%s%s', $globalBasename, $subSpace . ($subSpace ? '\\' : ''), $className);
                 if (enum_exists($class, false)) {
                     $enums[] = $class;
                 }

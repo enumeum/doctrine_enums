@@ -60,7 +60,7 @@ final class EnumAlterTest extends BaseTestCaseSchema
                     new Definition('status_type', ['started', 'processing', 'finished', 'accepted', 'rejected']),
                     new Usage('status_type', [
                         new UsageColumn('status_type', 'entity', 'status'),
-                    ])
+                    ]),
                 ),
             ],
         );
@@ -94,7 +94,7 @@ final class EnumAlterTest extends BaseTestCaseSchema
                     new Definition('status_type', ['started', 'processing', 'finished', 'accepted', 'rejected']),
                     new Usage('status_type', [
                         new UsageColumn('status_type', 'entity', 'status'),
-                    ])
+                    ]),
                 ),
             ],
         );

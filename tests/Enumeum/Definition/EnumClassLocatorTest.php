@@ -35,7 +35,7 @@ class EnumClassLocatorTest extends TestCase
 
     public function testAddPathsWithContruct(): void
     {
-        $locator = new EnumClassLocator([__DIR__.'/../Fixture/DefinitionEnum/One']);
+        $locator = new EnumClassLocator([__DIR__ . '/../Fixture/DefinitionEnum/One']);
         $found = $locator->findEnumClassNames('EnumeumTests\Fixture\DefinitionEnum\One');
 
         self::assertCount(3, $found);
@@ -47,7 +47,7 @@ class EnumClassLocatorTest extends TestCase
     public function testAddPaths(): void
     {
         $locator = new EnumClassLocator([]);
-        $locator->addPaths([__DIR__.'/../Fixture/DefinitionEnum/One']);
+        $locator->addPaths([__DIR__ . '/../Fixture/DefinitionEnum/One']);
         $found = $locator->findEnumClassNames('EnumeumTests\Fixture\DefinitionEnum\One');
 
         self::assertCount(3, $found);
@@ -58,8 +58,8 @@ class EnumClassLocatorTest extends TestCase
 
     public function testAddPathsSimultaneously(): void
     {
-        $locator = new EnumClassLocator([__DIR__.'/../Fixture/DefinitionEnum/One']);
-        $locator->addPaths([__DIR__.'/../Fixture/DefinitionEnum/Two']);
+        $locator = new EnumClassLocator([__DIR__ . '/../Fixture/DefinitionEnum/One']);
+        $locator->addPaths([__DIR__ . '/../Fixture/DefinitionEnum/Two']);
 
         $found = $locator->findEnumClassNames('EnumeumTests\Fixture\DefinitionEnum\One');
 
@@ -77,9 +77,9 @@ class EnumClassLocatorTest extends TestCase
 
     public function testAddSamePathsSimultaneously(): void
     {
-        $locator = new EnumClassLocator([__DIR__.'/../Fixture/DefinitionEnum/One']);
-        $locator->addPaths([__DIR__.'/../Fixture/DefinitionEnum/One']);
-        $locator->addPaths([__DIR__.'/../Fixture/DefinitionEnum/One']);
+        $locator = new EnumClassLocator([__DIR__ . '/../Fixture/DefinitionEnum/One']);
+        $locator->addPaths([__DIR__ . '/../Fixture/DefinitionEnum/One']);
+        $locator->addPaths([__DIR__ . '/../Fixture/DefinitionEnum/One']);
 
         $found = $locator->findEnumClassNames('EnumeumTests\Fixture\DefinitionEnum\One');
 
@@ -91,7 +91,7 @@ class EnumClassLocatorTest extends TestCase
 
     public function testFindEnumsRecursively(): void
     {
-        $locator = new EnumClassLocator([__DIR__.'/../Fixture/DefinitionEnum']);
+        $locator = new EnumClassLocator([__DIR__ . '/../Fixture/DefinitionEnum']);
 
         $found = $locator->findEnumClassNames('EnumeumTests\Fixture\DefinitionEnum');
 
@@ -106,7 +106,7 @@ class EnumClassLocatorTest extends TestCase
 
     public function testFindEnumsMoreThanOnce(): void
     {
-        $locator = new EnumClassLocator([__DIR__.'/../Fixture/DefinitionEnum']);
+        $locator = new EnumClassLocator([__DIR__ . '/../Fixture/DefinitionEnum']);
 
         $found = $locator->findEnumClassNames('EnumeumTests\Fixture\DefinitionEnum');
 
@@ -131,7 +131,7 @@ class EnumClassLocatorTest extends TestCase
 
     public function testFindEnumsSameNameFromAnotherNamespace(): void
     {
-        $locator = new EnumClassLocator([__DIR__.'/../Fixture/DefinitionEnum/Two']);
+        $locator = new EnumClassLocator([__DIR__ . '/../Fixture/DefinitionEnum/Two']);
 
         $found = $locator->findEnumClassNames('EnumeumTests\Fixture\DefinitionEnum\One');
 

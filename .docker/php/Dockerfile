@@ -1,22 +1,21 @@
-FROM php:8.1-cli
+FROM php:8.1-cli-alpine
 
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+RUN apk add --no-cache git build-base libzip-dev autoconf linux-headers
 
-RUN apt-get update \
-    && apt-get install -y git zip unzip zlib1g-dev libzip-dev \
-    && apt-get -y autoremove \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN docker-php-ext-install zip \
-    && docker-php-ext-install pcntl \
-    && docker-php-ext-install bcmath
+RUN apk add --no-cache libpq-dev
+RUN docker-php-ext-install pdo pdo_pgsql pgsql
 
-RUN apt-get update \
-  && apt-get install -y libpq-dev \
-  && docker-php-ext-install pdo pdo_pgsql pgsql
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
-#RUN pecl install mongodb \
-#    && docker-php-ext-enable mongodb \
+ARG PGID=1000
+ARG PUID=1000
+RUN apk --no-cache add shadow && \
+    groupmod -o -g ${PGID} www-data && \
+    usermod -o -u ${PUID} -g www-data www-data
+
+USER www-data
 
 WORKDIR /var/www

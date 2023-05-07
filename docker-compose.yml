@@ -4,6 +4,8 @@ services:
     build: .docker/php
     volumes:
       - .:/var/www
+    environment:
+      PHP_IDE_CONFIG: "serverName=DoctrineEnums"
     tty: true
     stdin_open: true
 

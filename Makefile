@@ -27,6 +27,6 @@ start:
 .PHONY: start
 
 console:
-	docker-compose exec php bash
+	docker-compose exec php sh
 
 .PHONY: console

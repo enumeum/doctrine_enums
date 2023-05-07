@@ -15,6 +15,7 @@ use Enumeum\DoctrineEnum\Exception\MappingException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
+
 use function array_merge;
 use function array_unique;
 use function assert;

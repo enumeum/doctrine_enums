@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Enumeum\DoctrineEnum\Exception;
 
 use Exception;
+
 use function sprintf;
 
 class MappingException extends Exception

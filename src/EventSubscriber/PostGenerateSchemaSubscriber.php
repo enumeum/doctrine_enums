@@ -38,6 +38,10 @@ class PostGenerateSchemaSubscriber implements EventSubscriber
 
     public function postGenerateSchema(GenerateSchemaEventArgs $event): void
     {
+//        var_dump(__METHOD__);
+//
+//        TypeRegistryLoader::load($this->registry->getDefinitions());
+
         if (!$event->getEntityManager()->getConnection()->getDatabasePlatform() instanceof PostgreSqlPlatform) {
             return;
         }

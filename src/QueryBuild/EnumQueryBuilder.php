@@ -13,6 +13,7 @@ namespace Enumeum\DoctrineEnum\QueryBuild;
 
 use Enumeum\DoctrineEnum\Definition\Definition;
 use Enumeum\DoctrineEnum\Tools\EnumCasesTool;
+
 use function implode;
 use function sprintf;
 
